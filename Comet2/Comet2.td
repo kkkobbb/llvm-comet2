@@ -8,7 +8,6 @@ include "llvm/Target/Target.td"
 // COMET-II subtarget features and instruction predicates.
 //===----------------------------------------------------------------------===//
 
-// TODO 定義不要？
 // nothing
 
 //===----------------------------------------------------------------------===//
@@ -25,15 +24,16 @@ include "Comet2SystemOperands.td"
 
 include "Comet2RegisterInfo.td"
 include "Comet2CallingConv.td"
+include "Comet2Schedule.td"
 include "Comet2InstrInfo.td"
-include "Comet2RegisterBanks.td"
 
 //===----------------------------------------------------------------------===//
 // COMET-II processors supported.
 //===----------------------------------------------------------------------===//
 
-// TODO subtargetがない場合、定義は不要？
-// nothing
+// TODO NoSchedModelでもいい？
+//def : Processor<"Comet2", NoSchedModel, []>;
+def : Processor<"Comet2", Comet2GenericItineraties, []>;
 
 //===----------------------------------------------------------------------===//
 // Define the COMET-II target.
@@ -51,10 +51,8 @@ def Comet2AsmParser : AsmParser {
   let AllowDuplicateRegisterNames = 1;
 }
 
-def Comet2AsmWriter : AsmWriter {
-  // MCSubtargetInfoを様々な print methodに渡すかどうか？ (将来廃止される)
-  int PassSubtarget = 1;
-}
+// TODO Target.tdに定義されているDefaultAsmWriterでもいい？
+def Comet2AsmWriter : AsmWriter;
 
 def Comet2 : Target {
   let InstructionSet = Comet2InstrInfo;
