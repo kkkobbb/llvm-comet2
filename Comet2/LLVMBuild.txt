@@ -1,0 +1,30 @@
+;===- ./lib/Target/Comet2/LLVMBuild.txt ------------------------*- Conf -*--===;
+;
+;===------------------------------------------------------------------------===;
+;
+; This is an LLVMBuild description file for the components in this subdirectory.
+;
+; For more information on the LLVMBuild system, please see:
+;
+;   http://llvm.org/docs/LLVMBuild.html
+;
+;===------------------------------------------------------------------------===;
+
+[common]
+subdirectories = AsmParser Disassembler TargetInfo MCTargetDesc Utils
+
+[component_0]
+type = TargetGroup
+name = Comet2
+parent = Target
+has_asmparser = 1
+has_asmprinter = 1
+has_disassembler = 1
+
+[component_1]
+type = Library
+name = Comet2CodeGen
+parent = Comet2
+required_libraries = Analysis AsmPrinter Core CodeGen MC Comet2Desc
+                     Comet2Info Comet2Utils SelectionDAG Support Target GlobalISel
+add_to_library_groups = Comet2
