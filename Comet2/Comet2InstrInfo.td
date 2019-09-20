@@ -19,13 +19,53 @@ def ADDA : Comet2InstReg<0x20, "ADDA", add, IIAlu, IntRegs>;
 def SUBA : Comet2InstReg<0x21, "SUBA", sub, IIAlu, IntRegs>;
 
 
-// TODO 即値の表現 LAD命令
+// 即値ロード
+class LoadI<bits<8> op, string asmstr>
+    : Comet2InstFormAdr<op, (outs IntRegs:$r), (ins i16imm:$addr),
+                        !strconcat(asmstr, " $r, $addr"),
+                        [(set IntRegs:$r, i16imm:$addr)], IICLoad> {
+}
+
+def LAD : LoadI<0x12, "LAD">;
 
 
-// TODO Call命令
+// Call命令
+def SDT_Comet2Call : SDTypeProfile<0, 1, [SDTCisVT<0, iPTR>]>;
+
+def Comet2Call : SDNode<"Comet2ISD::Call", SDT_Comet2Call,
+                        [SDNPHasChain, SDNPOutGlue, SDNPOptInGlue,
+                         SDNPVariadic]>;
+
+// Pat 第1引数にマッチしたパターンを第2引数に変換する
+def Pat<Comet2Call (i16, tglobaladdr:$dst)),
+        (CALL tglobaladdr:$dst)>;
+def Pat<Comet2Call (i16 texternalsym:$dst),
+        (CALL texternalsym)>;
+
+class Call<bits<8> op, string asmstr>
+    : Comet2InstFormAdr<op, (outs), (ins i16imm:$addr, variable_ops),
+                        !strconcat(asmstr, " $addr"), [(Comet2Call imm:$addr)],
+                        IICBranch> {
+    let isCall = 1;
+    let DecoderMethod = "DecodeCallTarget";
+}
+
+def CALL : Call<0x80, "CALL">;
 
 
 // TODO Ret命令
+def SDT_Comet2Ret : SDTypeProfile<0, 1, [SDTCisInt<0>]>;
+def Comet2Ret : SDNode<"Comet2ISD::Ret", SDT_Comet2Ret,
+                       [SDNPHasChain, SDNPOptInGlue, SDNPVariadic]>;
+
+class RetInst<bits<8> op, string asmstr>
+    : Comet2InstFormAdr<op, (outs), (ins), asmstr,
+                        [(Comet2Ret)], IICBranch> {
+    let isBranch = 1;
+    let isTerminator = 1;
+    let isBarrier = 1;
+    let isReturn = 1;
+}
 
 
 def mem : Operand<i16> {
