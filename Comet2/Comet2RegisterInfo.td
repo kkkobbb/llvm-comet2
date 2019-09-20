@@ -19,8 +19,11 @@ def GR4 : Comet2Reg<4, "GR4">, DwarfRegNum<[4]>;
 def GR5 : Comet2Reg<5, "GR5">, DwarfRegNum<[5]>;
 def GR6 : Comet2Reg<6, "GR6">, DwarfRegNum<[6]>;
 def GR7 : Comet2Reg<7, "GR7">, DwarfRegNum<[7]>;
-def SP  : Comet2Reg<8, "SP">, DwarfRegNum<[8]>;
 
 def IntRegs : RegisterClass<"Comet2", [i16], 16,
-    (add GR0, GR1, GR2, GR3, GR4, GR5, GR6, GR7, SP)>;
+    (add GR0, GR1, GR2, GR3, GR4, GR5, GR6, GR7)>;
+
+// RPUSH RPOPの対象となるレジスタ(GR0以外)
+def RpushRegs : RegisterClass<"Comet2", [i16], 16,
+    (add GR1, GR2, GR3, GR4, GR5, GR6, GR7)>;
 
