@@ -15,8 +15,8 @@ class Comet2InstReg<bits<8> op, string asmstr, SDNode OpNode, InstrItinClass iti
                         [(set RC:$r1, (OpNode RC:$r1, RC:$r2))], itin> {
 }
 
-def ADDA : Comet2InstReg<0x20, "ADDA", add, IIAlu, IntRegs>;
-def SUBA : Comet2InstReg<0x21, "SUBA", sub, IIAlu, IntRegs>;
+def ADDAREG : Comet2InstReg<0x20, "ADDA", add, IIAlu, IntRegs>;
+def SUBAREG : Comet2InstReg<0x21, "SUBA", sub, IIAlu, IntRegs>;
 
 
 // 即値ロード
@@ -27,6 +27,17 @@ class LoadI<bits<8> op, string asmstr>
 }
 
 def LAD : LoadI<0x12, "LAD">;
+
+
+// レジスタ間ロード
+class LoadR<bits<8> op, string asmstr>
+    : Comet2InstFormReg<op, (outs IntRegs:$r1), (ins IntRegs:$r2),
+                        !strconcat(asmstr, " $r1, $r2"),
+                        [(set IntRegs:$r1, IntRegs:$r2)], IICLoad> {
+}
+
+def LDREG : LoadR<0x14, "LD">;
+
 
 
 // Call命令
