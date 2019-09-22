@@ -53,7 +53,7 @@ class Call<bits<8> op, string asmstr>
 def CALL : Call<0x80, "CALL">;
 
 
-// TODO Ret命令
+// Ret命令
 def SDT_Comet2Ret : SDTypeProfile<0, 1, [SDTCisInt<0>]>;
 def Comet2Ret : SDNode<"Comet2ISD::Ret", SDT_Comet2Ret,
                        [SDNPHasChain, SDNPOptInGlue, SDNPVariadic]>;
