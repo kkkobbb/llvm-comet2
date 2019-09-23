@@ -20,5 +20,6 @@ def RetCC_Comet2 : CallingConv<[
 ]>;
 
 // 呼び出し先退避レジスタ
-def CSR_Comet2 : CalleeSavedRegs<(add (sequence "GR%u", 1, 7))>;
+// GR0は戻り先アドレス格納用、GR7はフレームレジスタとして使用する
+def CSR : CalleeSavedRegs<(add (sequence "GR%u", 1, 6))>;
 
