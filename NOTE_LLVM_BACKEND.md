@@ -7,9 +7,11 @@
     * `-DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=Comet2`
         * 自分で追加した場合はこのオプションを指定する
         * `Target/` に配置したディレクトリ名を指定する
-    * `-DLLVM_TARGETS_TO_BUILD=Cpu0`
+    * `-DLLVM_TARGETS_TO_BUILD=Comet2`
         * このオプションで指定したマシンのみビルド対象にする
         * `Target/` に配置したディレクトリ名を指定する
+    * 全てビルドするとかなり時間がかかるので一部だけビルドする
+        * `make llc`
 
 ### コード修正
 * `$LLVM_ROOT/llvm/include/llvm/ADT/Triple.h`
@@ -24,6 +26,6 @@
 
 ## 参考
 * 公式のバックエンドのソースコード `$LLVM_ROOT/llvm/lib/Target/*`
-    * `RISCV`、`Sparc`を参考にした
-
+    * 特に`RISCV`、`Sparc`
+* きつねさん
 
