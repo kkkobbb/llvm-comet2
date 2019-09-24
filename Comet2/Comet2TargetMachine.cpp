@@ -8,7 +8,7 @@
 
 #include "Comet2TargetMachine.h"
 #include "Comet2.h"
-#include "TargetInfo/RISCVTargetInfo.h"
+#include "TargetInfo/Comet2TargetInfo.h"
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/Analysis/TargetTransformInfo.h"
 #include "llvm/CodeGen/GlobalISel/IRTranslator.h"
@@ -59,8 +59,8 @@ Comet2TargetMachine::Comet2TargetMachine(const Target &T, const Triple &TT,
 }
 
 TargetTransformInfo
-RISCVTargetMachine::getTargetTransformInfo(const Function &F) {
-  return TargetTransformInfo(RISCVTTIImpl(this, F));
+Comet2TargetMachine::getTargetTransformInfo(const Function &F) {
+  return TargetTransformInfo(Comet2TTIImpl(this, F));
 }
 
 namespace {
@@ -81,7 +81,7 @@ TargetPassConfig *Comet2TargetMachine::createPassConfig(PassManagerBase &PM) {
   return new Comet2PassConfig(*this, PM);
 }
 
-bool RISCVPassConfig::addInstSelector() {
+bool Comet2PassConfig::addInstSelector() {
   addPass(createComet2ISelDag(getComet2TargetMachine()));
 
   return false;

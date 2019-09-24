@@ -17,15 +17,15 @@ using namespace llvm;
 #define GET_SUBTARGETINFO_CTOR
 #include "Comet2GenSubtargetInfo.inc"
 
-void RISCVSubtarget::anchor() {}
+void Comet2Subtarget::anchor() {}
 
 Comet2Subtarget::Comet2Subtarget(const Triple &TT, StringRef CPU, StringRef FS,
                                StringRef ABIName, const TargetMachine &TM)
-    : RISCVGenSubtargetInfo(TT, CPU, FS),
+    : Comet2GenSubtargetInfo(TT, CPU, FS),
       FrameLowering(initializeSubtargetDependencies(TT, CPU, FS, ABIName)),
       InstrInfo(), RegInfo(getHwMode()), TLInfo(TM, *this) {
-	std::string CPUName = "generic";
+  std::string CPUName = "generic";
 
-	ParseSubtargetFeatures(CPUName, FS);
+  ParseSubtargetFeatures(CPUName, FS);
 }
 

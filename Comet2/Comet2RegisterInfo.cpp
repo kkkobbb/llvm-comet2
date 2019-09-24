@@ -42,7 +42,7 @@ BitVector Comet2RegisterInfo::getReservedRegs(const MachineFunction &MF) const {
   return Reserved;
 }
 
-void RISCVRegisterInfo::eliminateFrameIndex(MachineBasicBlock::iterator II,
+void Comet2RegisterInfo::eliminateFrameIndex(MachineBasicBlock::iterator II,
                                             int SPAdj, unsigned FIOperandNum,
                                             RegScavenger *RS) const {
   assert(SPAdj == 0 && "Unexpected non-zero SPAdj value");
@@ -50,7 +50,7 @@ void RISCVRegisterInfo::eliminateFrameIndex(MachineBasicBlock::iterator II,
   MachineInstr &MI = *II;
   MachineFunction &MF = *MI.getParent()->getParent();
   MachineRegisterInfo &MRI = MF.getRegInfo();
-  const RISCVInstrInfo *TII = MF.getSubtarget<RISCVSubtarget>().getInstrInfo();
+  const Comet2InstrInfo *TII = MF.getSubtarget<Comet2Subtarget>().getInstrInfo();
   DebugLoc DL = MI.getDebugLoc();
 
   int FrameIndex = MI.getOperand(FIOperandNum).getIndex();
