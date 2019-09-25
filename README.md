@@ -29,6 +29,7 @@ TODO (llcのみな気がする)
     * `MCTargetDesc/Comet2AsmBackend.{h,cpp}`
     * `MCTargetDesc/Comet2MCCodeEmitter.cpp`
     * `MCTargetDesc/Comet2MCAsmInfo.{h,cpp}`
+    * `MCTargetDesc/Comet2TargetDesc.{h,cpp}`
     * `Disassembler/{CMakeLists.txt,LLVMBuild.txt}`
     * `Disassembler/Comet2Disassembler.cpp`
     * `TargetInfo/{CMakeLists.txt,LLVMBuild.txt}`
