@@ -50,7 +50,7 @@ def Comet2Call : SDNode<"Comet2ISD::Call", SDT_Comet2Call,
 // Pat 第1引数にマッチしたパターンを第2引数に変換する
 def Pat<Comet2Call (i16, tglobaladdr:$dst)),
         (CALL tglobaladdr:$dst)>;
-def Pat<Comet2Call (i16 texternalsym:$dst),
+def Pat<Comet2Call (i16, texternalsym:$dst),
         (CALL texternalsym)>;
 
 class Call<bits<8> op, string asmstr>
