@@ -20,7 +20,6 @@ TODO (llcのみな気がする)
 
 ## TODO
 * (たぶん必要となる)未作成ファイル一覧
-    * `Comet2ISelLowering.{h,cpp}`
     * `Comet2FrameLowering.{h,cpp}`
     * `Comet2AsmPrinter.cpp`
     * `Comet2MCInstLower.cpp`
