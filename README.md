@@ -20,7 +20,6 @@ TODO (llcのみな気がする)
 
 ## TODO
 * (たぶん必要となる)未作成ファイル一覧
-    * `Comet2AsmPrinter.cpp`
     * `Comet2MCInstLower.cpp`
     * `MCTargetDesc/{CMakeLists.txt,LLVMBuild.txt}`
     * `MCTargetDesc/Comet2InstPrinter.{h,cpp}`
