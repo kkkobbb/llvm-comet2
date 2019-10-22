@@ -24,6 +24,11 @@
 * `ProcessorModel`
     * `SubtargetFeature`を置き換える新しいクラス?
     * 参考 `$LLVM_ROOT/llvm/include/llvm/Target/Target.td`
+* vim用の llvm関係シンタックスハイライト定義ファイル
+    * `$LLVM_ROOT/llvm/utils/vim/syntax/tablegen.vim`
+        * バックエンド記述の `*.td` ファイル用
+    * `$LLVM_ROOT/llvm/utils/vim/syntax/llvm.vim`
+        * llvm中間表現 `*.ll` ファイル用
 
 
 ## 参考
