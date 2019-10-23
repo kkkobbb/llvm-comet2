@@ -4,6 +4,7 @@
 ## 準備
 1. オリジナルのLLVMソースコード取得
     * `git clone https://github.com/llvm/llvm-project.git`
+        * (commit d936a6301bd34ef991ff5630d06607315f34e6e7 時点のコード)
 2. ソースコード修正
     * TODO
 3. 追加ソースコードの配置
