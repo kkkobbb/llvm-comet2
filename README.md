@@ -21,8 +21,6 @@ TODO (llcのみな気がする)
 
 ## TODO
 * (たぶん必要となる)未作成ファイル一覧
-    * `Disassembler/{CMakeLists.txt,LLVMBuild.txt}`
-    * `Disassembler/Comet2Disassembler.cpp`
     * `TargetInfo/{CMakeLists.txt,LLVMBuild.txt}`
     * `TargetInfo/Comet2TargetInfo.{h,cpp}`
 
