@@ -12,7 +12,6 @@
 
 #include "Comet2InstPrinter.h"
 #include "MCTargetDesc/Comet2MCExpr.h"
-#include "Utils/Comet2BaseInfo.h"
 #include "llvm/MC/MCAsmInfo.h"
 #include "llvm/MC/MCExpr.h"
 #include "llvm/MC/MCInst.h"

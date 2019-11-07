@@ -18,5 +18,5 @@
 type = Library
 name = Comet2Desc
 parent = Comet2
-required_libraries = MC Comet2Info Comet2Utils Support
+required_libraries = MC Comet2Info Support
 add_to_library_groups = Comet2

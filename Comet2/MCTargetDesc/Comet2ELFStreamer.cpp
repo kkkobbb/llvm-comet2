@@ -13,7 +13,6 @@
 #include "Comet2ELFStreamer.h"
 #include "MCTargetDesc/Comet2AsmBackend.h"
 #include "Comet2MCTargetDesc.h"
-#include "Utils/Comet2BaseInfo.h"
 #include "llvm/BinaryFormat/ELF.h"
 #include "llvm/MC/MCSubtargetInfo.h"
 

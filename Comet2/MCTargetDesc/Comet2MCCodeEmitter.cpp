@@ -13,7 +13,6 @@
 #include "MCTargetDesc/Comet2FixupKinds.h"
 #include "MCTargetDesc/Comet2MCExpr.h"
 #include "MCTargetDesc/Comet2MCTargetDesc.h"
-#include "Utils/Comet2BaseInfo.h"
 #include "llvm/ADT/Statistic.h"
 #include "llvm/CodeGen/Register.h"
 #include "llvm/MC/MCAsmInfo.h"

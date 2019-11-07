@@ -14,7 +14,6 @@
 
 #include "MCTargetDesc/Comet2FixupKinds.h"
 #include "MCTargetDesc/Comet2MCTargetDesc.h"
-#include "Utils/Comet2BaseInfo.h"
 #include "llvm/MC/MCAsmBackend.h"
 #include "llvm/MC/MCFixupKindInfo.h"
 #include "llvm/MC/MCSubtargetInfo.h"

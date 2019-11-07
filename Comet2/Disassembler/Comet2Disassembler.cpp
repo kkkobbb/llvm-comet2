@@ -12,7 +12,6 @@
 
 #include "MCTargetDesc/Comet2MCTargetDesc.h"
 #include "TargetInfo/Comet2TargetInfo.h"
-#include "Utils/Comet2BaseInfo.h"
 #include "llvm/CodeGen/Register.h"
 #include "llvm/MC/MCContext.h"
 #include "llvm/MC/MCDisassembler/MCDisassembler.h"

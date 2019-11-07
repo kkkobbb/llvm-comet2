@@ -17,7 +17,6 @@
 #include "Comet2RegisterInfo.h"
 #include "Comet2Subtarget.h"
 #include "Comet2TargetMachine.h"
-#include "Utils/Comet2MatInt.h"
 #include "llvm/ADT/SmallSet.h"
 #include "llvm/ADT/Statistic.h"
 #include "llvm/CodeGen/CallingConvLower.h"
