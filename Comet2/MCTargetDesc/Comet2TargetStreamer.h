@@ -15,7 +15,7 @@ namespace llvm {
 
 class Comet2TargetStreamer : public MCTargetStreamer {
 public:
-  RISCVTargetStreamer(MCStreamer &S);
+  Comet2TargetStreamer(MCStreamer &S);
 };
 
 // This part is for ascii assembly output

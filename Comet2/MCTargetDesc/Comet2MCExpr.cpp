@@ -59,8 +59,6 @@ void Comet2MCExpr::visitUsedExpr(MCStreamer &Streamer) const {
 // TODO 定義不要
 #if 0
 Comet2MCExpr::VariantKind Comet2MCExpr::getVariantKindForName(StringRef name) {
-  return StringSwitch<Comet2MCExpr::VariantKind>(name)
-      .Default(VK_RISCV_Invalid);
 }
 #endif
 

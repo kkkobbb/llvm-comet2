@@ -29,6 +29,6 @@ Comet2TargetELFStreamer::Comet2TargetELFStreamer(MCStreamer &S,
   MCA.setELFHeaderEFlags(EFlags);
 }
 
-MCELFStreamer &RISCVTargetELFStreamer::getStreamer() {
+MCELFStreamer &Comet2TargetELFStreamer::getStreamer() {
   return static_cast<MCELFStreamer &>(Streamer);
 }

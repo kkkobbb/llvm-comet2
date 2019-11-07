@@ -18,6 +18,7 @@ using namespace llvm;
 
 // NOTE llvm/include/llvm/BinaryFormat/ELF.h
 // NOTE llvm/include/llvm/BinaryFormat/ELFRelocs/*.def
+// NOTE llvm/lib/MC/MCELFObjectTargetWriter.cpp
 
 namespace {
 class Comet2ELFObjectWriter : public MCELFObjectTargetWriter {
@@ -25,15 +26,6 @@ public:
   Comet2ELFObjectWriter(uint8_t OSABI, bool Is64Bit);
 
   ~Comet2ELFObjectWriter() override;
-
-  // Return true if the given relocation must be with a symbol rather than
-  // section plus offset.
-  bool needsRelocateWithSymbol(const MCSymbol &Sym,
-                               unsigned Type) const override {
-    // TODO: this is very conservative, update once RISC-V psABI requirements
-    //       are clarified.
-    return true;
-  }
 
 protected:
   unsigned getRelocType(MCContext &Ctx, const MCValue &Target,

@@ -7,7 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 //===----------------------------------------------------------------------===//
-//  Declarations that describe the RISC-V register files
+//  Declarations that describe the COMET-II register files
 //===----------------------------------------------------------------------===//
 
 class Comet2Reg<bits<4> Enc, string n> : Register<n> {
