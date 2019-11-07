@@ -20,7 +20,7 @@ TODO (llcのみな気がする)
 
 
 ## TODO
-* (たぶん必要となる)未作成ファイル一覧
-    * `TargetInfo/{CMakeLists.txt,LLVMBuild.txt}`
-    * `TargetInfo/Comet2TargetInfo.{h,cpp}`
+* Target以外で修正が必要なファイル
+    * `llvm/include/ADT/Triple.h`
+    * `llvm/lib/Support/Triple.cpp`
 
