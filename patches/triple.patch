@@ -1,0 +1,80 @@
+diff --git a/llvm/include/llvm/ADT/Triple.h b/llvm/include/llvm/ADT/Triple.h
+index edeb31efab8..9561f4e607c 100644
+--- a/llvm/include/llvm/ADT/Triple.h
++++ b/llvm/include/llvm/ADT/Triple.h
+@@ -95,6 +95,7 @@ public:
+     wasm64,         // WebAssembly with 64-bit pointers
+     renderscript32, // 32-bit RenderScript
+     renderscript64, // 64-bit RenderScript
++    comet2,         // COMET-II: 16-bit
+     LastArchType = renderscript64
+   };
+   enum SubArchType {
+diff --git a/llvm/lib/Support/Triple.cpp b/llvm/lib/Support/Triple.cpp
+index d419463e6a5..e1623888e9a 100644
+--- a/llvm/lib/Support/Triple.cpp
++++ b/llvm/lib/Support/Triple.cpp
+@@ -70,6 +70,7 @@ StringRef Triple::getArchTypeName(ArchType Kind) {
+   case wasm64:         return "wasm64";
+   case renderscript32: return "renderscript32";
+   case renderscript64: return "renderscript64";
++  case comet2:         return "comet2";
+   }
+ 
+   llvm_unreachable("Invalid ArchType!");
+@@ -315,6 +316,7 @@ Triple::ArchType Triple::getArchTypeForLLVMName(StringRef Name) {
+     .Case("wasm64", wasm64)
+     .Case("renderscript32", renderscript32)
+     .Case("renderscript64", renderscript64)
++    .Case("comet2", comet2)
+     .Default(UnknownArch);
+ }
+ 
+@@ -443,6 +445,7 @@ static Triple::ArchType parseArch(StringRef ArchName) {
+     .Case("wasm64", Triple::wasm64)
+     .Case("renderscript32", Triple::renderscript32)
+     .Case("renderscript64", Triple::renderscript64)
++    .Case("comet2", Triple::comet2)
+     .Default(Triple::UnknownArch);
+ 
+   // Some architectures require special parsing logic just to compute the
+@@ -701,6 +704,7 @@ static Triple::ObjectFormatType getDefaultFormat(const Triple &T) {
+   case Triple::tcele:
+   case Triple::thumbeb:
+   case Triple::xcore:
++  case Tripe::comet2:
+     return Triple::ELF;
+ 
+   case Triple::ppc:
+@@ -1232,6 +1236,7 @@ static unsigned getArchPointerBitWidth(llvm::Triple::ArchType Arch) {
+ 
+   case llvm::Triple::avr:
+   case llvm::Triple::msp430:
++  case llvm::Triple::comet2:
+     return 16;
+ 
+   case llvm::Triple::aarch64_32:
+@@ -1312,6 +1317,7 @@ Triple Triple::get32BitArchVariant() const {
+   case Triple::msp430:
+   case Triple::systemz:
+   case Triple::ppc64le:
++  case Triple::comet2:
+     T.setArch(UnknownArch);
+     break;
+ 
+@@ -1381,6 +1387,7 @@ Triple Triple::get64BitArchVariant() const {
+   case Triple::xcore:
+   case Triple::sparcel:
+   case Triple::shave:
++  case Tripe::comet2:
+     T.setArch(UnknownArch);
+     break;
+ 
+@@ -1553,6 +1560,7 @@ bool Triple::isLittleEndian() const {
+   case Triple::tcele:
+   case Triple::renderscript32:
+   case Triple::renderscript64:
++  case Triple::comet2:
+     return true;
+   default:
+     return false;
