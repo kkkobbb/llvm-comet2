@@ -42,7 +42,7 @@ index d419463e6a5..e1623888e9a 100644
    case Triple::tcele:
    case Triple::thumbeb:
    case Triple::xcore:
-+  case Tripe::comet2:
++  case Triple::comet2:
      return Triple::ELF;
  
    case Triple::ppc:
@@ -66,7 +66,7 @@ index d419463e6a5..e1623888e9a 100644
    case Triple::xcore:
    case Triple::sparcel:
    case Triple::shave:
-+  case Tripe::comet2:
++  case Triple::comet2:
      T.setArch(UnknownArch);
      break;
  
