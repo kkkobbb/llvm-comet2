@@ -5,22 +5,20 @@
 1. オリジナルのLLVMソースコード取得
     * `git clone https://github.com/llvm/llvm-project.git`
         * (commit d936a6301bd34ef991ff5630d06607315f34e6e7 時点のコード)
+    * llvmソースコードのトップディレクトリを `$LLVM_ROOT` とする
 2. ソースコード修正
-    * TODO
+    * `patches/` 内のパッチファイルを `$LLVM_ROOT` に適用する
 3. 追加ソースコードの配置
-    * TODO
+    * `$LLVM_ROOT/llvm/lib/Target/` に `Comet2` のシンボリックリンクを作成
 
 
 ## ビルド
 __まだビルドできない__
+* `cd $LLVM_ROOT && mkdir _build_comet2 && cd _build_comet2`
+* `cmake ../llvm -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=Comet2 -DLLVM_TARGETS_TO_BUILD=Comet2`
+* `make llc`
 
 
 ## 使い方
-TODO (llcのみな気がする)
-
-
-## TODO
-* Target以外で修正が必要なファイル
-    * `llvm/include/ADT/Triple.h`
-    * `llvm/lib/Support/Triple.cpp`
+TODO 使えるコマンド (llcのみな気がする)
 
