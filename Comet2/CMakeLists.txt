@@ -18,22 +18,14 @@ add_public_tablegen_target(Comet2CommonTableGen)
 
 add_llvm_target(Comet2CodeGen
   Comet2AsmPrinter.cpp
-  Comet2CallLowering.cpp
-  Comet2ExpandPseudoInsts.cpp
   Comet2FrameLowering.cpp
-  Comet2InstrInfo.cpp
-  Comet2InstructionSelector.cpp
   Comet2ISelDAGToDAG.cpp
   Comet2ISelLowering.cpp
-  Comet2LegalizerInfo.cpp
+  Comet2InstrInfo.cpp
   Comet2MCInstLower.cpp
-  Comet2MergeBaseOffset.cpp
-  Comet2RegisterBankInfo.cpp
   Comet2RegisterInfo.cpp
   Comet2Subtarget.cpp
   Comet2TargetMachine.cpp
-  Comet2TargetObjectFile.cpp
-  Comet2TargetTransformInfo.cpp
   )
 
 # TODO AsmParserは無視する
