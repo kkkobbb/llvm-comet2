@@ -17,6 +17,7 @@
 #include "Comet2RegisterInfo.h"
 #include "Comet2Subtarget.h"
 #include "Comet2TargetMachine.h"
+#include "MCTargetDesc/Comet2MCTargetDesc.h"
 #include "llvm/ADT/SmallSet.h"
 #include "llvm/ADT/Statistic.h"
 #include "llvm/CodeGen/CallingConvLower.h"
@@ -35,6 +36,8 @@
 
 using namespace llvm;
 
+#include "Comet2GenCallingConv.inc"
+
 #define DEBUG_TYPE "comet2-lower"
 
 STATISTIC(NumTailCalls, "Number of tail calls");
@@ -44,7 +47,7 @@ Comet2TargetLowering::Comet2TargetLowering(const TargetMachine &TM,
     : TargetLowering(TM), Subtarget(STI) {
 
   // Set up the register classes.
-  addRegisterClass(MVT::i16, &Comet2::IntRegsRegisterClass);
+  addRegisterClass(MVT::i16, &Comet2::IntRegsRegClass);
 
   // Compute derived properties from the register classes.
   computeRegisterProperties(STI.getRegisterInfo());
@@ -256,6 +259,7 @@ Comet2TargetLowering::EmitInstrWithCustomInserter(MachineInstr &MI,
 // register-size fields in the same situations they would be for fixed
 // arguments.
 
+
 // NOTE 定義あり llvm/include/llvm/CodeGen/TargetLowering.h
 // Transform physical registers into virtual registers.
 SDValue Comet2TargetLowering::LowerFormalArguments(
@@ -272,6 +276,8 @@ SDValue Comet2TargetLowering::LowerFormalArguments(
   }
 
   MachineFunction &MF = DAG.getMachineFunction();
+  MachineFrameInfo &MFI = MF.getFrameInfo();
+  MachineRegisterInfo &RegInfo = MF.getRegInfo();
 
   const Function &Func = MF.getFunction();
   if (Func.hasFnAttribute("interrupt")) {
@@ -298,28 +304,27 @@ SDValue Comet2TargetLowering::LowerFormalArguments(
       // 引数がレジスタ経由で渡された場合
       EVT RegVT = VA.getLocVT();
       // 使用するレジスタクラスを指定
-      const TargetRegisterClass *RC = Comet2::IntRegsRegisterClass;
-      if (VA.getLocInfo() != CCVallAssin::Full) {
+      const TargetRegisterClass *RC = &Comet2::IntRegsRegClass;
+      if (VA.getLocInfo() != CCValAssign::Full) {
         llvm_unreachable("not supported yet");
       }
 
       // 仮想レジスタを作成
-      unsigned VReg = RegInfo.createVirtualRegister(RC);
+      Register VReg = RegInfo.createVirtualRegister(RC);
       RegInfo.addLiveIn(VA.getLocReg(), VReg);
-      SDValue ArgValue = DAG.getCopyFromReg(Chain, dl, VReg, RegVT);
+      SDValue ArgValue = DAG.getCopyFromReg(Chain, DL, VReg, RegVT);
       InVals.push_back(ArgValue);
     } else {
       // 引数がスタック経由で渡された場合
       assert(VA.isMemLoc());
 
       unsigned ObjSize = VA.getLocVT().getSizeInBits() / 8;
-      int FI = MFI->CreateFixedObject(ObjSize, VA.getLocMemOffset(), true);
+      int FI = MFI.CreateFixedObject(ObjSize, VA.getLocMemOffset(), true);
 
       // スタックから引数を取得するためにloadノードを作成する
       SDValue FIN = DAG.getFrameIndex(FI, MVT::i32);
-      InVals.push_back(DAG.getLoad(VA.getLocVT(), dl, Chain, FIN,
-                  MachinePointerInfo::getFixedStack(FI),
-                  false, false, false, 0));
+      InVals.push_back(DAG.getLoad(VA.getLocVT(), DL, Chain, FIN,
+                  MachinePointerInfo::getFixedStack(MF, FI)));
     }
   }
 
@@ -337,19 +342,19 @@ SDValue Comet2TargetLowering::LowerFormalArguments(
 SDValue Comet2TargetLowering::LowerCall(CallLoweringInfo &CLI,
                                        SmallVectorImpl<SDValue> &InVals) const {
   SelectionDAG &DAG = CLI.DAG;
-  SDLoc &DL = CLI.DL;
-  SmallVectorImpl<ISD::OutputArg> &Outs = CLI.Outs;
-  SmallVectorImpl<SDValue> &OutVals = CLI.OutVals;
-  SmallVectorImpl<ISD::InputArg> &Ins = CLI.Ins;
+  //SDLoc &DL = CLI.DL;
+  //SmallVectorImpl<ISD::OutputArg> &Outs = CLI.Outs;
+  //SmallVectorImpl<SDValue> &OutVals = CLI.OutVals;
+  //SmallVectorImpl<ISD::InputArg> &Ins = CLI.Ins;
   SDValue Chain = CLI.Chain;
   SDValue Callee = CLI.Callee;
-  bool &IsTailCall = CLI.IsTailCall;
-  CallingConv::ID CallConv = CLI.CallConv;
-  bool IsVarArg = CLI.IsVarArg;
+  //bool &IsTailCall = CLI.IsTailCall;
+  //CallingConv::ID CallConv = CLI.CallConv;
+  //bool IsVarArg = CLI.IsVarArg;
   EVT PtrVT = getPointerTy(DAG.getDataLayout());
-  MVT XLenVT = Subtarget.getXLenVT();
+  //MVT XLenVT = Subtarget.getXLenVT();
 
-  MachineFunction &MF = DAG.getMachineFunction();
+  //MachineFunction &MF = DAG.getMachineFunction();
 
   // TODO 未実装
 

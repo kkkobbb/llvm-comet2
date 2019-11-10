@@ -100,7 +100,7 @@ DecodeStatus Comet2Disassembler::getInstruction(MCInst &MI, uint64_t &Size,
   DecodeStatus Result;
 
   Insn = support::endian::read16le(Bytes.data());
-  // TODO DecoderTable 名は正しい？
+  // TODO DecoderTableComet232もある
   Result = decodeInstruction(DecoderTableComet216, MI, Insn, Address, this, STI);
   Size = 2;
 

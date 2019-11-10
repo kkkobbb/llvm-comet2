@@ -23,7 +23,7 @@ class Comet2Inst2words<dag outs, dag ins, string asmstr,
     bits<8> Opcode = 0;
 
     let Namespace = "Comet2";
-    let Size = 4;  // TODO 語長? バイトサイズ?
+    let Size = 4;  // NOTE バイトサイズ?
     let Inst{31-24} = Opcode;
     let OutOperandList = outs;
     let InOperandList = ins;
@@ -65,7 +65,7 @@ class Comet2InstFormReg<bits<8> op, dag outs, dag ins, string asmstr,
     let Inst{3-0} = r2;
 
     let Namespace = "Comet2";
-    let Size = 1;  // TODO 語長? バイトサイズ?
+    let Size = 2;  // NOTE バイトサイズ
     let OutOperandList = outs;
     let InOperandList = ins;
     let AsmString = asmstr;

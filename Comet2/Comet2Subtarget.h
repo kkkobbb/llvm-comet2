@@ -13,6 +13,7 @@
 #ifndef LLVM_LIB_TARGET_COMET2_COMET2SUBTARGET_H
 #define LLVM_LIB_TARGET_COMET2_COMET2SUBTARGET_H
 
+#include "Comet2FrameLowering.h"
 #include "Comet2InstrInfo.h"
 #include "Comet2ISelLowering.h"
 #include "llvm/CodeGen/TargetSubtargetInfo.h"
