@@ -14,13 +14,13 @@ def CC_Comet2 : CallingConv<[
     // i8型の引数はi16型に昇格する
     CCIfType<[i8], CCPromoteToType<i32>>,
     // i16型はGR1-GR7に渡す
-    CCIfType<[i16], CCAssingToReg<[(sequence "GR%u", 1, 7)]>>,
+    CCIfType<[i16], CCAssignToReg<[GR1, GR2, GR3, GR4, GR5, GR6, GR7]>>
 ]>;
 
 // 戻り値
 def RetCC_Comet2 : CallingConv<[
     // i16型はGR0に渡す
-    CCIfType<[i16], CCAssingToReg<[GR0]>>
+    CCIfType<[i16], CCAssignToReg<[GR0]>>
 ]>;
 
 // 呼び出し先退避レジスタ

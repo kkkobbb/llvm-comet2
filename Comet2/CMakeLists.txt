@@ -2,7 +2,7 @@ set(LLVM_TARGET_DEFINITIONS Comet2.td)
 
 tablegen(LLVM Comet2GenAsmMatcher.inc -gen-asm-matcher)
 tablegen(LLVM Comet2GenAsmWriter.inc -gen-asm-writer)
-tablegen(LLVM Comet2GenCompressInstEmitter.inc -gen-compress-inst-emitter)
+#tablegen(LLVM Comet2GenCompressInstEmitter.inc -gen-compress-inst-emitter)
 tablegen(LLVM Comet2GenDAGISel.inc -gen-dag-isel)
 tablegen(LLVM Comet2GenDisassemblerTables.inc -gen-disassembler)
 tablegen(LLVM Comet2GenGlobalISel.inc -gen-global-isel)

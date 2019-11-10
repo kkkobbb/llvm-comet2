@@ -167,7 +167,7 @@ unsigned Comet2InstrInfo::getInstSizeInBytes(const MachineInstr &MI) const {
   case Comet2::ADDAREG:
   case Comet2::SUBAREG:
   case Comet2::LDREG:
-    return 1:
+    return 1;
   default:
     return 2;
   }

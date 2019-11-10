@@ -65,7 +65,7 @@ class Comet2InstFormReg<bits<8> op, dag outs, dag ins, string asmstr,
     let Inst{3-0} = r2;
 
     let Namespace = "Comet2";
-    let Size = 2;  // TODO 語長? バイトサイズ?
+    let Size = 1;  // TODO 語長? バイトサイズ?
     let OutOperandList = outs;
     let InOperandList = ins;
     let AsmString = asmstr;

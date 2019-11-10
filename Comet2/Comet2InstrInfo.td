@@ -14,20 +14,35 @@ include "Comet2InstrFormats.td"
 
 class Comet2InstReg<bits<8> op, string asmstr, SDNode OpNode, InstrItinClass itin,
     RegisterClass RC>
-    : Comet2InstFormReg<op, (outs RC:$r1), (ins RC:$r1, RC:$r2),  // TODO in,outが同じレジスタ これでいい?
-                        !strconcat(asmstr, " $r1, $r2"),
-                        [(set RC:$r1, (OpNode RC:$r1, RC:$r2))], itin> {
+    : Comet2InstFormReg<op, (outs RC:$r1), (ins RC:$r2, RC:$r3),  // TODO $r1 $r2 は実際には同じ
+                        !strconcat(asmstr, " $r1, $r3"),
+                        [(set RC:$r1, (OpNode RC:$r2, RC:$r3))], itin> {
 }
 
-def ADDAREG : Comet2InstReg<0x20, "ADDA", add, IIAlu, IntRegs>;
-def SUBAREG : Comet2InstReg<0x21, "SUBA", sub, IIAlu, IntRegs>;
+def ADDAREG : Comet2InstReg<0x20, "ADDA", add, IICAlu, IntRegs>;
+def SUBAREG : Comet2InstReg<0x21, "SUBA", sub, IICAlu, IntRegs>;
 
+
+// 即値ロード用のオペランド. 16bit
+// 16-0: 符号付き16bit整数
+// EncoderMethod: bit列から符号付き16bit整数を取得
+def imm16 : Operand<i16> {
+  let EncoderMethod = "get16bitOpValue";
+}
+
+def calltarget  : Operand<iPTR> {
+  let EncoderMethod = "getCallTargetOpValue";
+}
+
+// 符号付き16bit整数
+// 定数(ISD::Constant)で16bitで表現可能なもの
+def immSExt16 : PatLeaf<(imm), [{ return isInt<16>(Imm); }]>;
 
 // 即値ロード
 class LoadI<bits<8> op, string asmstr>
-    : Comet2InstFormAdr<op, (outs IntRegs:$r), (ins i16imm:$addr),
+    : Comet2InstFormAdr<op, (outs IntRegs:$r), (ins imm16:$addr),
                         !strconcat(asmstr, " $r, $addr"),
-                        [(set IntRegs:$r, i16imm:$addr)], IICLoad> {
+                        [(set IntRegs:$r, immSExt16:$addr)], IICLoad> {
 }
 
 def LAD : LoadI<0x12, "LAD">;
@@ -43,7 +58,6 @@ class LoadR<bits<8> op, string asmstr>
 def LDREG : LoadR<0x14, "LD">;
 
 
-
 // Call命令
 def SDT_Comet2Call : SDTypeProfile<0, 1, [SDTCisVT<0, iPTR>]>;
 
@@ -51,21 +65,23 @@ def Comet2Call : SDNode<"Comet2ISD::Call", SDT_Comet2Call,
                         [SDNPHasChain, SDNPOutGlue, SDNPOptInGlue,
                          SDNPVariadic]>;
 
-// Pat 第1引数にマッチしたパターンを第2引数に変換する
-def Pat<Comet2Call (i16, tglobaladdr:$dst)),
-        (CALL tglobaladdr:$dst)>;
-def Pat<Comet2Call (i16, texternalsym:$dst),
-        (CALL texternalsym)>;
-
 class Call<bits<8> op, string asmstr>
-    : Comet2InstFormAdr<op, (outs), (ins i16imm:$addr, variable_ops),
-                        !strconcat(asmstr, " $addr"), [(Comet2Call imm:$addr)],
+    : Comet2InstFormAdr<op, (outs), (ins calltarget:$adr, variable_ops),
+                        !strconcat(asmstr, " $adr"), [(Comet2Call imm:$adr)],
                         IICBranch> {
     let isCall = 1;
     let DecoderMethod = "DecodeCallTarget";
+    let r = 0;
+    let x = 0;
 }
 
 def CALL : Call<0x80, "CALL">;
+
+// Pat 第1引数にマッチしたパターンを第2引数に変換する
+def : Pat<(Comet2Call (i16 tglobaladdr:$dst)),
+          (CALL tglobaladdr:$dst)>;
+def : Pat<(Comet2Call (i16 texternalsym:$dst)),
+          (CALL texternalsym:$dst)>;
 
 
 // Ret命令
@@ -101,7 +117,6 @@ class FMem<bits<8> op, dag outs, dag ins, string asmstr, list<dag> pattern,
 }
 
 // Load命令
-let canFoldAsLoad = 1 in
 class LoadM<bits<8> op, string asmstr, RegisterClass RC>
     : FMem<op, (outs RC:$r), (ins mem:$addr),
            !strconcat(asmstr, " $r $addr"),
@@ -110,7 +125,7 @@ class LoadM<bits<8> op, string asmstr, RegisterClass RC>
 // Store命令
 class StoreM<bits<8> op, string asmstr, RegisterClass RC>
     : FMem<op, (outs), (ins RC:$r, mem:$addr),
-           !strconcat(asmstr, " $r $addr),
+           !strconcat(asmstr, " $r $addr"),
            [(store RC:$r, addr:$addr)], IICStore>;
 
 def LD : LoadM<0x10, "LD", IntRegs>;

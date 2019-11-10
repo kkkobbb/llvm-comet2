@@ -20,7 +20,8 @@ include "llvm/Target/Target.td"
 
 // NOTE CSR (Control/Status Register)
 
-include "Comet2SystemOperands.td"
+// TODO 必要?
+//include "Comet2SystemOperands.td"
 
 //===----------------------------------------------------------------------===//
 // Registers, calling conventions, instruction descriptions.
@@ -37,7 +38,7 @@ include "Comet2InstrInfo.td"
 
 // TODO NoSchedModelでもいい？
 //def : Processor<"Comet2", NoSchedModel, []>;
-def : Processor<"Comet2", Comet2GenericItineraties, []>;
+def : Processor<"Comet2", Comet2GenericItineraries, []>;
 
 //===----------------------------------------------------------------------===//
 // Define the COMET-II target.

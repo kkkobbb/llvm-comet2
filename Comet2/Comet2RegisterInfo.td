@@ -11,7 +11,7 @@
 //===----------------------------------------------------------------------===//
 
 class Comet2Reg<bits<4> Enc, string n> : Register<n> {
-  let HWEncoding = Enc;
+  let HWEncoding{3-0} = Enc;
   let Namespace = "Comet2";
 }
 
