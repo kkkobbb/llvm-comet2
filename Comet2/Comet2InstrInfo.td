@@ -131,3 +131,26 @@ class StoreM<bits<8> op, string asmstr, RegisterClass RC>
 def LD : LoadM<0x10, "LD", IntRegs>;
 def ST : StoreM<0x11, "ST", IntRegs>;
 
+
+// 疑似命令
+
+// Target-independent type requirements, but with target-specific formats.
+def SDT_CallSeqStart : SDCallSeqStart<[SDTCisVT<0, i16>,
+                                       SDTCisVT<1, i16>]>;
+def SDT_CallSeqEnd   : SDCallSeqEnd<[SDTCisVT<0, i16>,
+                                     SDTCisVT<1, i16>]>;
+
+// Target-independent nodes, but with target-specific formats.
+def callseq_start : SDNode<"ISD::CALLSEQ_START", SDT_CallSeqStart,
+                           [SDNPHasChain, SDNPOutGlue]>;
+def callseq_end   : SDNode<"ISD::CALLSEQ_END", SDT_CallSeqEnd,
+                           [SDNPHasChain, SDNPOptInGlue, SDNPOutGlue]>;
+
+let Defs = [GR7], Uses = [GR7] in {
+def ADJCALLSTACKDOWN : Comet2Pseudo<(outs), (ins i16imm:$amt1, i16imm:$amt2),
+                                  "!ADJCALLSTACKDOWN $amt1",
+                                  [(callseq_start timm:$amt1, timm:$amt2)]>;
+def ADJCALLSTACKUP   : Comet2Pseudo<(outs), (ins i16imm:$amt1, i16imm:$amt2),
+                                  "!ADJCALLSTACKUP $amt1",
+                                  [(callseq_end timm:$amt1, timm:$amt2)]>;
+}

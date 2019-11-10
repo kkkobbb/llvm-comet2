@@ -14,6 +14,7 @@
 #include "Comet2.h"
 #include "Comet2Subtarget.h"
 #include "Comet2TargetMachine.h"
+#include "MCTargetDesc/Comet2MCTargetDesc.h"
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/CodeGen/MachineFunctionPass.h"
@@ -103,6 +104,11 @@ void Comet2InstrInfo::loadRegFromStackSlot(MachineBasicBlock &MBB,
   BuildMI(MBB, I, DL, get(Comet2::LD), DstReg)
       .addFrameIndex(FI)
       .addImm(0);  // TODO フレームインデックスの指定はこれでいい？
+}
+
+static unsigned getOppositeBranchOpcode(int Opc) {
+  // TODO 分岐なし
+  llvm_unreachable("Unrecognized conditional branch");
 }
 
 bool Comet2InstrInfo::analyzeBranch(MachineBasicBlock &MBB,
