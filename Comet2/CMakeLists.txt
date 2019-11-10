@@ -12,7 +12,7 @@ tablegen(LLVM Comet2GenMCPseudoLowering.inc -gen-pseudo-lowering)
 tablegen(LLVM Comet2GenRegisterBank.inc -gen-register-bank)
 tablegen(LLVM Comet2GenRegisterInfo.inc -gen-register-info)
 tablegen(LLVM Comet2GenSubtargetInfo.inc -gen-subtarget)
-tablegen(LLVM Comet2GenSystemOperands.inc -gen-searchable-tables)
+#tablegen(LLVM Comet2GenSystemOperands.inc -gen-searchable-tables)
 
 add_public_tablegen_target(Comet2CommonTableGen)
 

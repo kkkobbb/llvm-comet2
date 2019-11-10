@@ -13,6 +13,8 @@
 #ifndef LLVM_LIB_TARGET_COMET2_COMET2SUBTARGET_H
 #define LLVM_LIB_TARGET_COMET2_COMET2SUBTARGET_H
 
+#include "Comet2InstrInfo.h"
+#include "Comet2ISelLowering.h"
 #include "llvm/CodeGen/TargetSubtargetInfo.h"
 #include "llvm/Target/TargetMachine.h"
 
@@ -29,7 +31,6 @@ class Comet2Subtarget : public Comet2GenSubtargetInfo {
   Comet2InstrInfo InstrInfo;
   Comet2RegisterInfo RegInfo;
   Comet2TargetLowering TLInfo;
-  SelectionDAGTargetInfo TSInfo;
 
 public:
   // Initializes the data members to match that of the specified triple.
@@ -49,9 +50,6 @@ public:
   }
   const Comet2TargetLowering *getTargetLowering() const override {
     return &TLInfo;
-  }
-  const SelectionDAGTargetInfo *getSelectionDAGInfo() const override {
-    return &TSInfo;
   }
 };
 } // End llvm namespace

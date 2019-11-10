@@ -16,10 +16,8 @@
 #include "Comet2FrameLowering.h"
 #include "Comet2InstrInfo.h"
 #include "Comet2ISelLowering.h"
-#include "Comet2SelectionDAGInfo.h"
 #include "Comet2RegisterInfo.h"
 #include "Comet2Subtarget.h"
-#include "llvm/CodeGen/SelectionDAGTargetInfo.h"
 #include "llvm/IR/DataLayout.h"
 #include "llvm/Target/TargetMachine.h"
 

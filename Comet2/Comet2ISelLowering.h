@@ -20,6 +20,13 @@
 
 namespace llvm {
 class Comet2Subtarget;
+namespace Comet2ISD {
+enum NodeType : unsigned {
+  FIRST_NUMBER = ISD::BUILTIN_OP_END,
+  Call,
+  Ret
+};
+}
 
 class Comet2TargetLowering : public TargetLowering {
   const Comet2Subtarget &Subtarget;

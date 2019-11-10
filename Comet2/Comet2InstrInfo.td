@@ -36,7 +36,7 @@ def calltarget  : Operand<iPTR> {
 
 // 符号付き16bit整数
 // 定数(ISD::Constant)で16bitで表現可能なもの
-def immSExt16 : PatLeaf<(imm), [{ return isInt<16>(Imm); }]>;
+def immSExt16 : PatLeaf<(imm), [{ return isInt<16>(N->getSExtValue()); }]>;
 
 // 即値ロード
 class LoadI<bits<8> op, string asmstr>

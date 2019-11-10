@@ -57,9 +57,9 @@ void Comet2DAGToDAGISel::Select(SDNode *Node) {
 }
 
 bool Comet2DAGToDAGISel::SelectAddr(SDValue Addr, SDValue &Base, SDValue &Offset) {
-  // TODO RISCVのまま
+  // TODO 正しい？
   if (auto FIN = dyn_cast<FrameIndexSDNode>(Addr)) {
-    Base = CurDAG->getTargetFrameIndex(FIN->getIndex(), Subtarget->getXLenVT());
+    Base = CurDAG->getTargetFrameIndex(FIN->getIndex(), Addr.getValueType());
     return true;
   }
   return false;
