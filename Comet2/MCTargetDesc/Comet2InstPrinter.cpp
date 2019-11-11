@@ -10,7 +10,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "Comet2InstPrinter.h"
+#include "MCTargetDesc/Comet2InstPrinter.h"
 #include "MCTargetDesc/Comet2MCExpr.h"
 #include "llvm/MC/MCAsmInfo.h"
 #include "llvm/MC/MCExpr.h"
@@ -29,13 +29,9 @@ using namespace llvm;
 #define PRINT_ALIAS_INSTR
 #include "Comet2GenAsmWriter.inc"
 
-// Include the auto-generated portion of the compress emitter.
-#define GEN_UNCOMPRESS_INSTR
-#include "Comet2GenCompressInstEmitter.inc"
-
 void Comet2InstPrinter::printInst(const MCInst *MI, raw_ostream &O,
                                  StringRef Annot, const MCSubtargetInfo &STI) {
-  printInstruction(NewMI, STI, O);
+  printInstruction(MI, O);
   printAnnotation(O, Annot);
 }
 
@@ -44,8 +40,7 @@ void Comet2InstPrinter::printRegName(raw_ostream &O, unsigned RegNo) const {
 }
 
 void Comet2InstPrinter::printOperand(const MCInst *MI, unsigned OpNo,
-                                    const MCSubtargetInfo &STI, raw_ostream &O,
-                                    const char *Modifier) {
+                                    raw_ostream &O, const char *Modifier) {
   assert((Modifier == 0 || Modifier[0] == 0) && "No modifiers supported");
   const MCOperand &MO = MI->getOperand(OpNo);
 
@@ -64,10 +59,10 @@ void Comet2InstPrinter::printOperand(const MCInst *MI, unsigned OpNo,
 }
 
 void Comet2InstPrinter::printMemOperand(const MCInst *MI, unsigned OpNo,
-                       const MCSubtargetInfo &STI, raw_ostream &O) {
+                                        raw_ostream &O) {
   // TODO Comet2用表示
-  printOperand(MI, OpNo + 1, STI, O);
+  printOperand(MI, OpNo + 1, O);
   O << "(";
-  printOperand(MI, OpNo, STI, O);
+  printOperand(MI, OpNo, O);
   O << ")";
 }
