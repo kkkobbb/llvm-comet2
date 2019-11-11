@@ -10,8 +10,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "Comet2TargetMachine.h"
 #include "Comet2.h"
+#include "Comet2TargetMachine.h"
+#include "Comet2TargetObjectFile.h"
 #include "TargetInfo/Comet2TargetInfo.h"
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/Analysis/TargetTransformInfo.h"
@@ -60,11 +61,6 @@ Comet2TargetMachine::Comet2TargetMachine(const Target &T, const Triple &TT,
       TLOF(std::make_unique<Comet2ELFTargetObjectFile>()),
       Subtarget(TT, CPU, FS, Options.MCOptions.getABIName(), *this) {
   initAsmInfo();
-}
-
-TargetTransformInfo
-Comet2TargetMachine::getTargetTransformInfo(const Function &F) {
-  return TargetTransformInfo(Comet2TTIImpl(this, F));
 }
 
 namespace {
