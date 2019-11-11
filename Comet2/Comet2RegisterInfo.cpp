@@ -21,6 +21,7 @@
 #include "llvm/CodeGen/TargetInstrInfo.h"
 #include "llvm/Support/ErrorHandling.h"
 
+#define GET_REGINFO_ENUM
 #define GET_REGINFO_TARGET_DESC
 #include "Comet2GenRegisterInfo.inc"
 

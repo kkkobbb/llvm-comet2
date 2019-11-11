@@ -26,7 +26,7 @@ namespace llvm {
 class StringRef;
 
 class Comet2Subtarget : public Comet2GenSubtargetInfo {
-  virtual void anchor() {};
+  virtual void anchor();
   bool ExtendedInsts;
   Comet2FrameLowering FrameLowering;
   Comet2InstrInfo InstrInfo;

@@ -17,6 +17,8 @@
 
 using namespace llvm;
 
+#define DEBUG_TYPE "comet2-subtarget"
+
 #define GET_SUBTARGETINFO_TARGET_DESC
 #define GET_SUBTARGETINFO_CTOR
 #include "Comet2GenSubtargetInfo.inc"
@@ -26,7 +28,7 @@ void Comet2Subtarget::anchor() {}
 Comet2Subtarget::Comet2Subtarget(const Triple &TT, StringRef CPU, StringRef FS,
                                StringRef ABIName, const TargetMachine &TM)
     : Comet2GenSubtargetInfo(TT, CPU, FS),
-      FrameLowering(initializeSubtargetDependencies(TT, CPU, FS, ABIName)),
+      FrameLowering(*this),
       InstrInfo(), RegInfo(getHwMode()), TLInfo(TM, *this) {
   std::string CPUName = "generic";
 
