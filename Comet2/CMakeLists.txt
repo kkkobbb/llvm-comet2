@@ -27,6 +27,7 @@ add_llvm_target(Comet2CodeGen
   Comet2RegisterInfo.cpp
   Comet2Subtarget.cpp
   Comet2TargetMachine.cpp
+  Comet2TargetObjectFile.cpp
   )
 
 # TODO AsmParserは無視する
