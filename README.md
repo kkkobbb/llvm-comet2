@@ -14,18 +14,17 @@
 
 
 ## ビルド
-__まだビルドできない__
 * `cd $LLVM_ROOT && mkdir _build_comet2 && cd _build_comet2`
 * `cmake ../llvm -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=Comet2 -DLLVM_TARGETS_TO_BUILD=Comet2`
 * `make llc`
 
 
 ## 使い方
-llcのみ対応
+* __ビルドできるだけ__
+* llcのみ対応
 
 
 ## TODO
-* とりあえずビルドを通す
-    * エラーは全て修正するが、警告はできる限り修正のみ
+* ビルド時の警告修正
 * なるべく最小構成にする
 

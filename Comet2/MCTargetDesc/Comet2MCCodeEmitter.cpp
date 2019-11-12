@@ -71,6 +71,10 @@ public:
   unsigned get16bitOpValue(const MCInst &MI, unsigned OpNo,
                           SmallVectorImpl<MCFixup> &Fixups,
                           const MCSubtargetInfo &STI) const;
+
+  unsigned getCallTargetOpValue(const MCInst &MI, unsigned OpNo,
+                          SmallVectorImpl<MCFixup> &Fixups,
+                          const MCSubtargetInfo &STI) const;
 };
 } // end anonymous namespace
 
@@ -124,19 +128,32 @@ Comet2MCCodeEmitter::getMachineOpValue(const MCInst &MI, const MCOperand &MO,
 
 unsigned
 Comet2MCCodeEmitter::getMemEncoding(const MCInst &MI, unsigned OpNo,
-                          SmallVectorImpl<MCFixup> &Fixups,
-                          const MCSubtargetInfo &STI) const {
+                                    SmallVectorImpl<MCFixup> &Fixups,
+                                    const MCSubtargetInfo &STI) const {
   // TODO メモリ出力処理
   return 0;
 }
 
 unsigned
 Comet2MCCodeEmitter::get16bitOpValue(const MCInst &MI, unsigned OpNo,
-                          SmallVectorImpl<MCFixup> &Fixups,
-                          const MCSubtargetInfo &STI) const {
+                                     SmallVectorImpl<MCFixup> &Fixups,
+                                     const MCSubtargetInfo &STI) const {
   assert(MI.getOperand(OpNo).isImm());
-  unsigned value = getMachineOpValue(MI, MI.getOperand(OpNo),Fixups);
+  unsigned value = getMachineOpValue(MI, MI.getOperand(OpNo), Fixups, STI);
   return value & 0xFFFF;
+}
+
+unsigned
+Comet2MCCodeEmitter::getCallTargetOpValue(const MCInst &MI, unsigned OpNo,
+                                          SmallVectorImpl<MCFixup> &Fixups,
+                                          const MCSubtargetInfo &STI) const {
+  const MCOperand &MO = MI.getOperand(OpNo);
+  assert(MO.isExpr() && "getCallTargetOpValue expects only expressions");
+
+  const MCExpr *Expr = MO.getExpr();
+  Fixups.push_back(MCFixup::create(0, Expr,
+                                   MCFixupKind(Comet2::fixup_comet2_24)));
+  return 0;
 }
 
 #include "Comet2GenMCCodeEmitter.inc"
