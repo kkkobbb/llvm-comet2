@@ -8,6 +8,7 @@
     * llvmソースコードのトップディレクトリを `$LLVM_ROOT` とする
 2. ソースコード修正
     * `patches/` 内のパッチファイルを `$LLVM_ROOT` に適用する
+        * `cd $LLVM_ROOT && git apply comet2.patch`
 3. 追加ソースコードの配置
     * `$LLVM_ROOT/llvm/lib/Target/` に `Comet2` のシンボリックリンクを作成
 
