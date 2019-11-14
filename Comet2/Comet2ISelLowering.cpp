@@ -43,7 +43,7 @@ using namespace llvm;
 STATISTIC(NumTailCalls, "Number of tail calls");
 
 Comet2TargetLowering::Comet2TargetLowering(const TargetMachine &TM,
-                                         const Comet2Subtarget &STI)
+                                           const Comet2Subtarget &STI)
     : TargetLowering(TM), Subtarget(STI) {
 
   // Set up the register classes.
@@ -183,7 +183,7 @@ bool Comet2TargetLowering::hasBitPreservingFPLogic(EVT VT) const {
 #endif
 
 SDValue Comet2TargetLowering::LowerOperation(SDValue Op,
-                                            SelectionDAG &DAG) const {
+                                             SelectionDAG &DAG) const {
   // Custum に指定したノードに対する操作
   report_fatal_error("unimplemented operand");
   return SDValue();
@@ -227,7 +227,7 @@ unsigned Comet2TargetLowering::ComputeNumSignBitsForTargetNode(
 // NOTE 宣言あり llvm/include/llvm/CodeGen/TargetLowering.h
 MachineBasicBlock *
 Comet2TargetLowering::EmitInstrWithCustomInserter(MachineInstr &MI,
-                                                 MachineBasicBlock *BB) const {
+                                                  MachineBasicBlock *BB) const {
   // TODO 実装不要？
   llvm_unreachable("Unexpected instr type to insert");
   return BB;
@@ -340,7 +340,7 @@ SDValue Comet2TargetLowering::LowerFormalArguments(
 // Lower a call to a callseq_start + CALL + callseq_end chain, and add input
 // and output parameter nodes.
 SDValue Comet2TargetLowering::LowerCall(CallLoweringInfo &CLI,
-                                       SmallVectorImpl<SDValue> &InVals) const {
+                                     SmallVectorImpl<SDValue> &InVals) const {
   SelectionDAG &DAG = CLI.DAG;
   //SDLoc &DL = CLI.DL;
   //SmallVectorImpl<ISD::OutputArg> &Outs = CLI.Outs;

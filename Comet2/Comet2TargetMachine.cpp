@@ -52,11 +52,11 @@ static Reloc::Model getEffectiveRelocModel(const Triple &TT,
 }
 
 Comet2TargetMachine::Comet2TargetMachine(const Target &T, const Triple &TT,
-                                       StringRef CPU, StringRef FS,
-                                       const TargetOptions &Options,
-                                       Optional<Reloc::Model> RM,
-                                       Optional<CodeModel::Model> CM,
-                                       CodeGenOpt::Level OL, bool JIT)
+                                         StringRef CPU, StringRef FS,
+                                         const TargetOptions &Options,
+                                         Optional<Reloc::Model> RM,
+                                         Optional<CodeModel::Model> CM,
+                                         CodeGenOpt::Level OL, bool JIT)
     : LLVMTargetMachine(T, computeDataLayout(TT), TT, CPU, FS, Options,
                         getEffectiveRelocModel(TT, RM),
                         getEffectiveCodeModel(CM, CodeModel::Small), OL),

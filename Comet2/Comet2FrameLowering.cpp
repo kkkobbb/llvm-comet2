@@ -28,7 +28,7 @@ bool Comet2FrameLowering::hasFP(const MachineFunction &MF) const {
 }
 
 void Comet2FrameLowering::emitPrologue(MachineFunction &MF,
-                                      MachineBasicBlock &MBB) const {
+                                       MachineBasicBlock &MBB) const {
   assert(&MF.front() == &MBB && "Shrink-wrapping not yet supported");
 
   MachineFrameInfo &MFI = MF.getFrameInfo();
@@ -50,7 +50,7 @@ void Comet2FrameLowering::emitPrologue(MachineFunction &MF,
 }
 
 void Comet2FrameLowering::emitEpilogue(MachineFunction &MF,
-                                      MachineBasicBlock &MBB) const {
+                                       MachineBasicBlock &MBB) const {
   MachineBasicBlock::iterator MBBI = MBB.getLastNonDebugInstr();
   MachineFrameInfo &MFI = MF.getFrameInfo();
   DebugLoc DL = MBBI->getDebugLoc();

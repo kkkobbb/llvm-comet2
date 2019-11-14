@@ -35,7 +35,7 @@ namespace {
 class Comet2AsmPrinter : public AsmPrinter {
 public:
   explicit Comet2AsmPrinter(TargetMachine &TM,
-                           std::unique_ptr<MCStreamer> Streamer)
+                            std::unique_ptr<MCStreamer> Streamer)
       : AsmPrinter(TM, std::move(Streamer)) {}
 
   StringRef getPassName() const override { return "Comet2 Assembly Printer"; }
