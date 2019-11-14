@@ -34,12 +34,14 @@ extern "C" void LLVMInitializeComet2Target() {
 }
 
 static StringRef computeDataLayout(const Triple &TT) {
-  if (TT.isArch64Bit()) {
-    return "e-m:e-p:64:64-i64:64-i128:128-n64-S128";
-  } else {
-    assert(TT.isArch32Bit() && "only RV32 and RV64 are currently supported");
-    return "e-m:e-p:32:32-i64:64-n32-S128";
-  }
+  assert(TT.isArch16Bit() && "COMET-II 16bit only");
+
+  // e little-endian
+  // m:e ELF mangling
+  // p:16:16 16bit address space, 16-bit aligned
+  // i16:16 i16 is 16-bit aligned
+  // n16 native integer widths is 16-bit
+  return "e-m:e-p:16:16-i16:16-n16";
 }
 
 static Reloc::Model getEffectiveRelocModel(const Triple &TT,
