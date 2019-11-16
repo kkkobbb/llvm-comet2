@@ -22,10 +22,10 @@
 ## 使い方
 * __ビルドできるだけ__
 * llcのみ対応
-    * `llc --mtriple=comet2-pc-linux tests/add.ll && gcc tests/add.s`
+    * `llc --mtriple=comet2 tests/add.ll && gcc tests/add.s`
         * TODO target triple は正しい？
         * 実行ファイル `./a.out` が生成される
-        * llc にi `-debug` オプションを付けるとデバッグ用の情報も出力される
+        * llc に `-debug` オプションを付けるとデバッグ用の情報も出力される
 
 
 ## TODO
