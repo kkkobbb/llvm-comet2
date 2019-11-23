@@ -90,13 +90,17 @@ def Comet2Ret : SDNode<"Comet2ISD::Ret", SDT_Comet2Ret,
                        [SDNPHasChain, SDNPOptInGlue, SDNPVariadic]>;
 
 class RetInst<bits<8> op, string asmstr>
-    : Comet2InstFormAdr<op, (outs), (ins), asmstr,
-                        [(Comet2Ret)], IICBranch> {
+    : Comet2InstFormAdr<op, (outs), (ins IntRegs:$r), asmstr,
+                        [(Comet2Ret IntRegs:$r)], IICBranch> {
     let isBranch = 1;
     let isTerminator = 1;
     let isBarrier = 1;
     let isReturn = 1;
+    let x = 0;
+    let adr = 0;
 }
+
+def RET : RetInst<0x81, "RET">;
 
 
 def mem : Operand<i16> {

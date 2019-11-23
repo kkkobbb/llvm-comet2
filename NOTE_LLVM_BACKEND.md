@@ -31,6 +31,10 @@
     * `$LLVM_ROOT/llvm/utils/vim/syntax/llvm.vim`
         * llvm中間表現 `*.ll` ファイル用
 
+## ビルド時のエラー
+* `llvm::CGIOperandList::getSubOperandNumber(unsigned int) const: Assertion i < OperandList.size() && "Invalid flat operand #"' failed.`
+    * 親classで定義した全ての変数に値が設定されていない場合でるっぽい
+
 
 ## 参考
 * 公式のバックエンドのソースコード `$LLVM_ROOT/llvm/lib/Target/*`

@@ -35,6 +35,14 @@ public:
   explicit Comet2TargetLowering(const TargetMachine &TM,
                                const Comet2Subtarget &STI);
 
+  // Provide custom lowering hooks for some operations.
+  SDValue LowerOperation(SDValue Op, SelectionDAG &DAG) const override;
+  // This method returns the name of a target specific DAG node.
+  const char *getTargetNodeName(unsigned Opcode) const override;
+  MachineBasicBlock *
+  EmitInstrWithCustomInserter(MachineInstr &MI,
+                              MachineBasicBlock *BB) const override;
+
 #if 0
   bool isLegalAddressingMode(const DataLayout &DL, const AddrMode &AM, Type *Ty,
                              unsigned AS,
@@ -47,12 +55,7 @@ public:
   bool isSExtCheaperThanZExt(EVT SrcVT, EVT DstVT) const override;
 
   bool hasBitPreservingFPLogic(EVT VT) const override;
-#endif
 
-  // Provide custom lowering hooks for some operations.
-  SDValue LowerOperation(SDValue Op, SelectionDAG &DAG) const override;
-
-#if 0
   void ReplaceNodeResults(SDNode *N, SmallVectorImpl<SDValue> &Results,
                           SelectionDAG &DAG) const override;
 
@@ -63,8 +66,6 @@ public:
                                            const SelectionDAG &DAG,
                                            unsigned Depth) const override;
 
-  // This method returns the name of a target specific DAG node.
-  const char *getTargetNodeName(unsigned Opcode) const override;
 
   ConstraintType getConstraintType(StringRef Constraint) const override;
 
@@ -77,13 +78,7 @@ public:
   void LowerAsmOperandForConstraint(SDValue Op, std::string &Constraint,
                                     std::vector<SDValue> &Ops,
                                     SelectionDAG &DAG) const override;
-#endif
 
-  MachineBasicBlock *
-  EmitInstrWithCustomInserter(MachineInstr &MI,
-                              MachineBasicBlock *BB) const override;
-
-#if 0
   EVT getSetCCResultType(const DataLayout &DL, LLVMContext &Context,
                          EVT VT) const override;
 

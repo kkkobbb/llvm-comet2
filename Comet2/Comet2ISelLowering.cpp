@@ -266,6 +266,7 @@ SDValue Comet2TargetLowering::LowerFormalArguments(
     SDValue Chain, CallingConv::ID CallConv, bool IsVarArg,
     const SmallVectorImpl<ISD::InputArg> &Ins, const SDLoc &DL,
     SelectionDAG &DAG, SmallVectorImpl<SDValue> &InVals) const {
+  LLVM_DEBUG(dbgs() << "### LowerFormalArguments\n");
 
   switch (CallConv) {
   default:
@@ -341,6 +342,8 @@ SDValue Comet2TargetLowering::LowerFormalArguments(
 // and output parameter nodes.
 SDValue Comet2TargetLowering::LowerCall(CallLoweringInfo &CLI,
                                      SmallVectorImpl<SDValue> &InVals) const {
+  LLVM_DEBUG(dbgs() << "### LowerCall\n");
+
   SelectionDAG &DAG = CLI.DAG;
   //SDLoc &DL = CLI.DL;
   //SmallVectorImpl<ISD::OutputArg> &Outs = CLI.Outs;
@@ -377,6 +380,9 @@ Comet2TargetLowering::LowerReturn(SDValue Chain, CallingConv::ID CallConv,
                                  const SmallVectorImpl<ISD::OutputArg> &Outs,
                                  const SmallVectorImpl<SDValue> &OutVals,
                                  const SDLoc &DL, SelectionDAG &DAG) const {
+  LLVM_DEBUG(dbgs() << "### LowerReturn\n");
+  LLVM_DEBUG(Chain->dumpr());
+
   // TODO RISCVからの抜粋
 
   // Stores the assignment of the return value to a location.
@@ -385,6 +391,8 @@ Comet2TargetLowering::LowerReturn(SDValue Chain, CallingConv::ID CallConv,
   // Info about the registers and stack slot.
   CCState CCInfo(CallConv, IsVarArg, DAG.getMachineFunction(), RVLocs,
                  *DAG.getContext());
+
+  CCInfo.AnalyzeReturn(Outs, RetCC_Comet2);
 
   SDValue Glue;
   SmallVector<SDValue, 4> RetOps(1, Chain);
@@ -414,12 +422,18 @@ Comet2TargetLowering::LowerReturn(SDValue Chain, CallingConv::ID CallConv,
 }
 
 // NOTE 定義あり llvm/lib/CodeGen/SelectionDAG/TargetLowering.cpp
-#if 0
 // ノード名を返す
 const char *Comet2TargetLowering::getTargetNodeName(unsigned Opcode) const {
+  switch ((Comet2ISD::NodeType)Opcode) {
+  case Comet2ISD::FIRST_NUMBER:
+    break;
+  case Comet2ISD::Call:
+    return "Comet2ISD::Call";
+  case Comet2ISD::Ret:
+    return "Comet2ISD::Ret";
+  }
   return nullptr;
 }
-#endif
 
 // NOTE 定義あり llvm/lib/CodeGen/SelectionDAG/TargetLowering.cpp
 #if 0

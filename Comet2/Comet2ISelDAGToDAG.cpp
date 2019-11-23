@@ -33,10 +33,12 @@ public:
       : SelectionDAGISel(TargetMachine) {}
 
   StringRef getPassName() const override {
+    LLVM_DEBUG(dbgs() << "### getPassName\n");
     return "Comet2 DAG->DAG Pattern Instruction Selection";
   }
 
   bool runOnMachineFunction(MachineFunction &MF) override {
+    LLVM_DEBUG(dbgs() << "### runOnMachineFunction\n");
     Subtarget = &MF.getSubtarget<Comet2Subtarget>();
     return SelectionDAGISel::runOnMachineFunction(MF);
   }
@@ -52,12 +54,23 @@ public:
 }
 
 void Comet2DAGToDAGISel::Select(SDNode *Node) {
+  LLVM_DEBUG(dbgs() << "### Select\n");
+
+  // If we have a custom node, we have already selected.
+  if (Node->isMachineOpcode()) {
+    LLVM_DEBUG(dbgs() << "== "; Node->dump(CurDAG); dbgs() << "\n");
+    Node->setNodeId(-1);
+    return;
+  }
+
   // Select the default instruction.
   SelectCode(Node);
 }
 
 bool Comet2DAGToDAGISel::SelectAddr(SDValue Addr, SDValue &Base, SDValue &Offset) {
   // TODO 正しい？
+  LLVM_DEBUG(dbgs() << "### SelectAddr\n");
+
   if (auto FIN = dyn_cast<FrameIndexSDNode>(Addr)) {
     Base = CurDAG->getTargetFrameIndex(FIN->getIndex(), Addr.getValueType());
     return true;
