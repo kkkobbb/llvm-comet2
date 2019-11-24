@@ -20,7 +20,7 @@
 
 
 ## 使い方
-* __ビルドできるだけ__
+* __出力結果は適当__
 * llcのみ対応
     * `llc --mtriple=comet2 tests/add.ll && gcc tests/add.s`
         * TODO target triple は正しい？
