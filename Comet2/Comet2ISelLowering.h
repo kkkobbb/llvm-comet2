@@ -23,6 +23,8 @@ class Comet2Subtarget;
 namespace Comet2ISD {
 enum NodeType : unsigned {
   FIRST_NUMBER = ISD::BUILTIN_OP_END,
+  Add,
+  Sub,
   Call,
   Ret
 };

@@ -12,11 +12,14 @@
 
 include "Comet2InstrFormats.td"
 
+// TODO AVR ADD命令が参考になるかも
+// Add命令
 class Comet2InstReg<bits<8> op, string asmstr, SDNode OpNode, InstrItinClass itin,
     RegisterClass RC>
-    : Comet2InstFormReg<op, (outs RC:$r1), (ins RC:$r2, RC:$r3),  // TODO $r1 $r2 は実際には同じ
+    : Comet2InstFormReg<op, (outs RC:$r1), (ins RC:$r2, RC:$rr),  // TODO 実際は $r1 <- $r1 + $r2
                         !strconcat(asmstr, " $r1, $r2"),
-                        [(set RC:$r1, (OpNode RC:$r2, RC:$r3))], itin> {
+                        [(set RC:$r1, (OpNode RC:$rr, RC:$r2))], itin> {
+  let Constraints = "$rr = $r1";
 }
 
 def ADDAREG : Comet2InstReg<0x20, "ADDA", add, IICAlu, IntRegs>;
@@ -60,7 +63,6 @@ def LDREG : LoadR<0x14, "LD">;
 
 // Call命令
 def SDT_Comet2Call : SDTypeProfile<0, 1, [SDTCisVT<0, iPTR>]>;
-
 def Comet2Call : SDNode<"Comet2ISD::Call", SDT_Comet2Call,
                         [SDNPHasChain, SDNPOutGlue, SDNPOptInGlue,
                          SDNPVariadic]>;
