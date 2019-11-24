@@ -15,7 +15,7 @@ include "Comet2InstrFormats.td"
 class Comet2InstReg<bits<8> op, string asmstr, SDNode OpNode, InstrItinClass itin,
     RegisterClass RC>
     : Comet2InstFormReg<op, (outs RC:$r1), (ins RC:$r2, RC:$r3),  // TODO $r1 $r2 は実際には同じ
-                        !strconcat(asmstr, " $r1, $r3"),
+                        !strconcat(asmstr, " $r1, $r2"),
                         [(set RC:$r1, (OpNode RC:$r2, RC:$r3))], itin> {
 }
 

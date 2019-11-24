@@ -19,6 +19,7 @@
 #include "llvm/MC/MCSubtargetInfo.h"
 #include "llvm/MC/MCSymbol.h"
 #include "llvm/Support/CommandLine.h"
+#include "llvm/Support/Debug.h"
 #include "llvm/Support/ErrorHandling.h"
 #include "llvm/Support/FormattedStream.h"
 using namespace llvm;
@@ -42,6 +43,9 @@ void Comet2InstPrinter::printRegName(raw_ostream &O, unsigned RegNo) const {
 void Comet2InstPrinter::printOperand(const MCInst *MI, unsigned OpNo,
                                     raw_ostream &O, const char *Modifier) {
   assert((Modifier == 0 || Modifier[0] == 0) && "No modifiers supported");
+
+  LLVM_DEBUG(dbgs() << "### printOperand " << *MI << " " << OpNo << "\n");
+
   const MCOperand &MO = MI->getOperand(OpNo);
 
   if (MO.isReg()) {
@@ -60,6 +64,7 @@ void Comet2InstPrinter::printOperand(const MCInst *MI, unsigned OpNo,
 
 void Comet2InstPrinter::printMemOperand(const MCInst *MI, unsigned OpNo,
                                         raw_ostream &O) {
+  LLVM_DEBUG(dbgs() << "### printMemOperand:"; MI->dump());
   // TODO Comet2用表示
   printOperand(MI, OpNo + 1, O);
   O << "(";
