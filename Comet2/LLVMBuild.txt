@@ -21,7 +21,7 @@ subdirectories = Disassembler TargetInfo MCTargetDesc
 type = TargetGroup
 name = Comet2
 parent = Target
-has_asmparser = 1
+;has_asmparser = 1
 has_asmprinter = 1
 has_disassembler = 1
 
