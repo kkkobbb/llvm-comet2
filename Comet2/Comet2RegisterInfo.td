@@ -24,6 +24,8 @@ def GR5 : Comet2Reg<5, "GR5">, DwarfRegNum<[5]>;
 def GR6 : Comet2Reg<6, "GR6">, DwarfRegNum<[6]>;
 def GR7 : Comet2Reg<7, "GR7">, DwarfRegNum<[7]>;
 
-def IntRegs : RegisterClass<"Comet2", [i16], 16,
+def IntRegsAll : RegisterClass<"Comet2", [i16], 16,
     (add GR0, GR1, GR2, GR3, GR4, GR5, GR6, GR7)>;
 
+def IntRegs : RegisterClass<"Comet2", [i16], 16,
+    (add GR1, GR2, GR3, GR4, GR5, GR6)>;

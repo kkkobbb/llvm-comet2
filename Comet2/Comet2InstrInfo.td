@@ -125,13 +125,13 @@ class FMem<bits<8> op, dag outs, dag ins, string asmstr, list<dag> pattern,
 // Load命令
 class LoadM<bits<8> op, string asmstr, RegisterClass RC>
     : FMem<op, (outs RC:$r), (ins mem:$addr),
-           !strconcat(asmstr, " $r $addr"),
+           !strconcat(asmstr, " $r, $addr"),
            [(set RC:$r, (load addr:$addr))], IICLoad>;
 
 // Store命令
 class StoreM<bits<8> op, string asmstr, RegisterClass RC>
     : FMem<op, (outs), (ins RC:$r, mem:$addr),
-           !strconcat(asmstr, " $r $addr"),
+           !strconcat(asmstr, " $r, $addr"),
            [(store RC:$r, addr:$addr)], IICStore>;
 
 def LD : LoadM<0x10, "LD", IntRegs>;

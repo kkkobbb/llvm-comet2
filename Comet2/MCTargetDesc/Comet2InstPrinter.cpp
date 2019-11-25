@@ -67,7 +67,6 @@ void Comet2InstPrinter::printMemOperand(const MCInst *MI, unsigned OpNo,
   LLVM_DEBUG(dbgs() << "### printMemOperand:"; MI->dump());
   // TODO Comet2用表示
   printOperand(MI, OpNo + 1, O);
-  O << "(";
+  O << ", ";
   printOperand(MI, OpNo, O);
-  O << ")";
 }
