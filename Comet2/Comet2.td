@@ -29,16 +29,13 @@ include "llvm/Target/Target.td"
 
 include "Comet2RegisterInfo.td"
 include "Comet2CallingConv.td"
-include "Comet2Schedule.td"
 include "Comet2InstrInfo.td"
 
 //===----------------------------------------------------------------------===//
 // COMET-II processors supported.
 //===----------------------------------------------------------------------===//
 
-// TODO NoSchedModelでもいい？
-//def : Processor<"Comet2", NoSchedModel, []>;
-def : Processor<"Comet2", Comet2GenericItineraries, []>;
+def : ProcessorModel<"Comet2", NoSchedModel, []>;
 
 //===----------------------------------------------------------------------===//
 // Define the COMET-II target.

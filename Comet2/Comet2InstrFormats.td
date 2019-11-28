@@ -15,7 +15,7 @@ def InstFormatAdr    : Format<1>;
 def InstFormatReg    : Format<2>;
 
 class Comet2Inst2words<dag outs, dag ins, string asmstr,
-    list<dag> pattern, InstrItinClass itin, Format f>
+    list<dag> pattern, Format f>
     : Instruction {
     field bits<32> Inst;
     Format Form = f;
@@ -29,7 +29,6 @@ class Comet2Inst2words<dag outs, dag ins, string asmstr,
     let InOperandList = ins;
     let AsmString = asmstr;
     let Pattern = pattern;
-    let Itinerary = itin;
 
     bits<2> FormBits = Form.Value;
 
@@ -39,8 +38,8 @@ class Comet2Inst2words<dag outs, dag ins, string asmstr,
 }
 
 class Comet2InstFormAdr<bits<8> op, dag outs, dag ins, string asmstr,
-    list<dag> pattern, InstrItinClass itin>
-    : Comet2Inst2words<outs, ins, asmstr, pattern, itin, InstFormatAdr> {
+    list<dag> pattern>
+    : Comet2Inst2words<outs, ins, asmstr, pattern, InstFormatAdr> {
     bits<4> r;
     bits<4> x;
     bits<16> adr;
@@ -53,7 +52,7 @@ class Comet2InstFormAdr<bits<8> op, dag outs, dag ins, string asmstr,
 }
 
 class Comet2InstFormReg<bits<8> op, dag outs, dag ins, string asmstr,
-    list<dag> pattern, InstrItinClass itin>
+    list<dag> pattern>
     : Instruction {
     field bits<16> Inst;
 
@@ -70,7 +69,6 @@ class Comet2InstFormReg<bits<8> op, dag outs, dag ins, string asmstr,
     let InOperandList = ins;
     let AsmString = asmstr;
     let Pattern = pattern;
-    let Itinerary = itin;
 
     Format Form = InstFormatReg;
     bits<2> FormBits = Form.Value;
@@ -81,7 +79,7 @@ class Comet2InstFormReg<bits<8> op, dag outs, dag ins, string asmstr,
 }
 
 class Comet2Pseudo<dag outs, dag ins, string asmstr, list<dag> pattern>
-    : Comet2Inst2words<outs, ins, asmstr, pattern, IICPseudo, InstFormatPseudo> {
+    : Comet2Inst2words<outs, ins, asmstr, pattern, InstFormatPseudo> {
     let isCodeGenOnly = 1;
     let isPseudo = 1;
 }
