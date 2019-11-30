@@ -36,11 +36,23 @@
 
 using namespace llvm;
 
-#include "Comet2GenCallingConv.inc"
-
 #define DEBUG_TYPE "comet2-lower"
 
-STATISTIC(NumTailCalls, "Number of tail calls");
+//===----------------------------------------------------------------------===//
+//             Formal Arguments Calling Convention Implementation
+//===----------------------------------------------------------------------===//
+
+#include "Comet2GenCallingConv.inc"
+
+static void analyzeArguments(TargetLowering::CallLoweringInfo *CLI,
+                             const Function *F, const DataLayout *TD,
+                             const SmallVectorImpl<ISD::OutputArg> *Outs,
+                             const SmallVectorImpl<ISD::InputArg> *Ins,
+                             CallingConv::ID CallConv,
+                             SmallVectorImpl<CCValAssign> &ArgLocs,
+                             CCState &CCInfo, bool IsCall, bool IsVarArg) {
+ // TODO 未実装 AVR参考
+}
 
 Comet2TargetLowering::Comet2TargetLowering(const TargetMachine &TM,
                                            const Comet2Subtarget &STI)
@@ -173,24 +185,194 @@ SDValue Comet2TargetLowering::LowerCall(CallLoweringInfo &CLI,
                                      SmallVectorImpl<SDValue> &InVals) const {
   LLVM_DEBUG(dbgs() << "### LowerCall\n");
 
+  // TODO ここで処理を書かなくても同じasmを出力している: 不要？
+
+  // NOTE AVR参考
   SelectionDAG &DAG = CLI.DAG;
-  //SDLoc &DL = CLI.DL;
-  //SmallVectorImpl<ISD::OutputArg> &Outs = CLI.Outs;
-  //SmallVectorImpl<SDValue> &OutVals = CLI.OutVals;
-  //SmallVectorImpl<ISD::InputArg> &Ins = CLI.Ins;
+  SDLoc &DL = CLI.DL;
+  SmallVectorImpl<ISD::OutputArg> &Outs = CLI.Outs;
+  SmallVectorImpl<SDValue> &OutVals = CLI.OutVals;
+  SmallVectorImpl<ISD::InputArg> &Ins = CLI.Ins;
   SDValue Chain = CLI.Chain;
   SDValue Callee = CLI.Callee;
-  //bool &IsTailCall = CLI.IsTailCall;
-  //CallingConv::ID CallConv = CLI.CallConv;
-  //bool IsVarArg = CLI.IsVarArg;
-  EVT PtrVT = getPointerTy(DAG.getDataLayout());
-  //MVT XLenVT = Subtarget.getXLenVT();
+  bool &isTailCall = CLI.IsTailCall;
+  CallingConv::ID CallConv = CLI.CallConv;
+  bool isVarArg = CLI.IsVarArg;
 
-  //MachineFunction &MF = DAG.getMachineFunction();
+  MachineFunction &MF = DAG.getMachineFunction();
 
-  // TODO 未実装
+  // Comet2 does not yet support tail call optimization.
+  isTailCall = false;
 
-  // FIXME ここがおかしい？
+  // Analyze operands of the call, assigning locations to each operand.
+  SmallVector<CCValAssign, 16> ArgLocs;
+  CCState CCInfo(CallConv, isVarArg, DAG.getMachineFunction(), ArgLocs,
+                 *DAG.getContext());
+
+  // If the callee is a GlobalAddress/ExternalSymbol node (quite common, every
+  // direct call is) turn it into a TargetGlobalAddress/TargetExternalSymbol
+  // node so that legalize doesn't hack it.
+  const Function *F = nullptr;
+  if (const GlobalAddressSDNode *G = dyn_cast<GlobalAddressSDNode>(Callee)) {
+    const GlobalValue *GV = G->getGlobal();
+
+    F = cast<Function>(GV);
+    Callee =
+        DAG.getTargetGlobalAddress(GV, DL, getPointerTy(DAG.getDataLayout()));
+  } else if (const ExternalSymbolSDNode *ES =
+                 dyn_cast<ExternalSymbolSDNode>(Callee)) {
+    Callee = DAG.getTargetExternalSymbol(ES->getSymbol(),
+                                         getPointerTy(DAG.getDataLayout()));
+  }
+
+  analyzeArguments(&CLI, F, &DAG.getDataLayout(), &Outs, 0, CallConv, ArgLocs, CCInfo,
+                   true, isVarArg);
+
+  // Get a count of how many bytes are to be pushed on the stack.
+  unsigned NumBytes = CCInfo.getNextStackOffset();
+
+  Chain = DAG.getCALLSEQ_START(Chain, NumBytes, 0, DL);
+
+  SmallVector<std::pair<unsigned, SDValue>, 8> RegsToPass;
+
+  // First, walk the register assignments, inserting copies.
+  unsigned AI, AE;
+  bool HasStackArgs = false;
+  for (AI = 0, AE = ArgLocs.size(); AI != AE; ++AI) {
+    CCValAssign &VA = ArgLocs[AI];
+    EVT RegVT = VA.getLocVT();
+    SDValue Arg = OutVals[AI];
+
+    // Promote the value if needed. With Clang this should not happen.
+    switch (VA.getLocInfo()) {
+    default:
+      llvm_unreachable("Unknown loc info!");
+    case CCValAssign::Full:
+      break;
+    case CCValAssign::SExt:
+      Arg = DAG.getNode(ISD::SIGN_EXTEND, DL, RegVT, Arg);
+      break;
+    case CCValAssign::ZExt:
+      Arg = DAG.getNode(ISD::ZERO_EXTEND, DL, RegVT, Arg);
+      break;
+    case CCValAssign::AExt:
+      Arg = DAG.getNode(ISD::ANY_EXTEND, DL, RegVT, Arg);
+      break;
+    case CCValAssign::BCvt:
+      Arg = DAG.getNode(ISD::BITCAST, DL, RegVT, Arg);
+      break;
+    }
+
+    // Stop when we encounter a stack argument, we need to process them
+    // in reverse order in the loop below.
+    if (VA.isMemLoc()) {
+      HasStackArgs = true;
+      break;
+    }
+
+    // Arguments that can be passed on registers must be kept in the RegsToPass
+    // vector.
+    RegsToPass.push_back(std::make_pair(VA.getLocReg(), Arg));
+  }
+
+  // Second, stack arguments have to walked in reverse order by inserting
+  // chained stores, this ensures their order is not changed by the scheduler
+  // and that the push instruction sequence generated is correct, otherwise they
+  // can be freely intermixed.
+  if (HasStackArgs) {
+    for (AE = AI, AI = ArgLocs.size(); AI != AE; --AI) {
+      unsigned Loc = AI - 1;
+      CCValAssign &VA = ArgLocs[Loc];
+      SDValue Arg = OutVals[Loc];
+
+      assert(VA.isMemLoc());
+
+      // GR7 points to one stack slot further so add one to adjust it.
+      SDValue PtrOff = DAG.getNode(
+          ISD::ADD, DL, getPointerTy(DAG.getDataLayout()),
+          DAG.getRegister(Comet2::GR7, getPointerTy(DAG.getDataLayout())),
+          DAG.getIntPtrConstant(VA.getLocMemOffset() + 1, DL));
+
+      Chain =
+          DAG.getStore(Chain, DL, Arg, PtrOff,
+                       MachinePointerInfo::getStack(MF, VA.getLocMemOffset()),
+                       0);
+    }
+  }
+
+  // Build a sequence of copy-to-reg nodes chained together with token chain and
+  // flag operands which copy the outgoing args into registers.  The InFlag in
+  // necessary since all emited instructions must be stuck together.
+  SDValue InFlag;
+  for (auto Reg : RegsToPass) {
+    Chain = DAG.getCopyToReg(Chain, DL, Reg.first, Reg.second, InFlag);
+    InFlag = Chain.getValue(1);
+  }
+
+  // Returns a chain & a flag for retval copy to use.
+  SDVTList NodeTys = DAG.getVTList(MVT::Other, MVT::Glue);
+  SmallVector<SDValue, 8> Ops;
+  Ops.push_back(Chain);
+  Ops.push_back(Callee);
+
+  // Add argument registers to the end of the list so that they are known live
+  // into the call.
+  for (auto Reg : RegsToPass) {
+    Ops.push_back(DAG.getRegister(Reg.first, Reg.second.getValueType()));
+  }
+
+  // Add a register mask operand representing the call-preserved registers.
+  const TargetRegisterInfo *TRI = Subtarget.getRegisterInfo();
+  const uint32_t *Mask =
+      TRI->getCallPreservedMask(DAG.getMachineFunction(), CallConv);
+  assert(Mask && "Missing call preserved mask for calling convention");
+  Ops.push_back(DAG.getRegisterMask(Mask));
+
+  if (InFlag.getNode()) {
+    Ops.push_back(InFlag);
+  }
+
+  Chain = DAG.getNode(Comet2ISD::Call, DL, NodeTys, Ops);
+  InFlag = Chain.getValue(1);
+
+  // Create the CALLSEQ_END node.
+  Chain = DAG.getCALLSEQ_END(Chain, DAG.getIntPtrConstant(NumBytes, DL, true),
+                             DAG.getIntPtrConstant(0, DL, true), InFlag, DL);
+
+  if (!Ins.empty()) {
+    InFlag = Chain.getValue(1);
+  }
+
+  // Handle result values, copying them out of physregs into vregs that we
+  // return.
+  return LowerCallResult(Chain, InFlag, CallConv, isVarArg, Ins, DL, DAG,
+                         InVals);
+}
+
+/// Lower the result values of a call into the
+/// appropriate copies out of appropriate physical registers.
+///
+SDValue Comet2TargetLowering::LowerCallResult(
+    SDValue Chain, SDValue InFlag, CallingConv::ID CallConv, bool isVarArg,
+    const SmallVectorImpl<ISD::InputArg> &Ins, const SDLoc &dl, SelectionDAG &DAG,
+    SmallVectorImpl<SDValue> &InVals) const {
+
+  // Assign locations to each value returned by this call.
+  SmallVector<CCValAssign, 16> RVLocs;
+  CCState CCInfo(CallConv, isVarArg, DAG.getMachineFunction(), RVLocs,
+                 *DAG.getContext());
+
+  // Handle runtime calling convs.
+  CCInfo.AnalyzeCallResult(Ins, RetCC_Comet2);
+
+  // Copy all of the result registers out of their specified physreg.
+  for (CCValAssign const &RVLoc : RVLocs) {
+    Chain = DAG.getCopyFromReg(Chain, dl, RVLoc.getLocReg(), RVLoc.getValVT(),
+                               InFlag)
+                .getValue(1);
+    InFlag = Chain.getValue(2);
+    InVals.push_back(Chain.getValue(0));
+  }
 
   return Chain;
 }
@@ -252,6 +434,11 @@ const char *Comet2TargetLowering::getTargetNodeName(unsigned Opcode) const {
     return "Comet2ISD::Call";
   case Comet2ISD::Ret:
     return "Comet2ISD::Ret";
+  case Comet2ISD::Add:
+    return "Comet2ISD::Add";
+  case Comet2ISD::Sub:
+    return "Comet2ISD::Sub";
   }
   return nullptr;
 }
+
