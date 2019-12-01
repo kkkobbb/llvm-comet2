@@ -42,10 +42,11 @@ void Comet2FrameLowering::emitPrologue(MachineFunction &MF,
    // Update stack size
   MFI.setStackSize(StackSize);
 
+  // FIXME GR1ではなく未使用のレジスタを使うようにする
   // スタックを1フレーム分伸ばす
   BuildMI(MBB, MBBI, DL, TII->get(Comet2::LAD), Comet2::GR1)
-      .addImm(-StackSize);
-  BuildMI(MBB, MBBI, DL, TII->get(Comet2::ADDAREG), Comet2::GR7)
+      .addImm(StackSize);
+  BuildMI(MBB, MBBI, DL, TII->get(Comet2::SUBAREG), Comet2::GR7)
       .addReg(Comet2::GR1);
 }
 
@@ -59,10 +60,11 @@ void Comet2FrameLowering::emitEpilogue(MachineFunction &MF,
   // Get the number of bytes from FrameInfo
   uint64_t StackSize = MFI.getStackSize();
 
+  // FIXME GR1ではなく未使用のレジスタを使うようにする
   // スタックを1フレーム分戻す
   BuildMI(MBB, MBBI, DL, TII->get(Comet2::LAD), Comet2::GR1)
       .addImm(StackSize);
-  BuildMI(MBB, MBBI, DL, TII->get(Comet2::SUBAREG), Comet2::GR7)
+  BuildMI(MBB, MBBI, DL, TII->get(Comet2::ADDAREG), Comet2::GR7)
       .addReg(Comet2::GR1);
 }
 
