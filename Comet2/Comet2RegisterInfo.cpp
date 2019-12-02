@@ -37,7 +37,6 @@ Comet2RegisterInfo::getCalleeSavedRegs(const MachineFunction *MF) const {
 }
 
 BitVector Comet2RegisterInfo::getReservedRegs(const MachineFunction &MF) const {
-  const TargetFrameLowering *TFI = getFrameLowering(MF);
   BitVector Reserved(getNumRegs());
 
   // Use markSuperRegs to ensure any register aliases are also reserved
@@ -54,8 +53,6 @@ void Comet2RegisterInfo::eliminateFrameIndex(MachineBasicBlock::iterator II,
 
   MachineInstr &MI = *II;
   MachineFunction &MF = *MI.getParent()->getParent();
-  MachineRegisterInfo &MRI = MF.getRegInfo();
-  const Comet2InstrInfo *TII = MF.getSubtarget<Comet2Subtarget>().getInstrInfo();
   DebugLoc DL = MI.getDebugLoc();
 
   int FrameIndex = MI.getOperand(FIOperandNum).getIndex();
@@ -68,8 +65,6 @@ void Comet2RegisterInfo::eliminateFrameIndex(MachineBasicBlock::iterator II,
     report_fatal_error(
         "Frame offsets outside of the signed 16-bit range not supported");
   }
-
-  MachineBasicBlock &MBB = *MI.getParent();
 
   MI.getOperand(FIOperandNum)
       .ChangeToRegister(FrameReg, false);

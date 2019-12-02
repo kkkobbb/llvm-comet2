@@ -44,10 +44,11 @@ void Comet2FrameLowering::emitPrologue(MachineFunction &MF,
 
   // FIXME GR1ではなく未使用のレジスタを使うようにする
   // スタックを1フレーム分伸ばす
-  BuildMI(MBB, MBBI, DL, TII->get(Comet2::LAD), Comet2::GR1)
+  Register tmp = Comet2::GR6;
+  BuildMI(MBB, MBBI, DL, TII->get(Comet2::LAD), tmp)
       .addImm(StackSize);
   BuildMI(MBB, MBBI, DL, TII->get(Comet2::SUBAREG), Comet2::GR7)
-      .addReg(Comet2::GR1);
+      .addReg(tmp);
 }
 
 void Comet2FrameLowering::emitEpilogue(MachineFunction &MF,
@@ -62,10 +63,11 @@ void Comet2FrameLowering::emitEpilogue(MachineFunction &MF,
 
   // FIXME GR1ではなく未使用のレジスタを使うようにする
   // スタックを1フレーム分戻す
-  BuildMI(MBB, MBBI, DL, TII->get(Comet2::LAD), Comet2::GR1)
+  Register tmp = Comet2::GR6;
+  BuildMI(MBB, MBBI, DL, TII->get(Comet2::LAD), tmp)
       .addImm(StackSize);
   BuildMI(MBB, MBBI, DL, TII->get(Comet2::ADDAREG), Comet2::GR7)
-      .addReg(Comet2::GR1);
+      .addReg(tmp);
 }
 
 // NOTE 実装あり llvm/lib/CodeGen/TargetFrameLoweringImpl.cpp
