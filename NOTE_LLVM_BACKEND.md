@@ -5,6 +5,8 @@
 ### cmake
 * `cmake ../llvm -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=Comet2 -DLLVM_TARGETS_TO_BUILD=Comet2`
     * `-DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=Comet2`
+        * 試験的なターゲットの場合、このオプションで指定する必要がある
+            * 公式にあるターゲットでも必要な場合がある
         * 自分で追加した場合はこのオプションを指定する
         * `Target/` に配置したディレクトリ名を指定する
         * このオプションを指定すれば、`MakeLists.txt` `LLVMBuild.txt`は変更しなくていい？
@@ -14,6 +16,7 @@
         * 複数指定する場合は `;` で区切る
     * 全てビルドするとかなり時間がかかるので一部だけビルドする
         * `make llc`
+        * `llc`のみなら4GBでもビルドは成功する
 
 ### コード修正
 * `LLVM_EXPERIMENTAL_TARGETS_TO_BUILD`を指定すれば不要？
@@ -38,6 +41,6 @@
 
 ## 参考
 * 公式のバックエンドのソースコード `$LLVM_ROOT/llvm/lib/Target/*`
-    * 特に`RISCV`、`Sparc`
+    * 特に`RISCV`、`Sparc`、`AVR`
 * きつねさん
 

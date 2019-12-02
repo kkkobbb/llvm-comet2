@@ -20,7 +20,7 @@
 
 
 ## 使い方
-* __出力結果は適当__
+* __出力結果はほぼ適当__
 * llcのみ対応
     * `llc --mtriple=comet2 tests/add.ll && gcc tests/add.s`
         * TODO target triple は正しい？
@@ -29,6 +29,7 @@
 
 
 ## TODO
+* まともなコード出力をする
 * ビルド時の警告修正
 * なるべく最小構成にする
 
