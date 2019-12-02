@@ -58,7 +58,6 @@ def Comet2AsmWriter : AsmWriter;
 
 def Comet2 : Target {
   let InstructionSet = Comet2InstrInfo;
-  let AssemblyParsers = [Comet2AsmParser];
   let AssemblyWriters = [Comet2AsmWriter];
   // NOTE レジスタ割り当て後のレジスタ名変更をしてもいいか
   let AllowRegisterRenaming = 1;
