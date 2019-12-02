@@ -28,7 +28,7 @@ def IntRegsAll : RegisterClass<"Comet2", [i16], 16,
     (add GR0, GR1, GR2, GR3, GR4, GR5, GR6, GR7)>;
 
 def IntRegsArgs : RegisterClass<"Comet2", [i16], 16,
-    (add GR1, GR2, GR3)>;
+    (add GR3, GR4, GR5)>;
 
 def IntRegs : RegisterClass<"Comet2", [i16], 16,
     (add GR1, GR2, GR3, GR4, GR5, GR6)>;

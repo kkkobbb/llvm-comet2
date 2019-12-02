@@ -60,6 +60,7 @@ Comet2TargetLowering::Comet2TargetLowering(const TargetMachine &TM,
 
   // Set up the register classes.
   addRegisterClass(MVT::i16, &Comet2::IntRegsRegClass);
+  addRegisterClass(MVT::i16, &Comet2::IntRegsArgsRegClass);
 
   // Compute derived properties from the register classes.
   computeRegisterProperties(STI.getRegisterInfo());
