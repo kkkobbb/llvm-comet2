@@ -46,13 +46,6 @@ def Comet2InstrInfo : InstrInfo {
   let guessInstructionProperties = 0;
 }
 
-def Comet2AsmParser : AsmParser {
-  // NOTE レジスタ別名解決処理が必要か
-  let ShouldEmitMatchRegisterAltName = 1;
-  // NOTE レジスタ名とレジスタ別名が重複してもいいか？
-  let AllowDuplicateRegisterNames = 1;
-}
-
 // TODO Target.tdに定義されているDefaultAsmWriterでもいい？
 def Comet2AsmWriter : AsmWriter;
 
