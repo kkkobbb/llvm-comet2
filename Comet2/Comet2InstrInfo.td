@@ -109,7 +109,8 @@ def mem : Operand<i16> {
     let EncoderMethod = "getMemEncoding";
 }
 
-def addr : ComplexPattern<iPTR, 2, "SelectAddr", [], []>;
+// NOTE llvm/include/llvm/CodeGen/SDNodeProperties.td
+def addr : ComplexPattern<iPTR, 2, "SelectAddr", [], [SDNPWantRoot]>;
 
 // Load/Store命令共通フォーマット
 class FMem<bits<8> op, dag outs, dag ins, string asmstr, list<dag> pattern>
