@@ -36,8 +36,12 @@ void Comet2FrameLowering::emitPrologue(MachineFunction &MF,
   MachineBasicBlock::iterator MBBI = MBB.begin();
   DebugLoc DL = MBBI->getDebugLoc();
 
-  // allocate fixed size for simplicity
-  uint64_t StackSize = 4 * 16;
+  uint64_t StackSize = MFI.getStackSize();
+
+  // Early exit if there is no need to allocate on the stack
+  if (StackSize == 0 && !MFI.adjustsStack())
+    return;
+
 
    // Update stack size
   MFI.setStackSize(StackSize);
