@@ -16,7 +16,7 @@ include "Comet2InstrFormats.td"
 // Add命令
 class Comet2InstReg<bits<8> op, string asmstr, SDNode OpNode, RegisterClass RC>
     : Comet2InstFormReg<op, (outs RC:$r1), (ins RC:$r2, RC:$src),  // TODO 実際は $r1 <- $r1 + $r2
-                        !strconcat(asmstr, " $r1, $r2"),
+                        !strconcat(asmstr, " $r1,$r2"),
                         [(set i16:$r1, (OpNode i16:$src, i16:$r2))]> {
   let Constraints = "$src = $r1";
 }
@@ -43,7 +43,7 @@ def immSExt16 : PatLeaf<(imm), [{ return isInt<16>(N->getSExtValue()); }]>;
 // 即値ロード
 class LoadI<bits<8> op, string asmstr>
     : Comet2InstFormAdr<op, (outs IntRegs:$r), (ins imm16:$addr),
-                        !strconcat(asmstr, " $r, $addr"),
+                        !strconcat(asmstr, " $r,$addr"),
                         [(set IntRegs:$r, immSExt16:$addr)]> {
 }
 
@@ -53,7 +53,7 @@ def LAD : LoadI<0x12, "LAD">;
 // レジスタ間ロード
 class LoadR<bits<8> op, string asmstr>
     : Comet2InstFormReg<op, (outs IntRegs:$r1), (ins IntRegs:$r2),
-                        !strconcat(asmstr, " $r1, $r2"),
+                        !strconcat(asmstr, " $r1,$r2"),
                         [(set IntRegs:$r1, IntRegs:$r2)]> {
 }
 
@@ -123,13 +123,13 @@ class FMem<bits<8> op, dag outs, dag ins, string asmstr, list<dag> pattern>
 // Load命令
 class LoadM<bits<8> op, string asmstr, RegisterClass RC>
     : FMem<op, (outs RC:$r), (ins mem:$addr),
-           !strconcat(asmstr, " $r, $addr"),
+           !strconcat(asmstr, " $r,$addr"),
            [(set RC:$r, (load addr:$addr))]>;
 
 // Store命令
 class StoreM<bits<8> op, string asmstr, RegisterClass RC>
     : FMem<op, (outs), (ins RC:$r, mem:$addr),
-           !strconcat(asmstr, " $r, $addr"),
+           !strconcat(asmstr, " $r,$addr"),
            [(store RC:$r, addr:$addr)]>;
 
 def LD : LoadM<0x10, "LD", IntRegs>;
