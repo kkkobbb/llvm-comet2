@@ -21,9 +21,19 @@ void Comet2MCAsmInfo::anchor() {}
 
 Comet2MCAsmInfo::Comet2MCAsmInfo(const Triple &TT) {
   CodePointerSize = CalleeSaveStackSlotSize = 2;
-  CommentString = "#";
+  CommentString = ";";
+  LabelSuffix = " ";
   AlignmentIsInBytes = false;
-  //SupportsDebugInformation = true;
-  //ExceptionsType = ExceptionHandling::DwarfCFI;
+  UsesELFSectionDirectiveForBSS = true;
+  UseIntegratedAssembler = false;
+  SupportsDebugInformation = false;
+  HasDotTypeDotSizeDirective = false;
+  HasFunctionAlignment = false;
+  HasSingleParameterDotFile = false;
   Data16bitsDirective = "\t.word\t";
+}
+
+bool
+Comet2MCAsmInfo::shouldOmitSectionDirective(StringRef SectionName) const {
+    return true;
 }

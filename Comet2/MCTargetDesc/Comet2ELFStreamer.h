@@ -12,6 +12,9 @@
 #include "Comet2TargetStreamer.h"
 #include "llvm/MC/MCELFStreamer.h"
 
+// TODO ELFではなく MCNullStreamer は使える？
+// TODO #include "llvm/MC/MCStreamer.h"
+
 namespace llvm {
 
 class Comet2TargetELFStreamer : public Comet2TargetStreamer {
