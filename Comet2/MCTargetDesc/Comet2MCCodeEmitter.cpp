@@ -32,9 +32,6 @@ using namespace llvm;
 
 #define DEBUG_TYPE "mccodeemitter"
 
-STATISTIC(MCNumEmitted, "Number of MC instructions emitted");
-STATISTIC(MCNumFixups, "Number of MC fixups created");
-
 namespace {
 class Comet2MCCodeEmitter : public MCCodeEmitter {
   Comet2MCCodeEmitter(const Comet2MCCodeEmitter &) = delete;
@@ -107,8 +104,6 @@ void Comet2MCCodeEmitter::encodeInstruction(const MCInst &MI, raw_ostream &OS,
     break;
   }
   }
-
-  ++MCNumEmitted; // Keep track of the # of mi's emitted.
 }
 
 // TODO 不要？
