@@ -60,7 +60,7 @@ Comet2TargetMachine::Comet2TargetMachine(const Target &T, const Triple &TT,
     : LLVMTargetMachine(T, computeDataLayout(TT), TT, CPU, FS, Options,
                         getEffectiveRelocModel(TT, RM),
                         getEffectiveCodeModel(CM, CodeModel::Small), OL),
-      TLOF(std::make_unique<Comet2ELFTargetObjectFile>()),
+      TLOF(llvm::make_unique<Comet2ELFTargetObjectFile>()),
       Subtarget(TT, CPU, FS, Options.MCOptions.getABIName(), *this) {
   initAsmInfo();
 }

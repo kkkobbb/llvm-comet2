@@ -29,7 +29,8 @@ bool Comet2AsmBackend::writeNopData(raw_ostream &OS, uint64_t Count) const {
 
 static uint64_t adjustFixupValue(const MCFixup &Fixup, uint64_t Value,
                                  MCContext &Ctx) {
-  switch (Fixup.getTargetKind()) {
+  unsigned Kind = Fixup.getKind();
+  switch (Kind) {
   default:
     return 0;
   case Comet2::fixup_comet2_24:  // TODO 定義はこれでいい？

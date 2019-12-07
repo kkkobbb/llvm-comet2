@@ -75,7 +75,7 @@ Comet2TargetLowering::Comet2TargetLowering(const TargetMachine &TM,
   setOperationAction(ISD::SEXTLOAD, MVT::i8,  Promote);
 
   // TODO 命令のアラインメント？
-  setMinFunctionAlignment(llvm::Align(2));
+  setMinFunctionAlignment(2);
 
   // TODO gcc での __atomic_* 関数対応かどうか？
   setMaxAtomicSizeInBitsSupported(0);
