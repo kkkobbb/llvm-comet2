@@ -19,6 +19,7 @@ using namespace llvm;
 
 void Comet2MCAsmInfo::anchor() {}
 
+// NOTE 参考 llvm/include/llvm/MC/MCAsmInfo.h
 Comet2MCAsmInfo::Comet2MCAsmInfo(const Triple &TT) {
   CodePointerSize = CalleeSaveStackSlotSize = 2;
   CommentString = ";";
@@ -31,6 +32,8 @@ Comet2MCAsmInfo::Comet2MCAsmInfo(const Triple &TT) {
   HasFunctionAlignment = false;
   HasSingleParameterDotFile = false;
   Data16bitsDirective = "\t.word\t";
+
+  UsesNonexecutableStackSection = false;
 }
 
 bool
