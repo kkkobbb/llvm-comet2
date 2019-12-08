@@ -60,7 +60,6 @@ Comet2TargetLowering::Comet2TargetLowering(const TargetMachine &TM,
 
   // Set up the register classes.
   addRegisterClass(MVT::i16, &Comet2::IntRegsRegClass);
-  addRegisterClass(MVT::i16, &Comet2::IntRegsArgsRegClass);
 
   // Compute derived properties from the register classes.
   computeRegisterProperties(STI.getRegisterInfo());
@@ -143,7 +142,7 @@ SDValue Comet2TargetLowering::LowerFormalArguments(
       // 引数がレジスタ経由で渡された場合
       EVT RegVT = VA.getLocVT();
       // 使用するレジスタクラスを指定
-      const TargetRegisterClass *RC = &Comet2::IntRegsArgsRegClass;
+      const TargetRegisterClass *RC = &Comet2::IntRegsRegClass;
       if (VA.getLocInfo() != CCValAssign::Full) {
         llvm_unreachable("not supported yet");
       }

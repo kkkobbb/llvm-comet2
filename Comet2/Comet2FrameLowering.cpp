@@ -46,7 +46,6 @@ void Comet2FrameLowering::emitPrologue(MachineFunction &MF,
    // Update stack size
   MFI.setStackSize(StackSize);
 
-  // FIXME GR1ではなく未使用のレジスタを使うようにする
   // スタックを1フレーム分伸ばす
   Register tmp = Comet2::GR6;
   BuildMI(MBB, MBBI, DL, TII->get(Comet2::LAD), tmp)
@@ -65,7 +64,6 @@ void Comet2FrameLowering::emitEpilogue(MachineFunction &MF,
   // Get the number of bytes from FrameInfo
   uint64_t StackSize = MFI.getStackSize();
 
-  // FIXME GR1ではなく未使用のレジスタを使うようにする
   // スタックを1フレーム分戻す
   Register tmp = Comet2::GR6;
   BuildMI(MBB, MBBI, DL, TII->get(Comet2::LAD), tmp)
