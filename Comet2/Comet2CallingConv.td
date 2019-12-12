@@ -18,7 +18,7 @@
 // 引数
 def CC_Comet2 : CallingConv<[
     // i8型の引数はi16型に昇格する
-    CCIfType<[i8], CCPromoteToType<i32>>,
+    CCIfType<[i8], CCPromoteToType<i16>>,
     // i16型はGR1-GR5に渡す
     CCIfType<[i16], CCAssignToReg<[GR1, GR2, GR3, GR4, GR5]>>
 ]>;
