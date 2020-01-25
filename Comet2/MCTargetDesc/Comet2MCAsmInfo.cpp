@@ -23,7 +23,7 @@ void Comet2MCAsmInfo::anchor() {}
 Comet2MCAsmInfo::Comet2MCAsmInfo(const Triple &TT) {
   CodePointerSize = CalleeSaveStackSlotSize = 2;
   CommentString = ";";
-  LabelSuffix = " ";
+  LabelSuffix = " NOP ";
   AlignmentIsInBytes = false;
   UsesELFSectionDirectiveForBSS = true;
   UseIntegratedAssembler = false;
