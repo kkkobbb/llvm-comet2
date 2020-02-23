@@ -33,6 +33,8 @@ Comet2MCAsmInfo::Comet2MCAsmInfo(const Triple &TT) {
   HasSingleParameterDotFile = false;
   Data16bitsDirective = "\t.word\t";
 
+  GlobalDirective = "; ";
+
   UsesNonexecutableStackSection = false;
 }
 
