@@ -20,17 +20,19 @@
 
 
 ## 使い方
-* __出力結果はほぼ適当__
 * llcのみ対応
     * `llc --mtriple=comet2 tests/add.ll && gcc tests/add.s`
         * TODO target triple は正しい？
         * アセンブリ `add.s` が生成される
         * llc に `-debug` オプションを付けるとデバッグ用の情報も出力される
+    * そのままのアセンブリでは文法違反
+        * `.text` `.globl` の行を削除
+        * 先頭行に`_start START`を追加
+        * 最終行に` END`を追加
 
 
 ## TODO
 * まともなコード出力をする
-    * 本来はラベルのみだとエラー
     * 引数が多いとllc実行時エラー
         * スタック渡ししていない?
 * ビルド時の警告修正
