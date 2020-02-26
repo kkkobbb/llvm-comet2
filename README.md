@@ -16,7 +16,7 @@
 ## ビルド
 * `cd $LLVM_ROOT && mkdir _build_comet2 && cd _build_comet2`
 * `cmake ../llvm -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=Comet2 -DLLVM_TARGETS_TO_BUILD=Comet2`
-* `make llc`
+* `cmake --build . --target llc`
 
 
 ## 使い方
