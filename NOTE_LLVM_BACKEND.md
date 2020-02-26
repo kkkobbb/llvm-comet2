@@ -28,6 +28,9 @@
 * `ProcessorModel`
     * `SubtargetFeature`を置き換える新しいクラス?
     * 参考 `$LLVM_ROOT/llvm/include/llvm/Target/Target.td`
+* 以下の2か所を変更すると`.text`セクションを変更できる
+    * `$LLVM_ROOT/llvm/lib/MC/MCObjectFileInfo.cpp` +343
+    * `$LLVM_ROOT/llvm/lib/CodeGen/TargetLoweringObjectFileImpl.cpp` +611
 * vim用の llvm関係シンタックスハイライト定義ファイル
     * `$LLVM_ROOT/llvm/utils/vim/syntax/tablegen.vim`
         * バックエンド記述の `*.td` ファイル用
