@@ -44,16 +44,6 @@ using namespace llvm;
 
 #include "Comet2GenCallingConv.inc"
 
-static void analyzeArguments(TargetLowering::CallLoweringInfo *CLI,
-                             const Function *F, const DataLayout *TD,
-                             const SmallVectorImpl<ISD::OutputArg> *Outs,
-                             const SmallVectorImpl<ISD::InputArg> *Ins,
-                             CallingConv::ID CallConv,
-                             SmallVectorImpl<CCValAssign> &ArgLocs,
-                             CCState &CCInfo, bool IsCall, bool IsVarArg) {
- // TODO 未実装 AVR参考
-}
-
 Comet2TargetLowering::Comet2TargetLowering(const TargetMachine &TM,
                                            const Comet2Subtarget &STI)
     : TargetLowering(TM), Subtarget(STI) {
@@ -182,8 +172,6 @@ SDValue Comet2TargetLowering::LowerCall(CallLoweringInfo &CLI,
                                      SmallVectorImpl<SDValue> &InVals) const {
   LLVM_DEBUG(dbgs() << "### LowerCall\n");
 
-  // TODO ここで処理を書かなくても同じasmを出力している: 不要？
-
   // NOTE AVR参考
   SelectionDAG &DAG = CLI.DAG;
   SDLoc &DL = CLI.DL;
@@ -222,8 +210,8 @@ SDValue Comet2TargetLowering::LowerCall(CallLoweringInfo &CLI,
                                          getPointerTy(DAG.getDataLayout()));
   }
 
-  analyzeArguments(&CLI, F, &DAG.getDataLayout(), &Outs, 0, CallConv, ArgLocs, CCInfo,
-                   true, isVarArg);
+  // 関数呼び出し時の引数の処理
+  CCInfo.AnalyzeCallOperands(Outs, CC_Comet2);
 
   // Get a count of how many bytes are to be pushed on the stack.
   unsigned NumBytes = CCInfo.getNextStackOffset();
