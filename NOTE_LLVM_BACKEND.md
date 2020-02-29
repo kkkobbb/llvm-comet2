@@ -31,6 +31,9 @@
 * 以下の2か所を変更すると`.text`セクションを変更できる
     * `$LLVM_ROOT/llvm/lib/MC/MCObjectFileInfo.cpp` +343
     * `$LLVM_ROOT/llvm/lib/CodeGen/TargetLoweringObjectFileImpl.cpp` +611
+* 最後にコード追加
+    * `$LLVM_ROOT/llvm/include/llvm/MC/MCStreamer.h` +117 finish()
+    * 参考 `$LLVM_ROOT/llvm/lib/Target/AVR/MCTargetDesc/AVRTargetStreamer.cpp` +24
 * vim用の llvm関係シンタックスハイライト定義ファイル
     * `$LLVM_ROOT/llvm/utils/vim/syntax/tablegen.vim`
         * バックエンド記述の `*.td` ファイル用
