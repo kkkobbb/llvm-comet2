@@ -42,7 +42,6 @@ void Comet2FrameLowering::emitPrologue(MachineFunction &MF,
   if (StackSize == 0 && !MFI.adjustsStack())
     return;
 
-
    // Update stack size
   MFI.setStackSize(StackSize);
 

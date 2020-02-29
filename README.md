@@ -21,7 +21,7 @@
 
 ## 使い方
 * llcのみ対応
-    * `llc --mtriple=comet2 tests/add.ll && gcc tests/add.s`
+    * `llc --mtriple=comet2 tests/add.ll`
         * TODO target triple は正しい？
         * アセンブリ `add.s` が生成される
         * llc に `-debug` オプションを付けるとデバッグ用の情報も出力される

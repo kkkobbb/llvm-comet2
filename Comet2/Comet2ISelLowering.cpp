@@ -210,7 +210,7 @@ SDValue Comet2TargetLowering::LowerCall(CallLoweringInfo &CLI,
                                          getPointerTy(DAG.getDataLayout()));
   }
 
-  // 関数呼び出し時の引数の処理
+  // NOTE 関数呼び出し時の引数の処理
   CCInfo.AnalyzeCallOperands(Outs, CC_Comet2);
 
   // Get a count of how many bytes are to be pushed on the stack.

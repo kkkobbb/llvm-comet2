@@ -23,25 +23,7 @@ void Comet2MCAsmInfo::anchor() {}
 Comet2MCAsmInfo::Comet2MCAsmInfo(const Triple &TT) {
   CodePointerSize = CalleeSaveStackSlotSize = 2;
   CommentString = ";";
-  // ラベル単体は不可
-  LabelSuffix = " NOP ";
-  //LabelSuffix = " DS 0 ";
-  Data16bitsDirective = "\t.word\t";
-
-  // TODO その他の設定は不要？
-  /*
-  AlignmentIsInBytes = false;
-  UsesELFSectionDirectiveForBSS = true;
-  UseIntegratedAssembler = false;
-  SupportsDebugInformation = false;
-  HasDotTypeDotSizeDirective = false;
-  HasFunctionAlignment = false;
-  HasSingleParameterDotFile = false;
-
-  GlobalDirective = "; ";
-
-  UsesNonexecutableStackSection = false;
-  */
+  LabelSuffix = " NOP "; // ラベル単体は不可
 }
 
 bool
