@@ -12,10 +12,10 @@
 
 include "Comet2InstrFormats.td"
 
-// TODO AVR ADD命令が参考になるかも
+// NOTE AVR ADD命令が参考になるかも
 // Add命令
 class Comet2InstReg<bits<8> op, string asmstr, SDNode OpNode, RegisterClass RC>
-    : Comet2InstFormReg<op, (outs RC:$r1), (ins RC:$r2, RC:$src),  // TODO 実際は $r1 <- $r1 + $r2
+    : Comet2InstFormReg<op, (outs RC:$r1), (ins RC:$r2, RC:$src),
                         !strconcat(asmstr, " $r1,$r2"),
                         [(set i16:$r1, (OpNode i16:$src, i16:$r2))]> {
   let Constraints = "$src = $r1";
@@ -134,6 +134,9 @@ class StoreM<bits<8> op, string asmstr, RegisterClass RC>
 
 def LD : LoadM<0x10, "LD", IntRegs>;
 def ST : StoreM<0x11, "ST", IntRegs>;
+
+
+// TODO brcond br の実装
 
 
 // 疑似命令

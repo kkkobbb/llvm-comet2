@@ -36,13 +36,13 @@ const Comet2MCExpr *Comet2MCExpr::create(const MCExpr *Expr, VariantKind Kind,
   return new (Ctx) Comet2MCExpr(Expr, Kind);
 }
 
-// TODO 定義必要
+// NOTE 定義必要
 void Comet2MCExpr::printImpl(raw_ostream &OS, const MCAsmInfo *MAI) const {
   // TODO 追加が必要？
   Expr->print(OS, MAI);
 }
 
-// TODO 定義必要
+// NOTE 定義必要
 bool Comet2MCExpr::evaluateAsRelocatableImpl(MCValue &Res,
                                              const MCAsmLayout *Layout,
                                              const MCFixup *Fixup) const {
@@ -50,7 +50,7 @@ bool Comet2MCExpr::evaluateAsRelocatableImpl(MCValue &Res,
   return getSubExpr()->evaluateAsRelocatable(Res, Layout, Fixup);
 }
 
-// TODO 定義必要
+// NOTE 定義必要
 void Comet2MCExpr::visitUsedExpr(MCStreamer &Streamer) const {
   // TODO 追加が必要？
   Streamer.visitUsedExpr(*getSubExpr());
@@ -72,7 +72,7 @@ StringRef Comet2MCExpr::getVariantKindName(VariantKind Kind) {
 }
 #endif
 
-// TODO 定義必要
+// NOTE 定義必要
 void Comet2MCExpr::fixELFSymbolsInTLSFixups(MCAssembler &Asm) const {
   // TODO 追加が必要？
 }
