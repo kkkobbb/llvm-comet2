@@ -1,15 +1,15 @@
 diff --git a/llvm/include/llvm/ADT/Triple.h b/llvm/include/llvm/ADT/Triple.h
-index edeb31efab8..9561f4e607c 100644
+index edeb31efab8..3860ece9cbc 100644
 --- a/llvm/include/llvm/ADT/Triple.h
 +++ b/llvm/include/llvm/ADT/Triple.h
-@@ -95,6 +95,7 @@ public:
+@@ -93,6 +93,7 @@ public:
+     lanai,          // Lanai: Lanai 32-bit
+     wasm32,         // WebAssembly with 32-bit pointers
      wasm64,         // WebAssembly with 64-bit pointers
++    comet2,         // COMET-II: 16-bit
      renderscript32, // 32-bit RenderScript
      renderscript64, // 64-bit RenderScript
-+    comet2,         // COMET-II: 16-bit
      LastArchType = renderscript64
-   };
-   enum SubArchType {
 diff --git a/llvm/lib/Support/Triple.cpp b/llvm/lib/Support/Triple.cpp
 index d419463e6a5..10398f61a95 100644
 --- a/llvm/lib/Support/Triple.cpp
