@@ -29,6 +29,10 @@
 * `llvm::CGIOperandList::getSubOperandNumber(unsigned int) const: Assertion i < OperandList.size() && "Invalid flat operand #"' failed.`
     * 親classで定義した全ての変数に値が設定されていない場合でるっぽい
 
+### 実行時
+* `./bin/llc --march=comet2 -debug`
+    * `--march` 出力するasmのアーキテクチャを指定する
+    * `-debug` デバッグ情報を表示する
 
 ## 開発環境
 * vim用の llvm関係シンタックスハイライト定義ファイル

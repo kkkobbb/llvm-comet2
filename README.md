@@ -21,13 +21,11 @@
 
 ## 使い方
 * llcのみ対応
-    * `llc --mtriple=comet2 tests/add.ll`
-        * TODO target triple は正しい？
-        * アセンブリ `add.s` が生成される
-        * llc に `-debug` オプションを付けるとデバッグ用の情報も出力される
+    * `llc --march=comet2 tests/add.ll`
+        * アセンブリ `add.s` が.llファイルと同じ場所に生成される
     * そのままのアセンブリでは文法違反
         * `.text` の行を削除
-        * 先頭行に`start START`を追加 (ラベルは他と被らないもの)
+        * 先頭行に`LABEL START`を追加 (ラベルは他と被らないもの)
         * 最終行に` END`を追加
         * `tools/s2caslii.py`で変換できる
 
