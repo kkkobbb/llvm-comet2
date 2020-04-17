@@ -3,7 +3,7 @@
 ## ターゲット追加時のビルド
 
 ### cmake
-* `cmake ../llvm -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=Comet2 -DLLVM_TARGETS_TO_BUILD=Comet2`
+* `cmake ../llvm -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=Comet2 -DLLVM_TARGETS_TO_BUILD=Comet2 -DLLVM_DEFAULT_TARGET_TRIPLE=comet2-unknown-unknown`
     * `-DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=Comet2`
         * 試験的なターゲットの場合、このオプションで指定する必要がある
             * 公式にあるターゲットでも必要な場合がある
@@ -15,7 +15,9 @@
         * `Target/` に配置したディレクトリ名を指定する
         * 複数指定する場合は `;` で区切る (その場合、`'`で囲わないとshが`;`を処理してしまう)
             * 例 `-DLLVM_TARGETS_TO_BUILD='Riscv;Comet2'`
-
+    * `-DLLVM_DEFAULT_TARGET_TRIPLE=comet2-unknown-unknown`
+        * デフォルトのターゲットトリプルを変更するオプション
+        * 指定なしの場合、ホストマシンと同じ値となる
     * 全てビルドするとかなり時間がかかるので一部だけビルドする
         * `cmake --build . --target llc` or `make llc`
         * `llc`のみなら4GBでもビルドは成功する

@@ -4,18 +4,20 @@
 ## 準備
 1. オリジナルのLLVMソースコード取得
     * `git clone https://github.com/llvm/llvm-project.git`
-        * (tag llvmorg-9.0.0 時点のコード)
     * llvmソースコードのトップディレクトリを `$LLVM_ROOT` とする
 2. ソースコード修正
-    * `patches/` 内のパッチファイルを `$LLVM_ROOT` に適用する
-        * `cd $LLVM_ROOT && git apply comet2.patch`
+    * `cd $LLVM_ROOT`
+    * `git checkout llvmorg-9.0.0`
+        * 9.0.0のバージョンにする
+    * `git apply ~/llvm-cometii/patches/comet2.patch`
+        * `patches/` 内のパッチファイルを `$LLVM_ROOT` に適用する
 3. 追加ソースコードの配置
     * `$LLVM_ROOT/llvm/lib/Target/` に `Comet2` のシンボリックリンクを作成
 
 
 ## ビルド
 * `cd $LLVM_ROOT && mkdir _build_comet2 && cd _build_comet2`
-* `cmake ../llvm -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=Comet2 -DLLVM_TARGETS_TO_BUILD=Comet2`
+* `cmake ../llvm -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=Comet2 -DLLVM_TARGETS_TO_BUILD=Comet2 -DLLVM_DEFAULT_TARGET_TRIPLE=comet2-unknown-unknown`
 * `cmake --build . --target llc`
 
 
@@ -23,6 +25,7 @@
 * llcのみ対応
     * `llc --march=comet2 tests/add.ll`
         * アセンブリ `add.s` が.llファイルと同じ場所に生成される
+        * `--march=comet2`はなくてもいい
     * そのままのアセンブリでは文法違反
         * `.text` の行を削除
         * 先頭行に`LABEL START`を追加 (ラベルは他と被らないもの)
