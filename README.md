@@ -31,7 +31,7 @@
         * `.text` の行を削除
         * 先頭行に`LABEL START`を追加 (ラベルは他と被らないもの)
         * 最終行に` END`を追加
-        * `tools/s2caslii.py`で変換できる
+        * `tools/s2casl2.py`で変換できる
 
 
 ## TODO
