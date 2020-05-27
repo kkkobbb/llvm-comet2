@@ -1,5 +1,4 @@
 ; ModuleID = 'code'
-source_filename = "add.ea"
 
 define i16 @main() {
 entry:

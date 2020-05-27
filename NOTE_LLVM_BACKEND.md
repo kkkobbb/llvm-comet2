@@ -14,7 +14,7 @@
         * このオプションで指定したマシンのみビルド対象にする
         * `Target/` に配置したディレクトリ名を指定する
         * 複数指定する場合は `;` で区切る (その場合、`'`で囲わないとshが`;`を処理してしまう)
-            * 例 `-DLLVM_TARGETS_TO_BUILD='Riscv;Comet2'`
+            * 例 `-DLLVM_TARGETS_TO_BUILD='RISCV;Comet2'`
     * `-DLLVM_DEFAULT_TARGET_TRIPLE=comet2-unknown-unknown`
         * デフォルトのターゲットトリプルを変更するオプション
         * 指定なしの場合、ホストマシンと同じ値となる

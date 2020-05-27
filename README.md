@@ -9,10 +9,11 @@
     * `cd $LLVM_ROOT`
     * `git checkout llvmorg-9.0.0`
         * 9.0.0のバージョンにする
-    * `git apply ~/llvm-cometii/patches/comet2.patch`
+    * `git apply ~/llvm-comet2/patches/comet2.patch`
         * `patches/` 内のパッチファイルを `$LLVM_ROOT` に適用する
 3. 追加ソースコードの配置
-    * `$LLVM_ROOT/llvm/lib/Target/` に `Comet2` のシンボリックリンクを作成
+    * `ln -s ~/llvm-comet2/Comet2 $LLVM_ROOT/llvm/lib/Target/Comet2`
+        * `Target/` に `Comet2/` のシンボリックリンクを作成
 
 
 ## ビルド
