@@ -1,5 +1,7 @@
 ; ModuleID = 'code'
 
+;; TODO br is not implemented
+
 define i16 @main() {
 entry:
   %a = alloca i16
