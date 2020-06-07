@@ -24,8 +24,8 @@
 
 ## 使い方
 * llcのみ対応
-    * `llc --march=comet2 tests/add.ll`
-        * アセンブリ `add.s` が.llファイルと同じ場所に生成される
+    * `llc --march=comet2 tests/add_reg_reg.ll`
+        * アセンブリ `add_reg_reg.s` が.llファイルと同じ場所に生成される
         * `--march=comet2`はなくてもいい
     * そのままのアセンブリでは文法違反
         * `.text` の行を削除

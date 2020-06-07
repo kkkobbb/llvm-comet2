@@ -42,6 +42,9 @@
         * バックエンド記述の `*.td` ファイル用
     * `$LLVM_ROOT/llvm/utils/vim/syntax/llvm.vim`
         * llvm中間表現 `*.ll` ファイル用
+* 使い方
+    * `~/.vim/syntax`に定義ファイルを置く
+    * `$LLVM_ROOT/llvm/utils/vim/vimrc`を参考に`~/.vimrc`を修正する
 
 
 ## Target/ での記述で参考になりそうな部分
@@ -84,6 +87,11 @@
 * `Comet2/Comet2FrameLowering.cpp`
     * 関数呼び出し時のスタックの処理等
     * prologue、epilogue処理の記述もここ
+
+
+## debugメッセージ
+* `ISEL: Starting pattern match`でのindex番号は以下参考
+    * `ビルド用ディレクトリ/lib/Target/Comet2/Comet2GenDAGISel.inc` `MatcherTable`
 
 
 ## 参考
