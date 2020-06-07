@@ -69,14 +69,18 @@ void Comet2DAGToDAGISel::Select(SDNode *Node) {
 
 bool Comet2DAGToDAGISel::SelectAddr(SDNode *Op, SDValue Addr, SDValue &Base, SDValue &Offset) {
   LLVM_DEBUG(dbgs() << "### SelectAddr\n");
+  EVT VT = Addr.getValueType();
+  SDLoc dl(Op);
+
+  Offset = CurDAG->getTargetConstant(0, dl, VT);
 
   if (auto FIN = dyn_cast<FrameIndexSDNode>(Addr)) {
-    SDLoc dl(Op);
-    Base = CurDAG->getTargetFrameIndex(FIN->getIndex(), Addr.getValueType());
-    Offset = CurDAG->getTargetConstant(0, dl, MVT::i16);
+    Base = CurDAG->getTargetFrameIndex(FIN->getIndex(), VT);
     return true;
   }
-  return false;
+
+  Base = Addr;
+  return true;
 }
 
 // This pass converts a legalized DAG into a Comet2-specific DAG, ready
