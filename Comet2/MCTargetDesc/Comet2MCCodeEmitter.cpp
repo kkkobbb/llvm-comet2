@@ -69,7 +69,11 @@ public:
                           SmallVectorImpl<MCFixup> &Fixups,
                           const MCSubtargetInfo &STI) const;
 
-  unsigned getCallTargetOpValue(const MCInst &MI, unsigned OpNo,
+  unsigned getAddrTargetOpValue(const MCInst &MI, unsigned OpNo,
+                          SmallVectorImpl<MCFixup> &Fixups,
+                          const MCSubtargetInfo &STI) const;
+
+  unsigned getBrTargetOpValue(const MCInst &MI, unsigned OpNo,
                           SmallVectorImpl<MCFixup> &Fixups,
                           const MCSubtargetInfo &STI) const;
 };
@@ -139,11 +143,24 @@ Comet2MCCodeEmitter::get16bitOpValue(const MCInst &MI, unsigned OpNo,
 }
 
 unsigned
-Comet2MCCodeEmitter::getCallTargetOpValue(const MCInst &MI, unsigned OpNo,
+Comet2MCCodeEmitter::getAddrTargetOpValue(const MCInst &MI, unsigned OpNo,
                                           SmallVectorImpl<MCFixup> &Fixups,
                                           const MCSubtargetInfo &STI) const {
   const MCOperand &MO = MI.getOperand(OpNo);
-  assert(MO.isExpr() && "getCallTargetOpValue expects only expressions");
+  assert(MO.isExpr() && "getAddrTargetOpValue expects only expressions");
+
+  const MCExpr *Expr = MO.getExpr();
+  Fixups.push_back(MCFixup::create(0, Expr,
+                                   MCFixupKind(Comet2::fixup_comet2_24)));
+  return 0;
+}
+
+unsigned
+Comet2MCCodeEmitter::getBrTargetOpValue(const MCInst &MI, unsigned OpNo,
+                                          SmallVectorImpl<MCFixup> &Fixups,
+                                          const MCSubtargetInfo &STI) const {
+  const MCOperand &MO = MI.getOperand(OpNo);
+  assert(MO.isExpr() && "getBrTargetOpValue expects only expressions");
 
   const MCExpr *Expr = MO.getExpr();
   Fixups.push_back(MCFixup::create(0, Expr,

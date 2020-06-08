@@ -32,8 +32,12 @@ def imm16 : Operand<i16> {
   let EncoderMethod = "get16bitOpValue";
 }
 
-def calltarget  : Operand<iPTR> {
-  let EncoderMethod = "getCallTargetOpValue";
+def addrtarget : Operand<iPTR> {
+  let EncoderMethod = "getAddrTargetOpValue";
+}
+
+def brtarget : Operand<OtherVT> {
+  let EncoderMethod = "getBrTargetOpValue";
 }
 
 // 符号付き16bit整数
@@ -67,7 +71,7 @@ def Comet2Call : SDNode<"Comet2ISD::Call", SDT_Comet2Call,
                          SDNPVariadic]>;
 
 class Call<bits<8> op, string asmstr>
-    : Comet2InstFormAdr<op, (outs), (ins calltarget:$adr, variable_ops),
+    : Comet2InstFormAdr<op, (outs), (ins addrtarget:$adr, variable_ops),
                         !strconcat(asmstr, " $adr"), [(Comet2Call imm:$adr)]> {
     let isCall = 1;
     let DecoderMethod = "DecodeCallTarget";
@@ -137,6 +141,20 @@ def ST : StoreM<0x11, "ST", IntRegs>;
 
 
 // TODO brcond br の実装
+class UncondBranch<bits<8> op, string asmstr>
+    : Comet2InstFormAdr<op, (outs), (ins brtarget:$target),
+                        !strconcat(asmstr, " $target"),
+                        [(br bb:$target)]> {
+    let isBranch = 1;
+    let isTerminator = 1;
+    let isBarrier = 1;
+    let r = 0;
+    let x = 0;
+    let adr = 0;
+}
+
+def JUMP : UncondBranch<0x64, "JUMP">;
+
 
 
 // 疑似命令

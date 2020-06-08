@@ -63,6 +63,11 @@ Comet2TargetLowering::Comet2TargetLowering(const TargetMachine &TM,
   setOperationAction(ISD::SEXTLOAD, MVT::i1,  Promote);
   setOperationAction(ISD::SEXTLOAD, MVT::i8,  Promote);
 
+  /*
+  setOperationAction(ISD::BR_CC, MVT::i8,  Expand);
+  setOperationAction(ISD::BR_CC, MVT::i16, Expand);
+  */
+
   // TODO gcc での __atomic_* 関数対応かどうか？
   setMaxAtomicSizeInBitsSupported(0);
 
