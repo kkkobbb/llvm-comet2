@@ -88,6 +88,18 @@
     * 関数呼び出し時のスタックの処理等
     * prologue、epilogue処理の記述もここ
 
+### 分岐命令の実装について
+* Comet2の分岐命令はフラグレジスタの状態で判断する
+* (brcond (seteq) bb:$dst)を(JZE (CPA) bb:$dst)に変換することで対応している
+    * この変換をするために、CPAの仮想的な出力$condをJZEの仮想的な入力$condとしている
+    * brcond が そのオペランド(seteq setne等)によって変化するため直接brcondの変換をしていない
+
+### setOperationAction()について
+* LLVM IRの変換を制御する
+* `setOperationAction(ISD::BR_CC, MVT::i16, Expand)`の場合
+    * (たぶん) デフォルトでは `brcond`、`set*`の2つがあれば結合して`br_cc`を生成している
+    * `setOperationAction`で`BR_CC`に`Expand`を指定した場合、`br_cc`を生成する処理をしなくなる
+
 
 ## debugメッセージ
 * `ISEL: Starting pattern match`でのindex番号は以下参考
