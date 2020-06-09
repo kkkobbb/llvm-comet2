@@ -1,4 +1,4 @@
-define i16 @br() {
+define i16 @br_uncond() {
 entry:
   %b = alloca i16
   store i16 0, i16* %b
