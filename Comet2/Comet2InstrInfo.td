@@ -12,20 +12,6 @@
 
 include "Comet2InstrFormats.td"
 
-// NOTE AVR ADD命令が参考になるかも
-// 算術命令
-class Comet2InstReg<bits<8> op, string asmstr, SDNode OpNode, RegisterClass RC>
-    : Comet2InstFormReg<op, (outs RC:$r1), (ins RC:$r2, RC:$src),
-                        !strconcat(asmstr, " $r1,$r2"),
-                        [(set i16:$r1, (OpNode i16:$src, i16:$r2))]> {
-  let Constraints = "$src = $r1";
-  let isCommutable = 0;  // オペランドの順番を入れ替えられる場合は真
-}
-
-def ADDAREG : Comet2InstReg<0x20, "ADDA", add, IntRegs>;
-def SUBAREG : Comet2InstReg<0x21, "SUBA", sub, IntRegs>;
-
-
 // 即値ロード用のオペランド. 16bit
 // 16-0: 符号付き16bit整数
 // EncoderMethod: bit列から符号付き16bit整数を取得
@@ -33,16 +19,38 @@ def imm16 : Operand<i16> {
   let EncoderMethod = "get16bitOpValue";
 }
 
+// ラベル
 def addrtarget : Operand<iPTR> {
   let EncoderMethod = "getAddrTargetOpValue";
+}
+
+// 番地 + レジスタ
+def mem : Operand<i16> {
+    let PrintMethod = "printMemOperand";
+    let MIOperandInfo = (ops IntRegs, i16imm);
+    let EncoderMethod = "getMemEncoding";
 }
 
 def brtarget : Operand<OtherVT> {
   let EncoderMethod = "getBrTargetOpValue";
 }
 
-// 比較命令(CPA,CPL)と分岐命令(JZE, ...)を繋ぐための仮想的なオペランドの型
+// 比較命令(CPA,CPL)と分岐命令(JZE, ...)を繋ぐための仮想的なオペランド
 def condtarget : Operand<i16> {}
+
+
+// 算術命令
+// NOTE AVR ADD命令が参考になるかも
+class Comet2InstReg<bits<8> op, string asmstr, SDNode OpNode, RegisterClass RC>
+    : Comet2InstFormReg<op, (outs RC:$r1), (ins RC:$r2, RC:$src),
+                        !strconcat(asmstr, " $r1,$r2"),
+                        [(set i16:$r1, (OpNode i16:$src, i16:$r2))]> {
+  let Constraints = "$src = $r1";
+  let isCommutable = 0;  // オペランドの順番を入れ替えられる場合は真
+}
+def ADDAREG : Comet2InstReg<0x20, "ADDA", add, IntRegs>;
+def SUBAREG : Comet2InstReg<0x21, "SUBA", sub, IntRegs>;
+
 
 // 符号付き16bit整数
 // 定数(ISD::Constant)で16bitで表現可能なもの
@@ -54,7 +62,6 @@ class LoadI<bits<8> op, string asmstr>
                         !strconcat(asmstr, " $r,$addr"),
                         [(set IntRegs:$r, immSExt16:$addr)]> {
 }
-
 def LAD : LoadI<0x12, "LAD">;
 
 
@@ -64,7 +71,6 @@ class LoadR<bits<8> op, string asmstr>
                         !strconcat(asmstr, " $r1,$r2"),
                         [(set IntRegs:$r1, IntRegs:$r2)]> {
 }
-
 def LDREG : LoadR<0x14, "LD">;
 
 
@@ -82,7 +88,6 @@ class Call<bits<8> op, string asmstr>
     let r = 0;
     let x = 0;
 }
-
 def CALL : Call<0x80, "CALL">;
 
 // Pat 第1引数にマッチしたパターンを第2引数に変換する
@@ -107,15 +112,8 @@ class RetInst<bits<8> op, string asmstr>
     let x = 0;
     let adr = 0;
 }
-
 def RET : RetInst<0x81, "RET">;
 
-
-def mem : Operand<i16> {
-    let PrintMethod = "printMemOperand";
-    let MIOperandInfo = (ops IntRegs, i16imm);
-    let EncoderMethod = "getMemEncoding";
-}
 
 // NOTE llvm/include/llvm/CodeGen/SDNodeProperties.td
 def addr : ComplexPattern<iPTR, 2, "SelectAddr", [], [SDNPWantRoot]>;
@@ -133,14 +131,13 @@ class LoadM<bits<8> op, string asmstr, RegisterClass RC>
     : FMem<op, (outs RC:$r), (ins mem:$addr),
            !strconcat(asmstr, " $r,$addr"),
            [(set RC:$r, (load addr:$addr))]>;
+def LD : LoadM<0x10, "LD", IntRegs>;
 
 // Store命令
 class StoreM<bits<8> op, string asmstr, RegisterClass RC>
     : FMem<op, (outs), (ins RC:$r, mem:$addr),
            !strconcat(asmstr, " $r,$addr"),
            [(store RC:$r, addr:$addr)]>;
-
-def LD : LoadM<0x10, "LD", IntRegs>;
 def ST : StoreM<0x11, "ST", IntRegs>;
 
 
@@ -156,7 +153,6 @@ class UncondBranch<bits<8> op, string asmstr>
     let x = 0;
     let adr = 0;
 }
-
 def JUMP : UncondBranch<0x64, "JUMP">;
 
 
@@ -168,7 +164,6 @@ class CompReg<bits<8> op, string asmstr>
     let mayStore = 0;
     let mayLoad = 0;
 }
-
 def CPAREG : CompReg<0x44, "CPA">;
 def CPLREG : CompReg<0x45, "CPL">;
 
@@ -186,16 +181,28 @@ class Branch<bits<8> op, string asmstr>
     let x = 0;
     let adr = 0;
 }
-
 def JZE : Branch<0x63, "JZE">;
 def JNZ : Branch<0x62, "JNZ">;
 def JPL : Branch<0x65, "JPL">;
 def JMI : Branch<0x61, "JMI">;
 
 def : Pat<(brcond (i16 (seteq IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
+          (JZE (CPLREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
+def : Pat<(brcond (i16 (setueq IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
           (JZE (CPAREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
 def : Pat<(brcond (i16 (setne IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
           (JNZ (CPAREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
+def : Pat<(brcond (i16 (setune IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
+          (JNZ (CPLREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
+def : Pat<(brcond (i16 (setlt IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
+          (JPL (CPAREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
+def : Pat<(brcond (i16 (setult IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
+          (JPL (CPLREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
+def : Pat<(brcond (i16 (setgt IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
+          (JMI (CPAREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
+def : Pat<(brcond (i16 (setugt IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
+          (JMI (CPLREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
+
 
 // 疑似命令
 
