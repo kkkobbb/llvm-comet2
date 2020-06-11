@@ -46,6 +46,8 @@ public:
                             int FrameIndex, const TargetRegisterClass *RC,
                             const TargetRegisterInfo *TRI) const override;
 
+  void expandPseudoJLEp(MachineBasicBlock &MBB, MachineInstr &MI) const;
+  void expandPseudoJGEp(MachineBasicBlock &MBB, MachineInstr &MI) const;
   bool expandPostRAPseudo(MachineInstr &MI) const override;
 
   unsigned getInstSizeInBytes(const MachineInstr &MI) const override;

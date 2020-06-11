@@ -186,7 +186,7 @@ def CPLREG : CompReg<0x45, "CPL">;
 class Branch<bits<8> op, string asmstr>
     : Comet2InstFormAdr<op, (outs), (ins condtarget:$cond, brtarget:$target),
                         !strconcat(asmstr, " $target"), []> {
-    let hasSideEffects = 0;  // TODO これでいいかは不明
+    let hasSideEffects = 1;  // TODO これでいいかは不明
     let mayStore = 0;
     let mayLoad = 0;
     let isBranch = 1;
@@ -222,7 +222,32 @@ def : Pat<(brcond (i16 (setugt IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
           (JMI (CPLREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
 
 
-// 疑似命令
+// 分岐疑似命令
+// expandPostRAPseudo()で変換される
+class BranchPseudo : Comet2Pseudo<(outs), (ins condtarget:$cond, brtarget:$target),
+                        "", []> {
+    let hasSideEffects = 1;  // TODO これでいいかは不明
+    let mayStore = 0;
+    let mayLoad = 0;
+    let isBranch = 1;
+    let isTerminator = 1;
+}
+def JLEp : BranchPseudo;  // >=
+def JGEp : BranchPseudo;  // <=
+
+// lhs >= rhs
+def : Pat<(brcond (i16 (setle  IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
+          (JLEp (CPAREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
+def : Pat<(brcond (i16 (setule IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
+          (JLEp (CPLREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
+// lhs <= rhs
+def : Pat<(brcond (i16 (setge  IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
+          (JGEp (CPAREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
+def : Pat<(brcond (i16 (setuge IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
+          (JGEp (CPLREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
+
+
+// その他疑似命令
 
 // Target-independent type requirements, but with target-specific formats.
 def SDT_CallSeqStart : SDCallSeqStart<[SDTCisVT<0, i16>,
