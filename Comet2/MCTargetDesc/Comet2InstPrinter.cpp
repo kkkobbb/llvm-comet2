@@ -46,6 +46,12 @@ void Comet2InstPrinter::printOperand(const MCInst *MI, unsigned OpNo,
 
   LLVM_DEBUG(dbgs() << "### printOperand " << *MI << " " << OpNo << "\n");
 
+  // FIXME Constraintsを設定した命令のMIのオペランド数とOpNoがずれる
+  // MIは本来"op reg1 reg1 reg2"と来てほしいが何処かで重複が削除されて"op reg1 reg2"となっている
+  // 応急処置としてOpNoを変更している
+  unsigned lastOpNo = MI->getNumOperands() - 1;
+  if (OpNo > lastOpNo) OpNo = lastOpNo;
+
   const MCOperand &MO = MI->getOperand(OpNo);
 
   if (MO.isReg()) {

@@ -47,7 +47,7 @@ def immSExt16 : PatLeaf<(imm), [{ return isInt<16>(N->getSExtValue()); }]>;
 // 算術命令
 // NOTE AVR ADD命令が参考になるかも
 class Comet2InstReg<bits<8> op, string asmstr, SDNode OpNode, RegisterClass RC>
-    : Comet2InstFormReg<op, (outs RC:$r1), (ins RC:$r2, RC:$src),
+    : Comet2InstFormReg<op, (outs RC:$r1), (ins RC:$src, RC:$r2),
                         !strconcat(asmstr, " $r1,$r2"),
                         [(set i16:$r1, (OpNode i16:$src, i16:$r2))]> {
   let Constraints = "$src = $r1";
