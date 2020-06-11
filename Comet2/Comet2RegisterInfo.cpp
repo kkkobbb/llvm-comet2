@@ -19,7 +19,10 @@
 #include "llvm/CodeGen/RegisterScavenging.h"
 #include "llvm/CodeGen/TargetFrameLowering.h"
 #include "llvm/CodeGen/TargetInstrInfo.h"
+#include "llvm/Support/Debug.h"
 #include "llvm/Support/ErrorHandling.h"
+
+#define DEBUG_TYPE "comet2-reginfo"
 
 #define GET_REGINFO_ENUM
 #define GET_REGINFO_TARGET_DESC
@@ -49,6 +52,8 @@ BitVector Comet2RegisterInfo::getReservedRegs(const MachineFunction &MF) const {
 void Comet2RegisterInfo::eliminateFrameIndex(MachineBasicBlock::iterator II,
                                             int SPAdj, unsigned FIOperandNum,
                                             RegScavenger *RS) const {
+  LLVM_DEBUG(dbgs() << "### eliminateFrameIndex 0\n");
+
   assert(SPAdj == 0 && "Unexpected non-zero SPAdj value");
 
   MachineInstr &MI = *II;

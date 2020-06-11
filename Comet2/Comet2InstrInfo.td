@@ -36,7 +36,12 @@ def brtarget : Operand<OtherVT> {
 }
 
 // 比較命令(CPA,CPL)と分岐命令(JZE, ...)を繋ぐための仮想的なオペランド
+// TODO implicit defs uses とかを使う？
 def condtarget : Operand<i16> {}
+
+// 符号付き16bit整数
+// 定数(ISD::Constant)で16bitで表現可能なもの
+def immSExt16 : PatLeaf<(imm), [{ return isInt<16>(N->getSExtValue()); }]>;
 
 
 // 算術命令
@@ -51,10 +56,6 @@ class Comet2InstReg<bits<8> op, string asmstr, SDNode OpNode, RegisterClass RC>
 def ADDAREG : Comet2InstReg<0x20, "ADDA", add, IntRegs>;
 def SUBAREG : Comet2InstReg<0x21, "SUBA", sub, IntRegs>;
 
-
-// 符号付き16bit整数
-// 定数(ISD::Constant)で16bitで表現可能なもの
-def immSExt16 : PatLeaf<(imm), [{ return isInt<16>(N->getSExtValue()); }]>;
 
 // 即値ロード
 class LoadI<bits<8> op, string asmstr>
@@ -91,6 +92,7 @@ class Call<bits<8> op, string asmstr>
 def CALL : Call<0x80, "CALL">;
 
 // Pat 第1引数にマッチしたパターンを第2引数に変換する
+// NOTE llvm/include/llvm/Target/TargetSelectionDAG.td
 def : Pat<(Comet2Call (i16 tglobaladdr:$dst)),
           (CALL tglobaladdr:$dst)>;
 def : Pat<(Comet2Call (i16 texternalsym:$dst)),
@@ -160,6 +162,7 @@ def JUMP : UncondBranch<0x64, "JUMP">;
 class CompReg<bits<8> op, string asmstr>
     : Comet2InstFormReg<op, (outs condtarget:$cond), (ins IntRegs:$r1, IntRegs:$r2),
                         !strconcat(asmstr, " $r1,$r2"), []> {
+    let isCommutable = 0;
     let hasSideEffects = 1;  // TODO これでいいかは不明
     let mayStore = 0;
     let mayLoad = 0;
@@ -186,19 +189,23 @@ def JNZ : Branch<0x62, "JNZ">;
 def JPL : Branch<0x65, "JPL">;
 def JMI : Branch<0x61, "JMI">;
 
-def : Pat<(brcond (i16 (seteq IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
+// lhs == rhs
+def : Pat<(brcond (i16 (seteq  IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
           (JZE (CPLREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
 def : Pat<(brcond (i16 (setueq IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
           (JZE (CPAREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
-def : Pat<(brcond (i16 (setne IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
+// lhs != rhs
+def : Pat<(brcond (i16 (setne  IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
           (JNZ (CPAREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
 def : Pat<(brcond (i16 (setune IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
           (JNZ (CPLREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
-def : Pat<(brcond (i16 (setlt IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
+// lhs > rhs
+def : Pat<(brcond (i16 (setlt  IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
           (JPL (CPAREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
 def : Pat<(brcond (i16 (setult IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
           (JPL (CPLREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
-def : Pat<(brcond (i16 (setgt IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
+// lhs < rhs
+def : Pat<(brcond (i16 (setgt  IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
           (JMI (CPAREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
 def : Pat<(brcond (i16 (setugt IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
           (JMI (CPLREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;

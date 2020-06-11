@@ -20,10 +20,13 @@
 #include "llvm/MC/MCContext.h"
 #include "llvm/MC/MCExpr.h"
 #include "llvm/MC/MCInst.h"
+#include "llvm/Support/Debug.h"
 #include "llvm/Support/ErrorHandling.h"
 #include "llvm/Support/raw_ostream.h"
 
 using namespace llvm;
+
+#define DEBUG_TYPE "comet2-mcinstlower"
 
 static MCOperand lowerSymbolOperand(const MachineOperand &MO, MCSymbol *Sym,
                                     const AsmPrinter &AP) {
@@ -43,6 +46,8 @@ static MCOperand lowerSymbolOperand(const MachineOperand &MO, MCSymbol *Sym,
 bool llvm::LowerComet2MachineOperandToMCOperand(const MachineOperand &MO,
                                                MCOperand &MCOp,
                                                const AsmPrinter &AP) {
+  LLVM_DEBUG(dbgs() << "### LowerComet2MachineOperandToMCOperand 0\n");
+
   // TODO ほぼRISCV あまりターゲット依存がない？
   switch (MO.getType()) {
   default:
@@ -82,6 +87,7 @@ bool llvm::LowerComet2MachineOperandToMCOperand(const MachineOperand &MO,
 
 void llvm::LowerComet2MachineInstrToMCInst(const MachineInstr *MI, MCInst &OutMI,
                                           const AsmPrinter &AP) {
+  LLVM_DEBUG(dbgs() << "### LowerComet2MachineInstrToMCInst " << *MI << "\n");
   // TODO ほぼRISCV あまりターゲット依存がない？
   OutMI.setOpcode(MI->getOpcode());
 

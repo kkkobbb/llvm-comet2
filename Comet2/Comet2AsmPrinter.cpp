@@ -27,6 +27,7 @@
 #include "llvm/MC/MCSymbol.h"
 #include "llvm/Support/TargetRegistry.h"
 #include "llvm/Support/raw_ostream.h"
+#include "llvm/Support/Debug.h"
 using namespace llvm;
 
 #define DEBUG_TYPE "asm-printer"
@@ -60,17 +61,20 @@ void Comet2AsmPrinter::EmitToStreamer(MCStreamer &S, const MCInst &Inst) {
 #endif
 
 void Comet2AsmPrinter::EmitInstruction(const MachineInstr *MI) {
+  LLVM_DEBUG(dbgs() << "### EmitInstruction " << *MI << "\n");
   // TODO 実装はこれでいい？
   MCInst TmpInst;
   LowerComet2MachineInstrToMCInst(MI, TmpInst, *this);
   EmitToStreamer(*OutStreamer, TmpInst);
 }
 
-// NOTE 定義あり llvm/lib/CodeGen/AsmPrinter/AsmPrinterInlineAsm.cpp
 #if 0
+// NOTE 定義あり llvm/lib/CodeGen/AsmPrinter/AsmPrinterInlineAsm.cpp
 // インラインアセンブラ用
 bool Comet2AsmPrinter::PrintAsmOperand(const MachineInstr *MI, unsigned OpNo,
                                       const char *ExtraCode, raw_ostream &OS) {
+	LLVM_DEBUG(dbgs() << "### printAsmOperand\n");
+	return false;
 }
 #endif
 

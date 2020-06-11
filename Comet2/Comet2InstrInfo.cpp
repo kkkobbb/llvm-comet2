@@ -21,8 +21,11 @@
 #include "llvm/CodeGen/MachineInstrBuilder.h"
 #include "llvm/CodeGen/MachineRegisterInfo.h"
 #include "llvm/CodeGen/RegisterScavenging.h"
+#include "llvm/Support/Debug.h"
 #include "llvm/Support/ErrorHandling.h"
 #include "llvm/Support/TargetRegistry.h"
+
+#define DEBUG_TYPE "comet2-instrinfo"
 
 #define GET_INSTRINFO_CTOR_DTOR
 #include "Comet2GenInstrInfo.inc"
@@ -34,6 +37,9 @@ Comet2InstrInfo::Comet2InstrInfo()
 
 unsigned Comet2InstrInfo::isLoadFromStackSlot(const MachineInstr &MI,
                                               int &FrameIndex) const {
+
+  LLVM_DEBUG(dbgs() << "### isLoadFromStackSlot " << MI << "\n");
+
   switch (MI.getOpcode()) {
   default:
     return 0;
@@ -52,6 +58,9 @@ unsigned Comet2InstrInfo::isLoadFromStackSlot(const MachineInstr &MI,
 
 unsigned Comet2InstrInfo::isStoreToStackSlot(const MachineInstr &MI,
                                              int &FrameIndex) const {
+
+  LLVM_DEBUG(dbgs() << "### isStoreToStackSlot " << MI << "\n");
+
   switch (MI.getOpcode()) {
   default:
     return 0;
@@ -164,6 +173,11 @@ bool Comet2InstrInfo::isBranchOffsetInRange(unsigned BranchOp,
                                            int64_t BrOffset) const {
   // ジャンプ可能な範囲内なら真を返す
   return isIntN(16, BrOffset);  // BrOffsetを符号付き16bitで表現できる場合、真
+}
+
+bool Comet2InstrInfo::expandPostRAPseudo(MachineInstr &MI) const {
+  LLVM_DEBUG(dbgs() << "### expandPostRAPseudo " << MI << "\n");
+  return false;
 }
 
 unsigned Comet2InstrInfo::getInstSizeInBytes(const MachineInstr &MI) const {
