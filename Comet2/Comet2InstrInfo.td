@@ -55,6 +55,17 @@ class Comet2InstReg<bits<8> op, string asmstr, SDNode OpNode, RegisterClass RC>
 }
 def ADDAREG : Comet2InstReg<0x20, "ADDA", add, IntRegs>;
 def SUBAREG : Comet2InstReg<0x21, "SUBA", sub, IntRegs>;
+def XORREG : Comet2InstReg<0x36, "XOR", xor, IntRegs>;
+
+class Comet2InstAdr<bits<8> op, string asmstr, SDNode OpNode, RegisterClass RC>
+    : Comet2InstFormAdr<op, (outs RC:$r), (ins RC:$src, imm16:$addr),
+                        !strconcat(asmstr, " $r,$addr"),
+                        [(set IntRegs:$r, (OpNode i16:$src, immSExt16:$addr))]> {
+  let Constraints = "$src = $r";
+  let isCommutable = 0;
+}
+def ADDL : Comet2InstAdr<0x22, "ADDL", add, IntRegs>;
+def XOR : Comet2InstAdr<0x32, "ADDL", add, IntRegs>;
 
 
 // 即値ロード
