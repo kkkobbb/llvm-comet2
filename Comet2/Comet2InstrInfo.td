@@ -105,13 +105,12 @@ def : Pat<(Comet2Call (i16 texternalsym:$dst)), (CALL texternalsym:$dst)>;
 
 
 // Ret命令
-def SDT_Comet2Ret : SDTypeProfile<0, 1, [SDTCisInt<0>]>;
-def Comet2Ret : SDNode<"Comet2ISD::Ret", SDT_Comet2Ret,
+def Comet2Ret : SDNode<"Comet2ISD::Ret", SDTNone,
                        [SDNPHasChain, SDNPOptInGlue, SDNPVariadic]>;
 
-let isBranch = 1, isTerminator = 1, isBarrier = 1, isReturn = 1, x = 0 in
-def RET : Comet2InstRegAdr<0x81, (outs), (ins IntRegs:$r), "RET",
-                           [(Comet2Ret IntRegs:$r)]>;
+let isBranch = 1, isTerminator = 1, isBarrier = 1, isReturn = 1, Uses = [GR0],
+    x = 0, r = 0, adr = 0 in
+def RET : Comet2InstRegAdr<0x81, (outs), (ins), "RET", [(Comet2Ret)]>;
 
 
 // 比較命令
