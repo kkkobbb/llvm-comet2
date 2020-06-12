@@ -77,12 +77,12 @@ def XORREG  : Comet2InstRegRegSet<0x36, "XOR",  xor, IntRegs>;
 
 // 算術命令 register,address
 class Comet2InstAdrSet<bits<8> op, string asmstr, SDNode OpNode>
-    : Comet2InstRegAdr<op, (outs IntRegs:$r), (ins IntRegs:$src, imm16:$adr),
+    : Comet2InstRegAdr<op, (outs IntRegs:$r), (ins IntRegs:$src, mem:$adr),
                        !strconcat(asmstr, " $r,$adr"),
-                       [(set IntRegs:$r, (OpNode i16:$src, immSExt16:$adr))]> {
+                       [(set IntRegs:$r, (OpNode i16:$src, (load addr:$adr)))]> {
   let Constraints = "$src = $r";
 }
-def ADDL : Comet2InstAdrSet<0x22, "ADDL", add>;
+def ADDA : Comet2InstAdrSet<0x22, "ADDA", add>;
 def XOR  : Comet2InstAdrSet<0x32, "XOR",  xor>;
 
 
