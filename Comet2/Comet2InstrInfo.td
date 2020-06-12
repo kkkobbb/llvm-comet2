@@ -10,7 +10,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-include "Comet2InstrFormats.td"
+//===----------------------------------------------------------------------===//
+// Operand and SDNode transformation definitions.
+//===----------------------------------------------------------------------===//
 
 // 即値ロード用のオペランド. 16bit
 // 16-0: 符号付き16bit整数
@@ -47,6 +49,17 @@ def immSExt16 : PatLeaf<(imm), [{ return isInt<16>(N->getSExtValue()); }]>;
 // NOTE llvm/include/llvm/CodeGen/SDNodeProperties.td
 def addr : ComplexPattern<iPTR, 2, "SelectAddr", [], [SDNPWantRoot]>;
 
+
+//===----------------------------------------------------------------------===//
+// Instruction Formats
+//===----------------------------------------------------------------------===//
+
+include "Comet2InstrFormats.td"
+
+
+//===----------------------------------------------------------------------===//
+// Instructions
+//===----------------------------------------------------------------------===//
 
 // 算術命令 register,register
 // 本来不要だが、このクラスだけ練習用としてRegisterClassを引数に持つようにしている
@@ -89,6 +102,7 @@ def LDREG : Comet2InstRegReg<0x14, (outs IntRegs:$r1), (ins IntRegs:$r2),
 
 
 // Call命令
+// NOTE SDTypeProfile<出力の数, 入力の数, [入力の制約, ...]>
 def SDT_Comet2Call : SDTypeProfile<0, 1, [SDTCisVT<0, iPTR>]>;
 def Comet2Call : SDNode<"Comet2ISD::Call", SDT_Comet2Call,
                         [SDNPHasChain, SDNPOutGlue, SDNPOptInGlue,
@@ -98,7 +112,7 @@ let isCall = 1, r = 0, x = 0 in
 def CALL : Comet2InstRegAdr<0x80, (outs), (ins calltarget:$adr, variable_ops),
                             "CALL $adr", []>;
 
-// Pat 第1引数にマッチしたパターンを第2引数に変換する
+// NOTE Pat 第1引数にマッチしたパターンを第2引数に変換する
 // NOTE llvm/include/llvm/Target/TargetSelectionDAG.td
 def : Pat<(Comet2Call (i16 tglobaladdr:$dst)), (CALL tglobaladdr:$dst)>;
 def : Pat<(Comet2Call (i16 texternalsym:$dst)), (CALL texternalsym:$dst)>;
@@ -108,7 +122,8 @@ def : Pat<(Comet2Call (i16 texternalsym:$dst)), (CALL texternalsym:$dst)>;
 def Comet2Ret : SDNode<"Comet2ISD::Ret", SDTNone,
                        [SDNPHasChain, SDNPOptInGlue, SDNPVariadic]>;
 
-let isBranch = 1, isTerminator = 1, isBarrier = 1, isReturn = 1, Uses = [GR0],
+// NOTE Comet2CallingConv.tdでGR0に戻り値を格納する設定にしているため、Usesがなくてもimplicitが設定される
+let isBranch = 1, isTerminator = 1, isBarrier = 1, isReturn = 1,
     x = 0, r = 0, adr = 0 in
 def RET : Comet2InstRegAdr<0x81, (outs), (ins), "RET", [(Comet2Ret)]>;
 

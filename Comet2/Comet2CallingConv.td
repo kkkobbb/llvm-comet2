@@ -11,7 +11,8 @@
 
 // レジスタの役割
 // GR0     戻り値
-// GR1-GR5 引数受け取り
+// GR1-GR4 引数受け取り
+// GR5     空き
 // GR6     フレームレジスタ退避等の計算用
 // GR7     フレームレジスタ
 
@@ -19,8 +20,8 @@
 def CC_Comet2 : CallingConv<[
     // i8型の引数はi16型に昇格する
     CCIfType<[i8], CCPromoteToType<i16>>,
-    // i16型はGR1-GR5に渡す
-    CCIfType<[i16], CCAssignToReg<[GR1, GR2, GR3, GR4, GR5]>>
+    // i16型はGR1-GR4に渡す
+    CCIfType<[i16], CCAssignToReg<[GR1, GR2, GR3, GR4]>>,
 ]>;
 
 // 戻り値
