@@ -59,6 +59,20 @@
     * 参考 `$LLVM_ROOT/llvm/lib/Target/AVR/MCTargetDesc/AVRTargetStreamer.cpp` +24
 
 
+## LLVM 概要
+* 処理の流れ
+    * IR -> SelectionDAG -> MachineDAG -> MachineInstr -> MCInst
+
+
+## llvm共通部分のコード
+* `Tied` 2つのオペランドが同じレジスタにマッピングされたことを表す
+    * `$LLVM_ROOT/llvm/include/llvm/MC/MCInstrDesc.h` `TIED_TO`
+* 同じレジスタへのマッピング関係の処理？
+    * `$LLVM_ROOT/llvm/lib/CodeGen/TwoAddressInstructionPass.cpp` `tryInstructionTransform`
+* SelectionDAGノードのリスト、説明
+    * `$LLVM_ROOT/llvm/include/llvm/CodeGen/ISDOpcodes.h`
+
+
 ## Comet2での実装のメモ
 
 ### ASM出力時のフォーマット調整
@@ -110,4 +124,3 @@
 * 公式のバックエンドのソースコード `$LLVM_ROOT/llvm/lib/Target/*`
     * 特に`RISCV`、`Sparc`、`AVR`
 * きつねさん
-
