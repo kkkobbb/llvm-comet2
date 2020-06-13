@@ -43,8 +43,9 @@ BitVector Comet2RegisterInfo::getReservedRegs(const MachineFunction &MF) const {
   BitVector Reserved(getNumRegs());
 
   // Use markSuperRegs to ensure any register aliases are also reserved
-  markSuperRegs(Reserved, Comet2::GR0); // ra
-  markSuperRegs(Reserved, Comet2::GR7); // sp
+  markSuperRegs(Reserved, Comet2::GR0); // return
+  markSuperRegs(Reserved, Comet2::GR7); // stack pointer
+  markSuperRegs(Reserved, Comet2::FR);  // flag register
   assert(checkAllSuperRegsMarked(Reserved));
   return Reserved;
 }

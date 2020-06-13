@@ -165,9 +165,9 @@ def JMI : Branch<0x61, "JMI">;
 
 // lhs == rhs
 def : Pat<(brcond (i16 (seteq  IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
-          (JZE (CPLREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
-def : Pat<(brcond (i16 (setueq IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
           (JZE (CPAREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
+def : Pat<(brcond (i16 (setueq IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
+          (JZE (CPLREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
 // lhs != rhs
 def : Pat<(brcond (i16 (setne  IntRegs:$lhs, IntRegs:$rhs)), bb:$dst),
           (JNZ (CPAREG IntRegs:$lhs, IntRegs:$rhs), bb:$dst)>;
