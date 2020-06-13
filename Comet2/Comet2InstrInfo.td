@@ -11,6 +11,41 @@
 //===----------------------------------------------------------------------===//
 
 //===----------------------------------------------------------------------===//
+// COMET II specific DAG Nodes.
+//===----------------------------------------------------------------------===//
+
+// NOTE SDTypeProfile<出力の数, 入力の数, [入力の制約, ...]>
+def SDT_Comet2Call : SDTypeProfile<0, 1, [SDTCisVT<0, iPTR>]>;
+def Comet2Call : SDNode<"Comet2ISD::CALL", SDT_Comet2Call,
+                        [SDNPHasChain, SDNPOutGlue, SDNPOptInGlue,
+                         SDNPVariadic]>;
+
+def Comet2Ret : SDNode<"Comet2ISD::RET", SDTNone,
+                       [SDNPHasChain, SDNPOptInGlue, SDNPVariadic]>;
+
+def SDT_Comet2Comp : SDTypeProfile<0, 2, [SDTCisSameAs<0, 1>]>;
+def Comet2Cpa : SDNode<"Comet2ISD::CPA", SDT_Comet2Comp, [SDNPOutGlue]>;
+def Comet2Cpl : SDNode<"Comet2ISD::CPL", SDT_Comet2Comp, [SDNPOutGlue]>;
+
+def SDT_Comet2Br : SDTypeProfile<0, 1, [SDTCisVT<0, OtherVT>]>;
+def Comet2Jze : SDNode<"Comet2ISD::JZE", SDT_Comet2Br, [SDNPHasChain, SDNPInGlue]>;
+def Comet2Jnz : SDNode<"Comet2ISD::JNZ", SDT_Comet2Br, [SDNPHasChain, SDNPInGlue]>;
+def Comet2Jpl : SDNode<"Comet2ISD::JPL", SDT_Comet2Br, [SDNPHasChain, SDNPInGlue]>;
+def Comet2Jmi : SDNode<"Comet2ISD::JMI", SDT_Comet2Br, [SDNPHasChain, SDNPInGlue]>;
+def Comet2Jle : SDNode<"Comet2ISD::JLE", SDT_Comet2Br, [SDNPHasChain, SDNPInGlue]>;
+def Comet2Jge : SDNode<"Comet2ISD::JGE", SDT_Comet2Br, [SDNPHasChain, SDNPInGlue]>;
+
+// Target-independent type requirements, but with target-specific formats.
+def SDT_CallSeqStart : SDCallSeqStart<[SDTCisVT<0, i16>, SDTCisVT<1, i16>]>;
+def SDT_CallSeqEnd   : SDCallSeqEnd<[SDTCisVT<0, i16>, SDTCisVT<1, i16>]>;
+// Target-independent nodes, but with target-specific formats.
+def callseq_start : SDNode<"ISD::CALLSEQ_START", SDT_CallSeqStart,
+                           [SDNPHasChain, SDNPOutGlue]>;
+def callseq_end   : SDNode<"ISD::CALLSEQ_END", SDT_CallSeqEnd,
+                           [SDNPHasChain, SDNPOptInGlue, SDNPOutGlue]>;
+
+
+//===----------------------------------------------------------------------===//
 // Operand and SDNode transformation definitions.
 //===----------------------------------------------------------------------===//
 
@@ -102,12 +137,6 @@ def LDREG : Comet2InstRegReg<0x14, (outs IntRegs:$r1), (ins IntRegs:$r2),
 
 
 // Call命令
-// NOTE SDTypeProfile<出力の数, 入力の数, [入力の制約, ...]>
-def SDT_Comet2Call : SDTypeProfile<0, 1, [SDTCisVT<0, iPTR>]>;
-def Comet2Call : SDNode<"Comet2ISD::CALL", SDT_Comet2Call,
-                        [SDNPHasChain, SDNPOutGlue, SDNPOptInGlue,
-                         SDNPVariadic]>;
-
 let isCall = 1, r = 0, x = 0 in
 def CALL : Comet2InstRegAdr<0x80, (outs), (ins calltarget:$adr, variable_ops),
                             "CALL $adr", []>;
@@ -119,9 +148,6 @@ def : Pat<(Comet2Call (i16 texternalsym:$dst)), (CALL texternalsym:$dst)>;
 
 
 // Ret命令
-def Comet2Ret : SDNode<"Comet2ISD::RET", SDTNone,
-                       [SDNPHasChain, SDNPOptInGlue, SDNPVariadic]>;
-
 // NOTE Comet2CallingConv.tdでGR0に戻り値を格納する設定にしているため、Usesがなくてもimplicitが設定される
 let isBranch = 1, isTerminator = 1, isBarrier = 1, isReturn = 1,
     x = 0, r = 0, adr = 0 in
@@ -129,10 +155,6 @@ def RET : Comet2InstRegAdr<0x81, (outs), (ins), "RET", [(Comet2Ret)]>;
 
 
 // 比較命令
-def SDT_Comet2Comp : SDTypeProfile<0, 2, [SDTCisSameAs<0, 1>]>;
-def Comet2Cpa : SDNode<"Comet2ISD::CPA", SDT_Comet2Comp, [SDNPOutGlue]>;
-def Comet2Cpl : SDNode<"Comet2ISD::CPL", SDT_Comet2Comp, [SDNPOutGlue]>;
-
 class CompReg<bits<8> op, string asmstr, SDNode OpNode>
     : Comet2InstRegReg<op, (outs), (ins IntRegs:$r1, IntRegs:$r2),
                        !strconcat(asmstr, " $r1,$r2"),
@@ -153,14 +175,6 @@ def JUMP : Comet2InstRegAdr<0x64, (outs), (ins brtarget:$target),
 
 
 // 分岐命令
-def SDT_Comet2Br : SDTypeProfile<0, 1, [SDTCisVT<0, OtherVT>]>;
-def Comet2Jze : SDNode<"Comet2ISD::JZE", SDT_Comet2Br, [SDNPHasChain, SDNPInGlue]>;
-def Comet2Jnz : SDNode<"Comet2ISD::JNZ", SDT_Comet2Br, [SDNPHasChain, SDNPInGlue]>;
-def Comet2Jpl : SDNode<"Comet2ISD::JPL", SDT_Comet2Br, [SDNPHasChain, SDNPInGlue]>;
-def Comet2Jmi : SDNode<"Comet2ISD::JMI", SDT_Comet2Br, [SDNPHasChain, SDNPInGlue]>;
-def Comet2Jle : SDNode<"Comet2ISD::JLE", SDT_Comet2Br, [SDNPHasChain, SDNPInGlue]>;
-def Comet2Jge : SDNode<"Comet2ISD::JGE", SDT_Comet2Br, [SDNPHasChain, SDNPInGlue]>;
-
 class Branch<bits<8> op, string asmstr, SDNode OpNode>
     : Comet2InstRegAdr<op, (outs), (ins brtarget:$target),
                        !strconcat(asmstr, " $target"),
@@ -174,10 +188,10 @@ class Branch<bits<8> op, string asmstr, SDNode OpNode>
   let r = 0;
   let x = 0;
 }
-def JZE : Branch<0x63, "JZE", Comet2Jze>;
-def JNZ : Branch<0x62, "JNZ", Comet2Jnz>;
-def JPL : Branch<0x65, "JPL", Comet2Jpl>;
-def JMI : Branch<0x61, "JMI", Comet2Jmi>;
+def JZE : Branch<0x63, "JZE", Comet2Jze>;  // ==
+def JNZ : Branch<0x62, "JNZ", Comet2Jnz>;  // !=
+def JPL : Branch<0x65, "JPL", Comet2Jpl>;  // >=
+def JMI : Branch<0x61, "JMI", Comet2Jmi>;  // <=
 
 
 // 分岐疑似命令
@@ -196,18 +210,7 @@ def JLEp : BranchPseudo<Comet2Jle>;  // >=
 def JGEp : BranchPseudo<Comet2Jge>;  // <=
 
 
-// その他疑似命令
-
-// Target-independent type requirements, but with target-specific formats.
-def SDT_CallSeqStart : SDCallSeqStart<[SDTCisVT<0, i16>, SDTCisVT<1, i16>]>;
-def SDT_CallSeqEnd   : SDCallSeqEnd<[SDTCisVT<0, i16>, SDTCisVT<1, i16>]>;
-
-// Target-independent nodes, but with target-specific formats.
-def callseq_start : SDNode<"ISD::CALLSEQ_START", SDT_CallSeqStart,
-                           [SDNPHasChain, SDNPOutGlue]>;
-def callseq_end   : SDNode<"ISD::CALLSEQ_END", SDT_CallSeqEnd,
-                           [SDNPHasChain, SDNPOptInGlue, SDNPOutGlue]>;
-
+// Callの開始終了を表す疑似命令
 let Defs = [GR7], Uses = [GR7] in {
 def ADJCALLSTACKDOWN : Comet2InstPseudo<(outs), (ins i16imm:$amt1, i16imm:$amt2),
                                         "!ADJCALLSTACKDOWN $amt1",
