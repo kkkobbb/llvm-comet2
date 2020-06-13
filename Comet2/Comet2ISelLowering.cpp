@@ -63,7 +63,7 @@ Comet2TargetLowering::Comet2TargetLowering(const TargetMachine &TM,
   setOperationAction(ISD::SEXTLOAD, MVT::i1,  Promote);
   setOperationAction(ISD::SEXTLOAD, MVT::i8,  Promote);
 
-  setOperationAction(ISD::BR_CC, MVT::i16, Expand);
+  setOperationAction(ISD::BR_CC, MVT::i16, Custom);
 
   // NOTE ISD::SETLE等の条件の場合、setCondCodeAction()を使う
 
@@ -76,9 +76,81 @@ Comet2TargetLowering::Comet2TargetLowering(const TargetMachine &TM,
 
 SDValue Comet2TargetLowering::LowerOperation(SDValue Op,
                                              SelectionDAG &DAG) const {
-  // Custum に指定したノードに対する操作
-  report_fatal_error("unimplemented operand");
+  // Custom に指定したノードに対する操作
+  switch (Op.getOpcode()) {
+  default:
+    report_fatal_error("unimplemented operand");
+  case ISD::BR_CC:
+    return lowerBB_CC(Op, DAG);
+  }
   return SDValue();
+}
+
+SDValue Comet2TargetLowering::lowerBB_CC(SDValue Op, SelectionDAG &DAG) const {
+  SDValue Chain = Op.getOperand(0);
+  ISD::CondCode CC = cast<CondCodeSDNode>(Op.getOperand(1))->get();
+  SDValue LHS   = Op.getOperand(2);
+  SDValue RHS   = Op.getOperand(3);
+  SDValue Dest  = Op.getOperand(4);
+  SDLoc dl  (Op);
+
+  Comet2ISD::NodeType compNT;
+  Comet2ISD::NodeType jumpNT;
+  switch (CC) {
+  default:
+    llvm_unreachable("unimplemented condition");
+  case ISD::SETEQ:
+    compNT = Comet2ISD::CPA;
+    jumpNT = Comet2ISD::JZE;
+    break;
+  case ISD::SETUEQ:
+    compNT = Comet2ISD::CPL;
+    jumpNT = Comet2ISD::JZE;
+    break;
+  case ISD::SETNE:
+    compNT = Comet2ISD::CPA;
+    jumpNT = Comet2ISD::JNZ;
+    break;
+  case ISD::SETUNE:
+    compNT = Comet2ISD::CPL;
+    jumpNT = Comet2ISD::JNZ;
+    break;
+  case ISD::SETLT:
+    compNT = Comet2ISD::CPA;
+    jumpNT = Comet2ISD::JPL;
+    break;
+  case ISD::SETULT:
+    compNT = Comet2ISD::CPL;
+    jumpNT = Comet2ISD::JPL;
+    break;
+  case ISD::SETGT:
+    compNT = Comet2ISD::CPA;
+    jumpNT = Comet2ISD::JMI;
+    break;
+  case ISD::SETUGT:
+    compNT = Comet2ISD::CPL;
+    jumpNT = Comet2ISD::JMI;
+    break;
+  case ISD::SETLE:
+    compNT = Comet2ISD::CPA;
+    jumpNT = Comet2ISD::JLE;
+    break;
+  case ISD::SETULE:
+    compNT = Comet2ISD::CPL;
+    jumpNT = Comet2ISD::JLE;
+    break;
+  case ISD::SETGE:
+    compNT = Comet2ISD::CPA;
+    jumpNT = Comet2ISD::JGE;
+    break;
+  case ISD::SETUGE:
+    compNT = Comet2ISD::CPL;
+    jumpNT = Comet2ISD::JGE;
+    break;
+  }
+
+  auto compNode = DAG.getNode(compNT, dl, MVT::Glue, LHS, RHS);
+  return DAG.getNode(jumpNT, dl, Op.getValueType(), Chain, Dest, compNode);
 }
 
 // NOTE 宣言あり llvm/include/llvm/CodeGen/TargetLowering.h
@@ -319,7 +391,7 @@ SDValue Comet2TargetLowering::LowerCall(CallLoweringInfo &CLI,
     Ops.push_back(InFlag);
   }
 
-  Chain = DAG.getNode(Comet2ISD::Call, DL, NodeTys, Ops);
+  Chain = DAG.getNode(Comet2ISD::CALL, DL, NodeTys, Ops);
   InFlag = Chain.getValue(1);
 
   // Create the CALLSEQ_END node.
@@ -408,7 +480,7 @@ Comet2TargetLowering::LowerReturn(SDValue Chain, CallingConv::ID CallConv,
     RetOps.push_back(Glue);
   }
 
-  return DAG.getNode(Comet2ISD::Ret, DL, MVT::Other, RetOps);
+  return DAG.getNode(Comet2ISD::RET, DL, MVT::Other, RetOps);
 }
 
 // NOTE 定義あり llvm/lib/CodeGen/SelectionDAG/TargetLowering.cpp
@@ -417,14 +489,26 @@ const char *Comet2TargetLowering::getTargetNodeName(unsigned Opcode) const {
   switch ((Comet2ISD::NodeType)Opcode) {
   case Comet2ISD::FIRST_NUMBER:
     break;
-  case Comet2ISD::Call:
-    return "Comet2ISD::Call";
-  case Comet2ISD::Ret:
-    return "Comet2ISD::Ret";
-  case Comet2ISD::Add:
-    return "Comet2ISD::Add";
-  case Comet2ISD::Sub:
-    return "Comet2ISD::Sub";
+  case Comet2ISD::CALL:
+    return "Comet2ISD::CALL";
+  case Comet2ISD::RET:
+    return "Comet2ISD::RET";
+  case Comet2ISD::CPA:
+    return "Comet2ISD::CPA";
+  case Comet2ISD::CPL:
+    return "Comet2ISD::CPL";
+  case Comet2ISD::JZE:
+    return "Comet2ISD::JZE";
+  case Comet2ISD::JNZ:
+    return "Comet2ISD::JNZ";
+  case Comet2ISD::JPL:
+    return "Comet2ISD::JPL";
+  case Comet2ISD::JMI:
+    return "Comet2ISD::JMI";
+  case Comet2ISD::JLE:
+    return "Comet2ISD::JLE";
+  case Comet2ISD::JGE:
+    return "Comet2ISD::JGE";
   }
   return nullptr;
 }

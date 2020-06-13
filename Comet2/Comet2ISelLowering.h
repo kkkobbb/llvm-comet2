@@ -23,10 +23,17 @@ class Comet2Subtarget;
 namespace Comet2ISD {
 enum NodeType : unsigned {
   FIRST_NUMBER = ISD::BUILTIN_OP_END,
-  Add,
-  Sub,
-  Call,
-  Ret
+  CALL,
+  RET,
+
+  CPA,
+  CPL,
+  JZE,
+  JNZ,
+  JPL,
+  JMI,
+  JLE,
+  JGE,
 };
 }
 
@@ -39,6 +46,7 @@ public:
 
   // Provide custom lowering hooks for some operations.
   SDValue LowerOperation(SDValue Op, SelectionDAG &DAG) const override;
+  SDValue lowerBB_CC(SDValue Op, SelectionDAG &DAG) const;
   // This method returns the name of a target specific DAG node.
   const char *getTargetNodeName(unsigned Opcode) const override;
   MachineBasicBlock *

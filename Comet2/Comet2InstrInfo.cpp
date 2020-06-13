@@ -178,12 +178,11 @@ bool Comet2InstrInfo::isBranchOffsetInRange(unsigned BranchOp,
 void Comet2InstrInfo::expandPseudoJLEp(MachineBasicBlock &MBB, MachineInstr &MI) const {
   // >=の疑似命令
   // == と > の比較を行う
-  unsigned cond = MI.getOperand(0).getReg();
-  auto dest = MI.getOperand(1).getMBB();
+  auto dest = MI.getOperand(0).getMBB();
   BuildMI(MBB, MI, MI.getDebugLoc(), get(Comet2::JZE))
-      .addReg(cond).addMBB(dest);
+      .addMBB(dest);
   BuildMI(MBB, MI, MI.getDebugLoc(), get(Comet2::JPL))
-      .addReg(cond).addMBB(dest);
+      .addMBB(dest);
 }
 
 void Comet2InstrInfo::expandPseudoJGEp(MachineBasicBlock &MBB, MachineInstr &MI) const {

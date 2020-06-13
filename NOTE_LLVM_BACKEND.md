@@ -120,7 +120,27 @@
     * `ビルド用ディレクトリ/lib/Target/Comet2/Comet2GenDAGISel.inc` `MatcherTable`
 
 
+## 実行時の流れ
+
+### 分岐命令 (例: `==`)
+1. `br_cc`ノードが`LowerOperation()`でComet2Cpa、Comet2Jzeノードに変換される
+    * `setOperationAction(ISD::BR_CC, MVT::i16, Custom)`とCustomを指定したためLowerOperationが実行される
+2. Comet2InstrInfo.tdでの記述から、CPA命令、JZE命令に変換される
+3. CPA命令、JZE命令をComet2用の命令に変換する
+
+### 分岐命令 (例: `>=`)
+* `<=`、`>=`を表す単体の命令はないため、複数の命令で実現する
+* 1つのノードを複数の命令に変換するために一度疑似命令に変換してcppで処理させる
+1. `br_cc`ノードが`LowerOperation()`でComet2Cpa、Comet2Jleのノードに変換される
+2. Comet2InstrInfo.tdでの記述から、CPA命令、JLEp疑似命令に変換される
+3. 生成された疑似命令に対して`expandPostRAPseudo()`が実行され、JLEp疑似命令が2つの命令(JZE JLT)に変換される
+4. CPA命令、JZE命令、JLT命令をComet2用の命令に変換する
+
+
 ## 参考
 * 公式のバックエンドのソースコード `$LLVM_ROOT/llvm/lib/Target/*`
     * 特に`RISCV`、`Sparc`、`AVR`
 * きつねさん
+* <https://jonathan2251.github.io/lbd/index.html>
+* <https://llvm.org/devmtg/2014-04/PDFs/Talks/Building%20an%20LLVM%20backend.pdf>
+* <https://scholarworks.rit.edu/cgi/viewcontent.cgi?article=10699&context=theses>
