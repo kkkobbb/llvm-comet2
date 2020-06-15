@@ -7,8 +7,6 @@
 //===----------------------------------------------------------------------===//
 
 
-// TODO CallingConvは不要？
-
 // レジスタの役割
 // GR0     戻り値
 // GR1-GR4 引数受け取り
@@ -22,6 +20,8 @@ def CC_Comet2 : CallingConv<[
     CCIfType<[i8], CCPromoteToType<i16>>,
     // i16型はGR1-GR4に渡す
     CCIfType<[i16], CCAssignToReg<[GR1, GR2, GR3, GR4]>>,
+    // レジスタに収まらなかった場合、スタックに渡す
+    CCIfType<[i16], CCAssignToStack<2, 2>>
 ]>;
 
 // 戻り値

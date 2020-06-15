@@ -227,7 +227,7 @@ SDValue Comet2TargetLowering::LowerFormalArguments(
       int FI = MFI.CreateFixedObject(ObjSize, VA.getLocMemOffset(), true);
 
       // スタックから引数を取得するためにloadノードを作成する
-      SDValue FIN = DAG.getFrameIndex(FI, MVT::i32);
+      SDValue FIN = DAG.getFrameIndex(FI, MVT::i16);
       InVals.push_back(DAG.getLoad(VA.getLocVT(), DL, Chain, FIN,
                   MachinePointerInfo::getFixedStack(MF, FI)));
     }
@@ -259,8 +259,6 @@ SDValue Comet2TargetLowering::LowerCall(CallLoweringInfo &CLI,
   bool &isTailCall = CLI.IsTailCall;
   CallingConv::ID CallConv = CLI.CallConv;
   bool isVarArg = CLI.IsVarArg;
-
-  MachineFunction &MF = DAG.getMachineFunction();
 
   // Comet2 does not yet support tail call optimization.
   isTailCall = false;
@@ -339,6 +337,7 @@ SDValue Comet2TargetLowering::LowerCall(CallLoweringInfo &CLI,
   // and that the push instruction sequence generated is correct, otherwise they
   // can be freely intermixed.
   if (HasStackArgs) {
+    LLVM_DEBUG(dbgs() << "### LowerCall HasStack\n");
     for (AE = AI, AI = ArgLocs.size(); AI != AE; --AI) {
       unsigned Loc = AI - 1;
       CCValAssign &VA = ArgLocs[Loc];
@@ -346,16 +345,13 @@ SDValue Comet2TargetLowering::LowerCall(CallLoweringInfo &CLI,
 
       assert(VA.isMemLoc());
 
-      // GR7 points to one stack slot further so add one to adjust it.
-      SDValue PtrOff = DAG.getNode(
-          ISD::ADD, DL, getPointerTy(DAG.getDataLayout()),
+      // スタックに引数を格納する
+      // ここで(store reg1, (add reg2, offset))のようなノードを作るとうまく変換してくれないため
+      // 専用のノードSTREGOFFSETを生成している
+      Chain = DAG.getNode(Comet2ISD::STREGOFFSET, DL, getPointerTy(DAG.getDataLayout()),
+          Chain, Arg,
           DAG.getRegister(Comet2::GR7, getPointerTy(DAG.getDataLayout())),
-          DAG.getIntPtrConstant(VA.getLocMemOffset() + 1, DL));
-
-      Chain =
-          DAG.getStore(Chain, DL, Arg, PtrOff,
-                       MachinePointerInfo::getStack(MF, VA.getLocMemOffset()),
-                       0);
+          DAG.getIntPtrConstant(VA.getLocMemOffset(), DL));
     }
   }
 
@@ -493,6 +489,8 @@ const char *Comet2TargetLowering::getTargetNodeName(unsigned Opcode) const {
     return "Comet2ISD::CALL";
   case Comet2ISD::RET:
     return "Comet2ISD::RET";
+  case Comet2ISD::STREGOFFSET:
+    return "Comet2ISD::STREGOFFSET";
   case Comet2ISD::CPA:
     return "Comet2ISD::CPA";
   case Comet2ISD::CPL:

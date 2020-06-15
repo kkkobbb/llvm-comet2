@@ -23,6 +23,9 @@ def Comet2Call : SDNode<"Comet2ISD::CALL", SDT_Comet2Call,
 def Comet2Ret : SDNode<"Comet2ISD::RET", SDTNone,
                        [SDNPHasChain, SDNPOptInGlue, SDNPVariadic]>;
 
+def SDT_Comet2St : SDTypeProfile<0, 3, []>;
+def Comet2StRegOffset : SDNode<"Comet2ISD::STREGOFFSET", SDT_Comet2St, [SDNPHasChain, SDNPInGlue]>;
+
 def SDT_Comet2Comp : SDTypeProfile<0, 2, [SDTCisSameAs<0, 1>]>;
 def Comet2Cpa : SDNode<"Comet2ISD::CPA", SDT_Comet2Comp, [SDNPOutGlue]>;
 def Comet2Cpl : SDNode<"Comet2ISD::CPL", SDT_Comet2Comp, [SDNPOutGlue]>;
@@ -125,8 +128,19 @@ let Defs = [FR] in
 def LD : Comet2InstRegAdr<0x10, (outs IntRegs:$r), (ins mem:$adr),
                           "LD $r,$adr", [(set IntRegs:$r, (load addr:$adr))]>;
 // メモリストア
-def ST : Comet2InstRegAdr<0x11, (outs), (ins IntRegs:$r, mem:$adr),
-                          "ST $r,$adr", [(store IntRegs:$r, addr:$adr)]>;
+// (store src, (add ...))よりも (store src, dest)のパターンに優先してマッチしてしまう
+def ST : Comet2InstRegAdr<0x11, (outs), (ins IntRegs:$src, IntRegs:$dest, imm16:$offset),
+                          "ST $src,$offset,$dest",
+                          [(store IntRegs:$src, (add IntRegs:$dest, immSExt16:$offset))]>;
+// NOTE PatFragで複数階層のパターンを1階層として扱うことができる
+// (この場合、PatFragなしでもPatは記述できる)
+def StAddr : PatFrag<(ops node:$n1, node:$n2, node:$n3),
+                     (store node:$n1, (addr node:$n2, node:$n3))>;
+def : Pat<(StAddr IntRegs:$src, IntRegs:$dest, immSExt16:$offset),
+          (ST IntRegs:$src, IntRegs:$dest, immSExt16:$offset)>;
+def : Pat<(Comet2StRegOffset IntRegs:$src, IntRegs:$dest, immSExt16:$offset),
+          (ST IntRegs:$src, IntRegs:$dest, immSExt16:$offset)>;
+
 // 即値ロード
 def LAD : Comet2InstRegAdr<0x12, (outs IntRegs:$r), (ins imm16:$adr),
                            "LAD $r,$adr", [(set IntRegs:$r, immSExt16:$adr)]>;
