@@ -14,6 +14,8 @@
 // COMET II specific DAG Nodes.
 //===----------------------------------------------------------------------===//
 
+// NOTE SDNP* llvm/include/llvm/CodeGen/SDNodeProperties.td
+
 // NOTE SDTypeProfile<出力の数, 入力の数, [入力の制約, ...]>
 def SDT_Comet2Call : SDTypeProfile<0, 1, [SDTCisVT<0, iPTR>]>;
 def Comet2Call : SDNode<"Comet2ISD::CALL", SDT_Comet2Call,
@@ -24,7 +26,8 @@ def Comet2Ret : SDNode<"Comet2ISD::RET", SDTNone,
                        [SDNPHasChain, SDNPOptInGlue, SDNPVariadic]>;
 
 def SDT_Comet2St : SDTypeProfile<0, 3, []>;
-def Comet2StRegOffset : SDNode<"Comet2ISD::STREGOFFSET", SDT_Comet2St, [SDNPHasChain, SDNPInGlue]>;
+def Comet2StRegOffset : SDNode<"Comet2ISD::STREGOFFSET", SDT_Comet2St,
+                               [SDNPHasChain, SDNPInGlue, SDNPMayStore]>;
 
 def SDT_Comet2Comp : SDTypeProfile<0, 2, [SDTCisSameAs<0, 1>]>;
 def Comet2Cpa : SDNode<"Comet2ISD::CPA", SDT_Comet2Comp, [SDNPOutGlue]>;
@@ -80,7 +83,9 @@ def brtarget : Operand<OtherVT> {
 // 定数(ISD::Constant)で16bitで表現可能なもの
 def immSExt16 : PatLeaf<(imm), [{ return isInt<16>(N->getSExtValue()); }]>;
 
-// NOTE llvm/include/llvm/CodeGen/SDNodeProperties.td
+// NOTE SDNPWantRoot llvm/include/llvm/CodeGen/SDNodeProperties.td
+// NOTE ComplexPattern llvm/include/llvm/Target/TargetSelectionDAG.td
+// NOTE ComplexPattern<パターンの型, オペランドの数, 生成時の関数名, マッチできるルートノード, 追加の設定>
 def addr : ComplexPattern<iPTR, 2, "SelectAddr", [], [SDNPWantRoot]>;
 
 
@@ -96,13 +101,15 @@ include "Comet2InstrFormats.td"
 //===----------------------------------------------------------------------===//
 
 // 算術命令 register,register
-// 本来不要だが、このクラスだけ練習用としてRegisterClassを引数に持つようにしている
+// RegisterClassを引数にするのは本来不要だが、このクラスだけ練習用として記述している
 // NOTE 入力と出力が同じレジスタの場合の命令は AVR ADD命令が参考になるかも
 class Comet2InstRegRegSet<bits<8> op, string asmstr, SDNode OpNode, RegisterClass RC>
     : Comet2InstRegReg<op, (outs RC:$r1), (ins RC:$src, RC:$r2),
                        !strconcat(asmstr, " $r1,$r2"),
                        [(set i16:$r1, (OpNode i16:$src, i16:$r2))]> {
+  // NOTE Defs オペランドに現れないレジスタを変更することを表す
   let Defs = [FR];
+  // NOTE "$src = $r1" $srcと$r1が同じレジスタとなる必要があるという制約
   let Constraints = "$src = $r1";
 }
 def ADDAREG : Comet2InstRegRegSet<0x20, "ADDA", add, IntRegs>;
@@ -128,19 +135,24 @@ let Defs = [FR] in
 def LD : Comet2InstRegAdr<0x10, (outs IntRegs:$r), (ins mem:$adr),
                           "LD $r,$adr", [(set IntRegs:$r, (load addr:$adr))]>;
 // メモリストア
-// (store src, (add ...))よりも (store src, dest)のパターンに優先してマッチしてしまう
+let mayStore = 1 in
 def ST : Comet2InstRegAdr<0x11, (outs), (ins IntRegs:$src, IntRegs:$dest, imm16:$offset),
-                          "ST $src,$offset,$dest",
-                          [(store IntRegs:$src, (add IntRegs:$dest, immSExt16:$offset))]>;
+                          "ST $src,$offset,$dest", []>;
+// NOTE Pat 第1引数にマッチしたパターンを第2引数に変換する
+// NOTE llvm/include/llvm/Target/TargetSelectionDAG.td
+// Comet2StRegOffsetはComet2ISelLowering.cpp内で記述された処理によって生成される
+def : Pat<(Comet2StRegOffset IntRegs:$src, IntRegs:$dest, immSExt16:$offset),
+          (ST IntRegs:$src, IntRegs:$dest, immSExt16:$offset)>;
 // NOTE PatFragで複数階層のパターンを1階層として扱うことができる
 // (この場合、PatFragなしでもPatは記述できる)
 def StAddr : PatFrag<(ops node:$n1, node:$n2, node:$n3),
                      (store node:$n1, (addr node:$n2, node:$n3))>;
 def : Pat<(StAddr IntRegs:$src, IntRegs:$dest, immSExt16:$offset),
           (ST IntRegs:$src, IntRegs:$dest, immSExt16:$offset)>;
-def : Pat<(Comet2StRegOffset IntRegs:$src, IntRegs:$dest, immSExt16:$offset),
+// (store src, (add ...))よりも (store src, dest)のパターンが
+// 優先してマッチするので下のPatは本来不要 (メモ用に残す)
+def : Pat<(store IntRegs:$src, (add IntRegs:$dest, immSExt16:$offset)),
           (ST IntRegs:$src, IntRegs:$dest, immSExt16:$offset)>;
-
 // 即値ロード
 def LAD : Comet2InstRegAdr<0x12, (outs IntRegs:$r), (ins imm16:$adr),
                            "LAD $r,$adr", [(set IntRegs:$r, immSExt16:$adr)]>;
@@ -154,9 +166,6 @@ def LDREG : Comet2InstRegReg<0x14, (outs IntRegs:$r1), (ins IntRegs:$r2),
 let isCall = 1, r = 0, x = 0 in
 def CALL : Comet2InstRegAdr<0x80, (outs), (ins calltarget:$adr, variable_ops),
                             "CALL $adr", []>;
-
-// NOTE Pat 第1引数にマッチしたパターンを第2引数に変換する
-// NOTE llvm/include/llvm/Target/TargetSelectionDAG.td
 def : Pat<(Comet2Call (i16 tglobaladdr:$dst)), (CALL tglobaladdr:$dst)>;
 def : Pat<(Comet2Call (i16 texternalsym:$dst)), (CALL texternalsym:$dst)>;
 
@@ -198,6 +207,7 @@ class Branch<bits<8> op, string asmstr, SDNode OpNode>
   let mayLoad = 0;
   let isBranch = 1;
   let isTerminator = 1;
+  // NOTE Uses オペランドに現れないレジスタを参照することを表す
   let Uses = [FR];
   let r = 0;
   let x = 0;

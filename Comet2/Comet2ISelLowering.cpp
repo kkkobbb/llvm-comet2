@@ -56,6 +56,7 @@ Comet2TargetLowering::Comet2TargetLowering(const TargetMachine &TM,
 
   setStackPointerRegisterToSaveRestore(Comet2::GR7);
 
+  // NOTE Promote 型を大きな型として扱う
   setOperationAction(ISD::EXTLOAD,  MVT::i1,  Promote);
   setOperationAction(ISD::EXTLOAD,  MVT::i8,  Promote);
   setOperationAction(ISD::ZEXTLOAD, MVT::i1,  Promote);
@@ -63,6 +64,7 @@ Comet2TargetLowering::Comet2TargetLowering(const TargetMachine &TM,
   setOperationAction(ISD::SEXTLOAD, MVT::i1,  Promote);
   setOperationAction(ISD::SEXTLOAD, MVT::i8,  Promote);
 
+  // NOTE Custom LowerOperation()に渡す
   setOperationAction(ISD::BR_CC, MVT::i16, Custom);
 
   // NOTE ISD::SETLE等の条件の場合、setCondCodeAction()を使う
@@ -348,6 +350,7 @@ SDValue Comet2TargetLowering::LowerCall(CallLoweringInfo &CLI,
       // スタックに引数を格納する
       // ここで(store reg1, (add reg2, offset))のようなノードを作るとうまく変換してくれないため
       // 専用のノードSTREGOFFSETを生成している
+      // NOTE Comet2InstrInfo.tdの定義でSDNPHasChainを指定しているのでChainを渡す必要がある
       Chain = DAG.getNode(Comet2ISD::STREGOFFSET, DL, getPointerTy(DAG.getDataLayout()),
           Chain, Arg,
           DAG.getRegister(Comet2::GR7, getPointerTy(DAG.getDataLayout())),
