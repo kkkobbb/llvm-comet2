@@ -14,7 +14,7 @@
         * GR7: 関数用のスタックポインタ（フレームレジスタ）
 * `SP`
     * スタックポインタ
-    * スタックの伸びる向きはとりあえず正にしている
+    * スタックの伸びる向きはとりあえず負にしている
 * `PR`
     * プログラムカウンタ
 * `FR`
@@ -199,18 +199,18 @@
 ### stack instruction
 * `PUSH adr [,x]`
     * `0x70 0xhh 0xhh 0xhh`
-    * `mem(SP) <- adr + x, SP++`
+    * `mem(SP) <- adr + x, SP--`
 * `POP  r`
     * `0x71 0xhh`
-    * `adr + x <- mem(SP), SP--`
+    * `adr + x <- mem(SP), SP++`
 
 ### call instruction
 * `CALL adr [,x]`
     * `0x80 0xhh 0xhh 0xhh`
-    * `mem(SP) <- PR, SP++, PR <- adr + x`
+    * `mem(SP) <- PR, SP--, PR <- adr + x`
 * `RET`
     * `0x81 0x00`
-    * `PR <- mem(SP) + 1, SP--`
+    * `PR <- mem(SP) + 1, SP++`
 
 ### other
 * `SVC  adr [,x]`
