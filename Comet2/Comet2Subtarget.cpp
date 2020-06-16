@@ -30,7 +30,7 @@ Comet2Subtarget::Comet2Subtarget(const Triple &TT, StringRef CPU, StringRef FS,
     : Comet2GenSubtargetInfo(TT, CPU, FS),
       FrameLowering(*this),
       InstrInfo(), RegInfo(getHwMode()), TLInfo(TM, *this) {
-  std::string CPUName = "generic";
+  std::string CPUName = "comet2";
 
   ParseSubtargetFeatures(CPUName, FS);
 }
