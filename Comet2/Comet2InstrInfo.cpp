@@ -224,6 +224,8 @@ unsigned Comet2InstrInfo::getInstSizeInBytes(const MachineInstr &MI) const {
   switch (Opcode) {
   case Comet2::ADDAREG:
   case Comet2::SUBAREG:
+  case Comet2::ANDREG:
+  case Comet2::ORREG:
   case Comet2::XORREG:
   case Comet2::LDREG:
     return 1;

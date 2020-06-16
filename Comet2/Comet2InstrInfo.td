@@ -112,8 +112,10 @@ class Comet2InstRegRegSet<bits<8> op, string asmstr, SDNode OpNode, RegisterClas
   // NOTE "$src = $r1" $srcと$r1が同じレジスタとなる必要があるという制約
   let Constraints = "$src = $r1";
 }
-def ADDAREG : Comet2InstRegRegSet<0x20, "ADDA", add, IntRegs>;
-def SUBAREG : Comet2InstRegRegSet<0x21, "SUBA", sub, IntRegs>;
+def ADDAREG : Comet2InstRegRegSet<0x24, "ADDA", add, IntRegs>;
+def SUBAREG : Comet2InstRegRegSet<0x25, "SUBA", sub, IntRegs>;
+def ANDREG  : Comet2InstRegRegSet<0x34, "AND",  and, IntRegs>;
+def ORREG   : Comet2InstRegRegSet<0x35, "OR",   or,  IntRegs>;
 def XORREG  : Comet2InstRegRegSet<0x36, "XOR",  xor, IntRegs>;
 
 
@@ -125,7 +127,10 @@ class Comet2InstAdrSet<bits<8> op, string asmstr, SDNode OpNode>
   let Defs = [FR];
   let Constraints = "$src = $r";
 }
-def ADDA : Comet2InstAdrSet<0x22, "ADDA", add>;
+def ADDA : Comet2InstAdrSet<0x20, "ADDA", add>;
+def SUBA : Comet2InstAdrSet<0x21, "SUBA", sub>;
+def AND  : Comet2InstAdrSet<0x30, "AND",  and>;
+def OR   : Comet2InstAdrSet<0x31, "OR",   or>;
 def XOR  : Comet2InstAdrSet<0x32, "XOR",  xor>;
 
 
