@@ -42,11 +42,14 @@ void Comet2FrameLowering::emitPrologue(MachineFunction &MF,
   if (StackSize == 0 && !MFI.adjustsStack())
     return;
 
-   // Update stack size
+  // Update stack size
   MFI.setStackSize(StackSize);
 
+  // Comet2にはSPを直接読み書きする手段がないため、GR7をスタックポインタとして使用しているが、
+  // GR7で管理するスタックポインタとCALLで使用するSPが管理するスタックポインタが別なので
+  // ここで書き込む内容がCALLで上書きされる可能性がある (emitEpilogueでも同様)
+
   // スタックを1フレーム分伸ばす
-  // TODO GR7で持つスタックポインタとPUSH等で使用するSPが持つスタックポインタが干渉する可能性がある
   Register tmp = Comet2::GR6;
   BuildMI(MBB, MBBI, DL, TII->get(Comet2::LAD), tmp)
       .addImm(StackSize);
