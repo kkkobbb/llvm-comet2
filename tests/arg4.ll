@@ -6,9 +6,9 @@ entry:
 }
 
 define i16 @test(i16 %a, i16 %b, i16 %c, i16 %d) {
-    %ret1 = add i16 %a, %b
-    %ret2 = add i16 %c, %d
-    %ret5 = add i16 %ret1, %ret2
-    ret i16 %ret5
+  %ret1 = add i16 %a, %b
+  %ret2 = add i16 %c, %d
+  %ret5 = add i16 %ret1, %ret2
+  ret i16 %ret5
 }
 

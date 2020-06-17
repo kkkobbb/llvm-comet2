@@ -65,10 +65,6 @@ public:
                           SmallVectorImpl<MCFixup> &Fixups,
                           const MCSubtargetInfo &STI) const;
 
-  unsigned get16bitOpValue(const MCInst &MI, unsigned OpNo,
-                          SmallVectorImpl<MCFixup> &Fixups,
-                          const MCSubtargetInfo &STI) const;
-
   unsigned getAddrTargetOpValue(const MCInst &MI, unsigned OpNo,
                           SmallVectorImpl<MCFixup> &Fixups,
                           const MCSubtargetInfo &STI) const;
@@ -131,15 +127,6 @@ Comet2MCCodeEmitter::getMemEncoding(const MCInst &MI, unsigned OpNo,
                                     const MCSubtargetInfo &STI) const {
   // TODO メモリ出力処理
   return 0;
-}
-
-unsigned
-Comet2MCCodeEmitter::get16bitOpValue(const MCInst &MI, unsigned OpNo,
-                                     SmallVectorImpl<MCFixup> &Fixups,
-                                     const MCSubtargetInfo &STI) const {
-  assert(MI.getOperand(OpNo).isImm());
-  unsigned value = getMachineOpValue(MI, MI.getOperand(OpNo), Fixups, STI);
-  return value & 0xFFFF;
 }
 
 unsigned

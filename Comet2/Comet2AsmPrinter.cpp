@@ -54,7 +54,7 @@ public:
 };
 }
 
-// NOTE 定義あり lib/CodeGen/AsmPrinter/AsmPrinter.cpp
+// NOTE 定義あり llvm/lib/CodeGen/AsmPrinter/AsmPrinter.cpp
 #if 0
 void Comet2AsmPrinter::EmitToStreamer(MCStreamer &S, const MCInst &Inst) {
 }

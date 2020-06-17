@@ -55,13 +55,6 @@ def callseq_end   : SDNode<"ISD::CALLSEQ_END", SDT_CallSeqEnd,
 // Operand and SDNode transformation definitions.
 //===----------------------------------------------------------------------===//
 
-// 即値ロード用のオペランド. 16bit
-// 16-0: 符号付き16bit整数
-// EncoderMethod: bit列から符号付き16bit整数を取得
-def imm16 : Operand<i16> {
-  let EncoderMethod = "get16bitOpValue";
-}
-
 // アドレス (call用)
 def calltarget : Operand<iPTR> {
   let EncoderMethod = "getAddrTargetOpValue";
@@ -120,18 +113,18 @@ def XORREG  : Comet2InstRegRegSet<0x36, "XOR",  xor, IntRegs>;
 
 
 // 算術命令 register,address
-class Comet2InstAdrSet<bits<8> op, string asmstr, SDNode OpNode>
+class Comet2InstRegAdrSet<bits<8> op, string asmstr, SDNode OpNode>
     : Comet2InstRegAdr<op, (outs IntRegs:$r), (ins IntRegs:$src, mem:$adr),
                        !strconcat(asmstr, " $r,$adr"),
                        [(set IntRegs:$r, (OpNode i16:$src, (load addr:$adr)))]> {
   let Defs = [FR];
   let Constraints = "$src = $r";
 }
-def ADDA : Comet2InstAdrSet<0x20, "ADDA", add>;
-def SUBA : Comet2InstAdrSet<0x21, "SUBA", sub>;
-def AND  : Comet2InstAdrSet<0x30, "AND",  and>;
-def OR   : Comet2InstAdrSet<0x31, "OR",   or>;
-def XOR  : Comet2InstAdrSet<0x32, "XOR",  xor>;
+def ADDA : Comet2InstRegAdrSet<0x20, "ADDA", add>;
+def SUBA : Comet2InstRegAdrSet<0x21, "SUBA", sub>;
+def AND  : Comet2InstRegAdrSet<0x30, "AND",  and>;
+def OR   : Comet2InstRegAdrSet<0x31, "OR",   or>;
+def XOR  : Comet2InstRegAdrSet<0x32, "XOR",  xor>;
 
 
 // Load/Store命令
@@ -141,7 +134,7 @@ def LD : Comet2InstRegAdr<0x10, (outs IntRegs:$r), (ins mem:$adr),
                           "LD $r,$adr", [(set IntRegs:$r, (load addr:$adr))]>;
 // メモリストア
 let mayStore = 1 in
-def ST : Comet2InstRegAdr<0x11, (outs), (ins IntRegs:$src, IntRegs:$dest, imm16:$offset),
+def ST : Comet2InstRegAdr<0x11, (outs), (ins IntRegs:$src, IntRegs:$dest, i16imm:$offset),
                           "ST $src,$offset,$dest", []>;
 // NOTE Pat 第1引数にマッチしたパターンを第2引数に変換する
 // NOTE llvm/include/llvm/Target/TargetSelectionDAG.td
@@ -159,7 +152,7 @@ def : Pat<(StAddr IntRegs:$src, IntRegs:$dest, immSExt16:$offset),
 def : Pat<(store IntRegs:$src, (add IntRegs:$dest, immSExt16:$offset)),
           (ST IntRegs:$src, IntRegs:$dest, immSExt16:$offset)>;
 // 即値ロード
-def LAD : Comet2InstRegAdr<0x12, (outs IntRegs:$r), (ins imm16:$adr),
+def LAD : Comet2InstRegAdr<0x12, (outs IntRegs:$r), (ins i16imm:$adr),
                            "LAD $r,$adr", [(set IntRegs:$r, immSExt16:$adr)]>;
 // レジスタ間ロード
 let Defs = [FR] in

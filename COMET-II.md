@@ -202,7 +202,7 @@
     * `mem(SP) <- adr + x, SP--`
 * `POP  r`
     * `0x71 0xhh`
-    * `adr + x <- mem(SP), SP++`
+    * `r <- mem(SP), SP++`
 
 ### call instruction
 * `CALL adr [,x]`

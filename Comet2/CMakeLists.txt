@@ -28,6 +28,5 @@ add_llvm_target(Comet2CodeGen
   Comet2TargetObjectFile.cpp
   )
 
-# TODO AsmParserは無視する
 add_subdirectory(MCTargetDesc)
 add_subdirectory(TargetInfo)
