@@ -50,11 +50,13 @@ void Comet2FrameLowering::emitPrologue(MachineFunction &MF,
   // ここで書き込む内容がCALLで上書きされる可能性がある (emitEpilogueでも同様)
 
   // スタックを1フレーム分伸ばす
-  Register tmp = Comet2::GR6;
-  BuildMI(MBB, MBBI, DL, TII->get(Comet2::LAD), tmp)
+  const Register frameReg = Comet2::GR7;
+  const Register tempReg = Comet2::GR6;
+  BuildMI(MBB, MBBI, DL, TII->get(Comet2::LAD), tempReg)
       .addImm(StackSize);
-  BuildMI(MBB, MBBI, DL, TII->get(Comet2::SUBAREG), Comet2::GR7)
-      .addReg(tmp);
+  BuildMI(MBB, MBBI, DL, TII->get(Comet2::SUBAREG), frameReg)
+      .addReg(frameReg)
+      .addReg(tempReg);
 }
 
 void Comet2FrameLowering::emitEpilogue(MachineFunction &MF,
@@ -68,11 +70,13 @@ void Comet2FrameLowering::emitEpilogue(MachineFunction &MF,
   uint64_t StackSize = MFI.getStackSize();
 
   // スタックを1フレーム分戻す
-  Register tmp = Comet2::GR6;
-  BuildMI(MBB, MBBI, DL, TII->get(Comet2::LAD), tmp)
+  const Register frameReg = Comet2::GR7;
+  const Register tempReg = Comet2::GR6;
+  BuildMI(MBB, MBBI, DL, TII->get(Comet2::LAD), tempReg)
       .addImm(StackSize);
-  BuildMI(MBB, MBBI, DL, TII->get(Comet2::ADDAREG), Comet2::GR7)
-      .addReg(tmp);
+  BuildMI(MBB, MBBI, DL, TII->get(Comet2::ADDAREG), frameReg)
+      .addReg(frameReg)
+      .addReg(tempReg);
 }
 
 // Eliminate ADJCALLSTACKDOWN, ADJCALLSTACKUP pseudo instructions.
