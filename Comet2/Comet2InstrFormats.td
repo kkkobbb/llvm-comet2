@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-// NOTE llvm/include/llvm/Target/Target.td
+// NOTE llvm/include/llvm/Target/Target.td Instruction
 
 class Comet2Inst<dag outs, dag ins, string asmstr, list<dag> pattern>
     : Instruction {
@@ -21,10 +21,10 @@ class Comet2Inst<dag outs, dag ins, string asmstr, list<dag> pattern>
 }
 
 class Comet2InstRegAdr<bits<8> opcode, dag outs, dag ins, string asmstr,
-                        list<dag> pattern>
+                       list<dag> pattern>
     : Comet2Inst<outs, ins, asmstr, pattern> {
   field bits<32> Inst;
-  let Size = 4;  // NOTE バイトサイズ?
+  let Size = 4;  // NOTE バイトサイズ
 
   bits<4> r;
   bits<4> x;
@@ -37,10 +37,10 @@ class Comet2InstRegAdr<bits<8> opcode, dag outs, dag ins, string asmstr,
 }
 
 class Comet2InstRegReg<bits<8> opcode, dag outs, dag ins, string asmstr,
-                        list<dag> pattern>
+                       list<dag> pattern>
     : Comet2Inst<outs, ins, asmstr, pattern> {
   field bits<16> Inst;
-  let Size = 2;  // NOTE バイトサイズ?
+  let Size = 2;
 
   bits<4> r1;
   bits<4> r2;

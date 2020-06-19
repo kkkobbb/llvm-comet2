@@ -30,7 +30,7 @@
 
 using namespace llvm;
 
-#define DEBUG_TYPE "mccodeemitter"
+#define DEBUG_TYPE "comet2-mccodeemitter"
 
 namespace {
 class Comet2MCCodeEmitter : public MCCodeEmitter {

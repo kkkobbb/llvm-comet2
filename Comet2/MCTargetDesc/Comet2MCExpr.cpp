@@ -26,10 +26,9 @@
 
 using namespace llvm;
 
-#define DEBUG_TYPE "comet2mcexpr"
+#define DEBUG_TYPE "comet2-mcexpr"
 
-// NOTE llvm/include/llvm/MC/MCExpr.h
-// NOTE llvm/lib/MC/MCExpr.cpp
+// NOTE llvm/lib/MC/MCExpr.cpp MCExpr
 
 const Comet2MCExpr *Comet2MCExpr::create(const MCExpr *Expr, VariantKind Kind,
                                          MCContext &Ctx) {

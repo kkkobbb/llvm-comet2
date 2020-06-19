@@ -19,7 +19,7 @@ using namespace llvm;
 
 void Comet2MCAsmInfo::anchor() {}
 
-// NOTE 参考 llvm/include/llvm/MC/MCAsmInfo.h
+// NOTE llvm/include/llvm/MC/MCAsmInfo.h MCAsmInfo各メンバ変数
 Comet2MCAsmInfo::Comet2MCAsmInfo(const Triple &TT) {
   CodePointerSize = CalleeSaveStackSlotSize = 2;
   CommentString = ";";

@@ -6,8 +6,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-// NOTE llvm/include/llvm/MC/MCAsmBackend.h
-// NOTE llvm/lib/MC/MCAsmBackend.cpp
+// NOTE llvm/include/llvm/MC/MCAsmBackend.h MCAsmBackend
+// NOTE llvm/lib/MC/MCAsmBackend.cpp MCAsmBackend
 
 #ifndef LLVM_LIB_TARGET_COMET2_MCTARGETDESC_COMET2ASMBACKEND_H
 #define LLVM_LIB_TARGET_COMET2_MCTARGETDESC_COMET2ASMBACKEND_H

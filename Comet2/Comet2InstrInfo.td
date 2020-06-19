@@ -14,7 +14,7 @@
 // COMET II specific DAG Nodes.
 //===----------------------------------------------------------------------===//
 
-// NOTE SDNP* llvm/include/llvm/CodeGen/SDNodeProperties.td
+// NOTE llvm/include/llvm/CodeGen/SDNodeProperties.td SDNP*
 
 // NOTE SDTypeProfile<出力の数, 入力の数, [入力の制約, ...]>
 def SDT_Comet2Call : SDTypeProfile<0, 1, [SDTCisVT<0, iPTR>]>;
@@ -76,8 +76,8 @@ def brtarget : Operand<OtherVT> {
 // 定数(ISD::Constant)で16bitで表現可能なもの
 def immSExt16 : PatLeaf<(imm), [{ return isInt<16>(N->getSExtValue()); }]>;
 
-// NOTE SDNPWantRoot llvm/include/llvm/CodeGen/SDNodeProperties.td
-// NOTE ComplexPattern llvm/include/llvm/Target/TargetSelectionDAG.td
+// NOTE llvm/include/llvm/CodeGen/SDNodeProperties.td SDNPWantRoot
+// NOTE llvm/include/llvm/Target/TargetSelectionDAG.td ComplexPattern
 // NOTE ComplexPattern<パターンの型, オペランドの数, 生成時の関数名, マッチできるルートノード, 追加の設定>
 def addr : ComplexPattern<iPTR, 2, "SelectAddr", [], [SDNPWantRoot]>;
 
@@ -137,12 +137,13 @@ let mayStore = 1 in
 def ST : Comet2InstRegAdr<0x11, (outs), (ins IntRegs:$src, IntRegs:$dest, i16imm:$offset),
                           "ST $src,$offset,$dest", []>;
 // NOTE Pat 第1引数にマッチしたパターンを第2引数に変換する
-// NOTE llvm/include/llvm/Target/TargetSelectionDAG.td
+// NOTE llvm/include/llvm/Target/TargetSelectionDAG.td Pat
 // Comet2StRegOffsetはComet2ISelLowering.cpp内で記述された処理によって生成される
 def : Pat<(Comet2StRegOffset IntRegs:$src, IntRegs:$dest, immSExt16:$offset),
           (ST IntRegs:$src, IntRegs:$dest, immSExt16:$offset)>;
 // NOTE PatFragで複数階層のパターンを1階層として扱うことができる
-// (この場合、PatFragなしでもPatは記述できる)
+// NOTE llvm/include/llvm/Target/TargetSelectionDAG.td PatFrag
+// (以下の場合、PatFragなしでもPatは記述できる)
 def StAddr : PatFrag<(ops node:$n1, node:$n2, node:$n3),
                      (store node:$n1, (addr node:$n2, node:$n3))>;
 def : Pat<(StAddr IntRegs:$src, IntRegs:$dest, immSExt16:$offset),

@@ -18,8 +18,8 @@
 namespace llvm {
 class Triple;
 
-// NOTE llvm/include/llvm/MC/MCAsmInfo.h
-// NOTE llvm/lib/MC/MCAsmInfo.cpp
+// NOTE llvm/include/llvm/MC/MCAsmInfo.h MCAsmInfo
+// NOTE llvm/lib/MC/MCAsmInfo.cpp MCAsmInfo
 class Comet2MCAsmInfo : public MCAsmInfoELF {
   void anchor() override;
 

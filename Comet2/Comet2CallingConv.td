@@ -21,7 +21,7 @@ def CC_Comet2 : CallingConv<[
     // i16型はGR1-GR4に渡す
     CCIfType<[i16], CCAssignToReg<[GR1, GR2, GR3, GR4]>>,
     // レジスタに収まらなかった場合、スタックに渡す
-    // NOTE llvm/include/llvm/Target/TargetCallingConv.td
+    // NOTE llvm/include/llvm/Target/TargetCallingConv.td CCAssignToStack
     // NOTE CCAssignToStack<確保するサイス、アラインメント> (0の場合ABIの値を使用する)
     CCIfType<[i16], CCAssignToStack<0, 0>>
 ]>;

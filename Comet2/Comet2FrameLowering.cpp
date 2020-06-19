@@ -23,6 +23,9 @@
 
 using namespace llvm;
 
+// NOTE llvm/include/llvm/CodeGen/TargetFrameLowering.h hasFP
+// 専用のフレームポインタレジスタを持つべき関数の場合、真を返す
+// 可変サイズの"alloca"が含まれる場合などで真になる
 bool Comet2FrameLowering::hasFP(const MachineFunction &MF) const {
   return false;
 }

@@ -16,9 +16,9 @@
 
 using namespace llvm;
 
-// NOTE llvm/include/llvm/BinaryFormat/ELF.h
-// NOTE llvm/include/llvm/BinaryFormat/ELFRelocs/*.def
-// NOTE llvm/lib/MC/MCELFObjectTargetWriter.cpp
+// NOTE llvm/include/llvm/BinaryFormat/ELF.h Elf関係の定数、構造体等
+// NOTE llvm/include/llvm/BinaryFormat/ELFRelocs/*.def アーキテクチャ毎のElf関係の設定
+// NOTE llvm/lib/MC/MCELFObjectTargetWriter.cpp MCELFObjectTargetWriter
 
 namespace {
 class Comet2ELFObjectWriter : public MCELFObjectTargetWriter {

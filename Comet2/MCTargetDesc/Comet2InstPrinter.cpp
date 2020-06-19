@@ -24,7 +24,7 @@
 #include "llvm/Support/FormattedStream.h"
 using namespace llvm;
 
-#define DEBUG_TYPE "asm-printer"
+#define DEBUG_TYPE "comet2-instprinter"
 
 // Include the auto-generated portion of the assembly writer.
 #define PRINT_ALIAS_INSTR

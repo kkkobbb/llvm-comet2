@@ -30,7 +30,7 @@
 #include "llvm/Support/Debug.h"
 using namespace llvm;
 
-#define DEBUG_TYPE "asm-printer"
+#define DEBUG_TYPE "comet2-asmprinter"
 
 namespace {
 class Comet2AsmPrinter : public AsmPrinter {
@@ -54,7 +54,7 @@ public:
 };
 }
 
-// NOTE 定義あり llvm/lib/CodeGen/AsmPrinter/AsmPrinter.cpp
+// NOTE llvm/lib/CodeGen/AsmPrinter/AsmPrinter.cpp EmitToStreamer
 #if 0
 void Comet2AsmPrinter::EmitToStreamer(MCStreamer &S, const MCInst &Inst) {
 }
@@ -69,7 +69,7 @@ void Comet2AsmPrinter::EmitInstruction(const MachineInstr *MI) {
 }
 
 #if 0
-// NOTE 定義あり llvm/lib/CodeGen/AsmPrinter/AsmPrinterInlineAsm.cpp
+// NOTE llvm/lib/CodeGen/AsmPrinter/AsmPrinterInlineAsm.cpp PrintAsmOperand
 // インラインアセンブラ用
 bool Comet2AsmPrinter::PrintAsmOperand(const MachineInstr *MI, unsigned OpNo,
                                       const char *ExtraCode, raw_ostream &OS) {
@@ -78,7 +78,7 @@ bool Comet2AsmPrinter::PrintAsmOperand(const MachineInstr *MI, unsigned OpNo,
 }
 #endif
 
-// NOTE 定義あり llvm/lib/CodeGen/AsmPrinter/AsmPrinterInlineAsm.cpp
+// NOTE llvm/lib/CodeGen/AsmPrinter/AsmPrinterInlineAsm.cpp PrintAsmMemoryOperand
 #if 0
 // インラインアセンブラ用
 bool Comet2AsmPrinter::PrintAsmMemoryOperand(const MachineInstr *MI,

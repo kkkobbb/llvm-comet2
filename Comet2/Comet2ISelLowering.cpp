@@ -36,7 +36,7 @@
 
 using namespace llvm;
 
-#define DEBUG_TYPE "comet2-lower"
+#define DEBUG_TYPE "comet2-isellowering"
 
 //===----------------------------------------------------------------------===//
 //             Formal Arguments Calling Convention Implementation
@@ -155,7 +155,7 @@ SDValue Comet2TargetLowering::lowerBB_CC(SDValue Op, SelectionDAG &DAG) const {
   return DAG.getNode(jumpNT, dl, Op.getValueType(), Chain, Dest, compNode);
 }
 
-// NOTE 宣言あり llvm/include/llvm/CodeGen/TargetLowering.h
+// NOTE llvm/include/llvm/CodeGen/TargetLowering.h EmitInstrWithCustomInserter
 MachineBasicBlock *
 Comet2TargetLowering::EmitInstrWithCustomInserter(MachineInstr &MI,
                                                   MachineBasicBlock *BB) const {
@@ -164,7 +164,7 @@ Comet2TargetLowering::EmitInstrWithCustomInserter(MachineInstr &MI,
   return BB;
 }
 
-// NOTE 定義あり llvm/include/llvm/CodeGen/TargetLowering.h
+// NOTE llvm/include/llvm/CodeGen/TargetLowering.h LowerFormalArguments
 // Transform physical registers into virtual registers.
 SDValue Comet2TargetLowering::LowerFormalArguments(
     SDValue Chain, CallingConv::ID CallConv, bool IsVarArg,
@@ -243,7 +243,7 @@ SDValue Comet2TargetLowering::LowerFormalArguments(
   return Chain;
 }
 
-// NOTE 定義あり llvm/include/llvm/CodeGen/TargetLowering.h
+// NOTE llvm/include/llvm/CodeGen/TargetLowering.h LowerCall
 // Lower a call to a callseq_start + CALL + callseq_end chain, and add input
 // and output parameter nodes.
 SDValue Comet2TargetLowering::LowerCall(CallLoweringInfo &CLI,
@@ -482,7 +482,7 @@ Comet2TargetLowering::LowerReturn(SDValue Chain, CallingConv::ID CallConv,
   return DAG.getNode(Comet2ISD::RET, DL, MVT::Other, RetOps);
 }
 
-// NOTE 定義あり llvm/lib/CodeGen/SelectionDAG/TargetLowering.cpp
+// NOTE llvm/lib/CodeGen/SelectionDAG/TargetLowering.cpp getTargetNodeName
 // ノード名を返す
 const char *Comet2TargetLowering::getTargetNodeName(unsigned Opcode) const {
   switch ((Comet2ISD::NodeType)Opcode) {

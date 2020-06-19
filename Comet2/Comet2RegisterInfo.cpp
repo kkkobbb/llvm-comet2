@@ -22,7 +22,7 @@
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/ErrorHandling.h"
 
-#define DEBUG_TYPE "comet2-reginfo"
+#define DEBUG_TYPE "comet2-registerinfo"
 
 #define GET_REGINFO_ENUM
 #define GET_REGINFO_TARGET_DESC

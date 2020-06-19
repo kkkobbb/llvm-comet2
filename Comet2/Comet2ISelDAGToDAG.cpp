@@ -20,7 +20,7 @@
 #include "llvm/Support/raw_ostream.h"
 using namespace llvm;
 
-#define DEBUG_TYPE "comet2-isel"
+#define DEBUG_TYPE "comet2-iseldagtodag"
 
 // Comet2-specific code to select Comet2 machine instructions for
 // SelectionDAG operations.

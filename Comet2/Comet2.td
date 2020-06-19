@@ -15,15 +15,6 @@ include "llvm/Target/Target.td"
 // nothing
 
 //===----------------------------------------------------------------------===//
-// Named operands for CSR instructions.
-//===----------------------------------------------------------------------===//
-
-// NOTE CSR (Control/Status Register)
-
-// TODO 必要?
-//include "Comet2SystemOperands.td"
-
-//===----------------------------------------------------------------------===//
 // Registers, calling conventions, instruction descriptions.
 //===----------------------------------------------------------------------===//
 
@@ -53,5 +44,6 @@ def Comet2 : Target {
   let InstructionSet = Comet2InstrInfo;
   let AssemblyWriters = [Comet2AsmWriter];
   // NOTE レジスタ割り当て後のレジスタ名変更をしてもいいか
+  // NOTE (MachineCopyPropagation最適化を適用するかに影響してるっぽい) <https://reviews.llvm.org/D43042>
   let AllowRegisterRenaming = 1;
 }
