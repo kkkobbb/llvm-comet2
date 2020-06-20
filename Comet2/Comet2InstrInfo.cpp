@@ -98,7 +98,7 @@ void Comet2InstrInfo::storeRegToStackSlot(MachineBasicBlock &MBB,
   BuildMI(MBB, I, DL, get(Comet2::ST))
       .addReg(SrcReg, getKillRegState(IsKill))
       .addFrameIndex(FI)
-      .addImm(0);  // TODO フレームインデックスの指定はこれでいい？
+      .addImm(0);
 }
 
 void Comet2InstrInfo::loadRegFromStackSlot(MachineBasicBlock &MBB,
@@ -112,65 +112,36 @@ void Comet2InstrInfo::loadRegFromStackSlot(MachineBasicBlock &MBB,
 
   BuildMI(MBB, I, DL, get(Comet2::LD), DstReg)
       .addFrameIndex(FI)
-      .addImm(0);  // TODO フレームインデックスの指定はこれでいい？
+      .addImm(0);
 }
 
-static unsigned getOppositeBranchOpcode(int Opc) {
-  // TODO 分岐なし
-  llvm_unreachable("Unrecognized conditional branch");
-}
-
+// NOTE llvm/include/llvm/CodeGen/TargetInstrInfo.h
 bool Comet2InstrInfo::analyzeBranch(MachineBasicBlock &MBB,
                                     MachineBasicBlock *&TBB,
                                     MachineBasicBlock *&FBB,
                                     SmallVectorImpl<MachineOperand> &Cond,
                                     bool AllowModify) const {
-  // TODO branch etc
+  LLVM_DEBUG(dbgs() << "### analyzeBranch " << MBB << "\n");
+  // 分岐関係で独自の処理を追加する場合はここに記述する
+  // removeBranch insertBranch はこの関数が成功したとき(falseを返したとき?)に呼び出される
   // 未実装の場合はtrueを返す
   return true;
 }
 
-unsigned Comet2InstrInfo::removeBranch(MachineBasicBlock &MBB,
-                                      int *BytesRemoved) const {
-  // TODO branch etc
-  llvm_unreachable("Target doesn't implement Comet2InstrInfo::removeBranch");
-}
-
-unsigned Comet2InstrInfo::insertBranch(
-    MachineBasicBlock &MBB, MachineBasicBlock *TBB, MachineBasicBlock *FBB,
-    ArrayRef<MachineOperand> Cond, const DebugLoc &DL, int *BytesAdded) const {
-  // TODO branch etc
-  llvm_unreachable("Target doesn't implement Comet2InstrInfo::insertBranch!");
-}
-
-unsigned Comet2InstrInfo::insertIndirectBranch(MachineBasicBlock &MBB,
-                                               MachineBasicBlock &DestBB,
-                                               const DebugLoc &DL,
-                                               int64_t BrOffset,
-                                               RegScavenger *RS) const {
-  // TODO branch etc
-  llvm_unreachable("Target doesn't implement Comet2InstrInfo::insertIndirectBranch!");
-}
-
-bool Comet2InstrInfo::reverseBranchCondition(
-    SmallVectorImpl<MachineOperand> &Cond) const {
-  // TODO RISCVのまま
-  assert((Cond.size() == 3) && "Invalid branch condition!");
-  Cond[0].setImm(getOppositeBranchOpcode(Cond[0].getImm()));
-  return false;
-}
-
 MachineBasicBlock *
 Comet2InstrInfo::getBranchDestBlock(const MachineInstr &MI) const {
+  LLVM_DEBUG(dbgs() << "### getBranchDestBlock " << MI << "\n");
+  // TODO brを使ったコードをコンパイルしても呼び出されない
   assert(MI.getDesc().isBranch() && "Unexpected opcode!");
-  // TODO RISCVのまま
-  // The branch target is always the last operand.
+  // Comet2では分岐先は常に最後のオペランドに格納している
   int NumOp = MI.getNumExplicitOperands();
   return MI.getOperand(NumOp - 1).getMBB();
 }
 
 bool Comet2InstrInfo::isBranchOffsetInRange(unsigned BranchOp,
                                            int64_t BrOffset) const {
+  LLVM_DEBUG(dbgs() << "### isBranchOffsetInRange " << BranchOp << "\n");
+  // TODO brを使ったコードをコンパイルしても呼び出されない
   // ジャンプ可能な範囲内なら真を返す
   return isIntN(16, BrOffset);  // BrOffsetを符号付き16bitで表現できる場合、真
 }

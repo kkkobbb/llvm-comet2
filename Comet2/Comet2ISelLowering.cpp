@@ -69,7 +69,9 @@ Comet2TargetLowering::Comet2TargetLowering(const TargetMachine &TM,
 
   // NOTE ISD::SETLE等の条件の場合、setCondCodeAction()を使う
 
-  // TODO gcc での __atomic_* 関数対応かどうか？
+  // NOTE llvm/include/llvm/CodeGen/TargetLowering.h setMaxAtomicSizeInBitsSupported
+  // NOTE バックエンドがサポートする最大のアトミック操作のサイズ
+  // これより大きい場合、__atomic_*ライブラリに展開される
   setMaxAtomicSizeInBitsSupported(0);
 
   // booleanの表現型
@@ -156,12 +158,12 @@ SDValue Comet2TargetLowering::lowerBB_CC(SDValue Op, SelectionDAG &DAG) const {
 }
 
 // NOTE llvm/include/llvm/CodeGen/TargetLowering.h EmitInstrWithCustomInserter
+// NOTE *.td等でusesCustomInserterを設定した命令がある場合この関数が呼び出される
 MachineBasicBlock *
 Comet2TargetLowering::EmitInstrWithCustomInserter(MachineInstr &MI,
                                                   MachineBasicBlock *BB) const {
-  // TODO 実装不要？
+  // Comet2では不要
   llvm_unreachable("Unexpected instr type to insert");
-  return BB;
 }
 
 // NOTE llvm/include/llvm/CodeGen/TargetLowering.h LowerFormalArguments
@@ -444,7 +446,7 @@ Comet2TargetLowering::LowerReturn(SDValue Chain, CallingConv::ID CallConv,
   LLVM_DEBUG(dbgs() << "### LowerReturn\n");
   LLVM_DEBUG(Chain->dumpr());
 
-  // TODO RISCVからの抜粋
+  // NOTE RISCV参考
 
   // Stores the assignment of the return value to a location.
   SmallVector<CCValAssign, 16> RVLocs;
