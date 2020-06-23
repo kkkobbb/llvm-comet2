@@ -127,6 +127,21 @@ def OR   : Comet2InstRegAdrSet<0x31, "OR",   or>;
 def XOR  : Comet2InstRegAdrSet<0x32, "XOR",  xor>;
 
 
+// 算術命令 register,immediate,register
+// (adr+x)をアドレスとしてではなく値として使う
+class Comet2InstRegImmRegSet<bits<8> op, string asmstr, SDNode OpNode>
+    : Comet2InstRegAdr<op, (outs IntRegs:$r), (ins IntRegs:$src, IntRegs:$x),
+                       !strconcat(asmstr, " $r,0,$x"),
+                       [(set IntRegs:$r, (OpNode IntRegs:$src, IntRegs:$x))]> {
+  let Defs = [FR];
+  let Constraints = "$src = $r";
+}
+def SLA : Comet2InstRegImmRegSet<0x50, "SLA",  shl>;
+// TODO SLL 相当の命令
+def SRA : Comet2InstRegImmRegSet<0x51, "SRA",  sra>;
+def SRL : Comet2InstRegImmRegSet<0x53, "SRL",  srl>;
+
+
 // Load/Store命令
 // メモリロード
 let Defs = [FR] in

@@ -163,16 +163,16 @@
 ### shift instruction
 * `SLA  r, adr [,x]`
     * `0x50 0xhh 0xhh 0xhh`
-    * `r <- r << mem(adr + x) (set FR)`
+    * `r <- r << (adr + x) (set FR)`
 * `SRA  r, adr [,x]`
     * `0x51 0xhh 0xhh 0xhh`
-    * `r <- r >> mem(adr + x) (set FR)`
+    * `r <- r >> (adr + x) (set FR)`
 * `SLL  r, adr [,x]`
     * `0x52 0xhh 0xhh 0xhh`
-    * `r <- r << mem(adr + x) (set FR)`
+    * `r <- r << (adr + x) (set FR)`
 * `SRL  r, adr [,x]`
     * `0x53 0xhh 0xhh 0xhh`
-    * `r <- r >> mem(adr + x) (set FR)`
+    * `r <- r >> (adr + x) (set FR)`
 
 ### jump instruction
 * `JMI  adr [,x]`
