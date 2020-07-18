@@ -22,7 +22,7 @@ class Comet2FrameLowering : public TargetFrameLowering {
 public:
   explicit Comet2FrameLowering(const Comet2Subtarget &STI)
       : TargetFrameLowering(StackGrowsDown,
-                            /*StackAlignment=*/16,
+                            /*StackAlignment=*/Align(16),
                             /*LocalAreaOffset=*/0),
         STI(STI) {}
 

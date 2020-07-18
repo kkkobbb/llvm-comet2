@@ -50,7 +50,8 @@ static MCRegisterInfo *createComet2MCRegisterInfo(const Triple &TT) {
 }
 
 static MCAsmInfo *createComet2MCAsmInfo(const MCRegisterInfo &MRI,
-                                        const Triple &TT) {
+                                        const Triple &TT,
+                                        const MCTargetOptions &Options) {
   MCAsmInfo *MAI = new Comet2MCAsmInfo(TT);
 
   Register SP = MRI.getDwarfRegNum(Comet2::GR7, true);
@@ -91,7 +92,7 @@ static MCTargetStreamer *createComet2AsmTargetStreamer(MCStreamer &S,
   return new Comet2TargetAsmStreamer(S, OS);
 }
 
-extern "C" void LLVMInitializeComet2TargetMC() {
+extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeComet2TargetMC() {
   // NOTE llvm/include/llvm/Support/TargetRegistry.h getTheFooTarget
   Target &T = getTheComet2Target();  // TODO 型は正しい？
   TargetRegistry::RegisterMCAsmInfo(T, createComet2MCAsmInfo);

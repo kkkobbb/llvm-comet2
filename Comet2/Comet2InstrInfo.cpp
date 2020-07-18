@@ -79,8 +79,8 @@ unsigned Comet2InstrInfo::isStoreToStackSlot(const MachineInstr &MI,
 
 void Comet2InstrInfo::copyPhysReg(MachineBasicBlock &MBB,
                                   MachineBasicBlock::iterator MBBI,
-                                  const DebugLoc &DL, unsigned DstReg,
-                                  unsigned SrcReg, bool KillSrc) const {
+                                  const DebugLoc &DL, MCRegister DstReg,
+                                  MCRegister SrcReg, bool KillSrc) const {
   BuildMI(MBB, MBBI, DL, get(Comet2::LDREG))
       .addReg(DstReg, RegState::Define)
       .addReg(SrcReg, getKillRegState(KillSrc));

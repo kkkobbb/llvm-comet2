@@ -30,9 +30,10 @@ using namespace llvm;
 #define PRINT_ALIAS_INSTR
 #include "Comet2GenAsmWriter.inc"
 
-void Comet2InstPrinter::printInst(const MCInst *MI, raw_ostream &O,
-                                 StringRef Annot, const MCSubtargetInfo &STI) {
-  printInstruction(MI, O);
+void Comet2InstPrinter::printInst(const MCInst *MI, uint64_t Address,
+                                  StringRef Annot, const MCSubtargetInfo &STI,
+                                  raw_ostream &O) {
+  printInstruction(MI, Address, O);
   printAnnotation(O, Annot);
 }
 

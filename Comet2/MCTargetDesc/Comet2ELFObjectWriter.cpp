@@ -56,5 +56,5 @@ unsigned Comet2ELFObjectWriter::getRelocType(MCContext &Ctx,
 
 std::unique_ptr<MCObjectTargetWriter>
 llvm::createComet2ELFObjectWriter(uint8_t OSABI, bool Is64Bit) {
-  return llvm::make_unique<Comet2ELFObjectWriter>(OSABI, Is64Bit);
+  return std::make_unique<Comet2ELFObjectWriter>(OSABI, Is64Bit);
 }

@@ -7,8 +7,8 @@
     * llvmソースコードのトップディレクトリを `$LLVM_ROOT` とする
 2. ソースコード修正
     * `cd $LLVM_ROOT`
-    * `git checkout llvmorg-9.0.0`
-        * 9.0.0のバージョンにする
+    * `git checkout llvmorg-10.0.0`
+        * バージョンを指定する
     * `git apply ~/llvm-comet2/patches/comet2.patch`
         * `patches/` 内のパッチファイルを `$LLVM_ROOT` に適用する
 3. 追加ソースコードの配置
