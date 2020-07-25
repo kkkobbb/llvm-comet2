@@ -25,8 +25,3 @@ Comet2MCAsmInfo::Comet2MCAsmInfo(const Triple &TT) {
   CommentString = ";";
   LabelSuffix = " NOP "; // ラベル単体は不可
 }
-
-bool
-Comet2MCAsmInfo::shouldOmitSectionDirective(StringRef SectionName) const {
-    return true;
-}

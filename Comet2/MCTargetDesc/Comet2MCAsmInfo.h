@@ -25,7 +25,6 @@ class Comet2MCAsmInfo : public MCAsmInfoELF {
 
 public:
   explicit Comet2MCAsmInfo(const Triple &TargetTriple);
-  bool shouldOmitSectionDirective(StringRef SectionName) const override;
 };
 
 } // namespace llvm
