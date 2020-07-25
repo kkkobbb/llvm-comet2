@@ -24,4 +24,6 @@ Comet2MCAsmInfo::Comet2MCAsmInfo(const Triple &TT) {
   CodePointerSize = CalleeSaveStackSlotSize = 2;
   CommentString = ";";
   LabelSuffix = " NOP "; // ラベル単体は不可
+  PrivateGlobalPrefix = "L";
+  PrivateLabelPrefix = "L";
 }
