@@ -118,6 +118,7 @@
 ## debugメッセージ
 * `ISEL: Starting pattern match`でのindex番号は以下参考
     * `ビルド用ディレクトリ/lib/Target/Comet2/Comet2GenDAGISel.inc` `MatcherTable`
+* 対応するパターンがない場合、(set reg reg) にマッチすることが多い
 
 
 ## 実行時の流れ
