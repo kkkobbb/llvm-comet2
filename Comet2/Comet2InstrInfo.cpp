@@ -92,7 +92,7 @@ void Comet2InstrInfo::copyPhysReg(MachineBasicBlock &MBB,
 
 void Comet2InstrInfo::storeRegToStackSlot(MachineBasicBlock &MBB,
                                           MachineBasicBlock::iterator I,
-                                          unsigned SrcReg, bool IsKill, int FI,
+                                          Register SrcReg, bool IsKill, int FI,
                                           const TargetRegisterClass *RC,
                                           const TargetRegisterInfo *TRI) const {
   DebugLoc DL;
@@ -107,7 +107,7 @@ void Comet2InstrInfo::storeRegToStackSlot(MachineBasicBlock &MBB,
 
 void Comet2InstrInfo::loadRegFromStackSlot(MachineBasicBlock &MBB,
                                            MachineBasicBlock::iterator I,
-                                           unsigned DstReg, int FI,
+                                           Register DstReg, int FI,
                                            const TargetRegisterClass *RC,
                                            const TargetRegisterInfo *TRI) const {
   DebugLoc DL;

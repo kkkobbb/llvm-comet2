@@ -41,7 +41,7 @@ public:
 
   StringRef getPassName() const override { return "Comet2 Assembly Printer"; }
 
-  void EmitInstruction(const MachineInstr *MI) override;
+  void emitInstruction(const MachineInstr *MI) override;
 
 #if 0
   bool PrintAsmOperand(const MachineInstr *MI, unsigned OpNo,
@@ -60,8 +60,8 @@ void Comet2AsmPrinter::EmitToStreamer(MCStreamer &S, const MCInst &Inst) {
 }
 #endif
 
-void Comet2AsmPrinter::EmitInstruction(const MachineInstr *MI) {
-  LLVM_DEBUG(dbgs() << "### EmitInstruction " << *MI << "\n");
+void Comet2AsmPrinter::emitInstruction(const MachineInstr *MI) {
+  LLVM_DEBUG(dbgs() << "### emitInstruction " << *MI << "\n");
   // TODO 実装はこれでいい？
   MCInst TmpInst;
   LowerComet2MachineInstrToMCInst(MI, TmpInst, *this);

@@ -7,7 +7,7 @@
     * llvmソースコードのトップディレクトリを `$LLVM_ROOT` とする
 2. ソースコード修正
     * `cd $LLVM_ROOT`
-    * `git checkout -B llvm-comet2-10.0.0 llvmorg-10.0.0`
+    * `git checkout -B llvm-comet2-11.1.0 llvmorg-11.1.0`
         * バージョンを指定してブランチ作成
     * `git apply ~/llvm-comet2/llvm.patch`
         * `patches/` 内のパッチファイルを `$LLVM_ROOT` に適用する

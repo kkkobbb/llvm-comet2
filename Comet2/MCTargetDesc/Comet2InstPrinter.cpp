@@ -33,7 +33,9 @@ using namespace llvm;
 void Comet2InstPrinter::printInst(const MCInst *MI, uint64_t Address,
                                   StringRef Annot, const MCSubtargetInfo &STI,
                                   raw_ostream &O) {
-  printInstruction(MI, Address, O);
+  const MCInst *NewMI = MI;
+  if (!printAliasInstr(NewMI, Address, O))
+    printInstruction(NewMI, Address, O);
   printAnnotation(O, Annot);
 }
 

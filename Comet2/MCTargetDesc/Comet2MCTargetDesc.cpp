@@ -53,18 +53,13 @@ static MCAsmInfo *createComet2MCAsmInfo(const MCRegisterInfo &MRI,
                                         const Triple &TT,
                                         const MCTargetOptions &Options) {
   MCAsmInfo *MAI = new Comet2MCAsmInfo(TT);
-
-  Register SP = MRI.getDwarfRegNum(Comet2::GR7, true);
-  MCCFIInstruction Inst = MCCFIInstruction::createDefCfa(nullptr, SP, 0);
-  MAI->addInitialFrameState(Inst);
-
   return MAI;
 }
 
 static MCSubtargetInfo *createComet2MCSubtargetInfo(const Triple &TT,
                                                     StringRef CPU, StringRef FS) {
   // TODO subtargetがない場合は？
-  std::string CPUName = CPU;
+  std::string CPUName = std::string(CPU);
   return createComet2MCSubtargetInfoImpl(TT, CPUName, FS);
 }
 
