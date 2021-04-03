@@ -35,6 +35,7 @@ using namespace llvm;
 Comet2InstrInfo::Comet2InstrInfo()
     : Comet2GenInstrInfo(Comet2::ADJCALLSTACKDOWN, Comet2::ADJCALLSTACKUP) {}
 
+// TODO 不要？ 不要なロードストアを削除するとき等に使用しているっぽい
 unsigned Comet2InstrInfo::isLoadFromStackSlot(const MachineInstr &MI,
                                               int &FrameIndex) const {
 
@@ -47,6 +48,7 @@ unsigned Comet2InstrInfo::isLoadFromStackSlot(const MachineInstr &MI,
     break;
   }
 
+  // TODO RISCVのまま
   if (MI.getOperand(1).isFI() && MI.getOperand(2).isImm() &&
       MI.getOperand(2).getImm() == 0) {
     FrameIndex = MI.getOperand(1).getIndex();
@@ -56,6 +58,7 @@ unsigned Comet2InstrInfo::isLoadFromStackSlot(const MachineInstr &MI,
   return 0;
 }
 
+// TODO 不要？ 不要なロードストアを削除するとき等に使用しているっぽい
 unsigned Comet2InstrInfo::isStoreToStackSlot(const MachineInstr &MI,
                                              int &FrameIndex) const {
 
@@ -68,6 +71,7 @@ unsigned Comet2InstrInfo::isStoreToStackSlot(const MachineInstr &MI,
     break;
   }
 
+  // TODO RISCVのまま
   if (MI.getOperand(0).isFI() && MI.getOperand(1).isImm() &&
       MI.getOperand(1).getImm() == 0) {
     FrameIndex = MI.getOperand(0).getIndex();
@@ -128,6 +132,7 @@ bool Comet2InstrInfo::analyzeBranch(MachineBasicBlock &MBB,
   return true;
 }
 
+// TODO 実装していないアーキテクチャもあるので不要？
 MachineBasicBlock *
 Comet2InstrInfo::getBranchDestBlock(const MachineInstr &MI) const {
   LLVM_DEBUG(dbgs() << "### getBranchDestBlock " << MI << "\n");
@@ -138,6 +143,7 @@ Comet2InstrInfo::getBranchDestBlock(const MachineInstr &MI) const {
   return MI.getOperand(NumOp - 1).getMBB();
 }
 
+// TODO 実装していないアーキテクチャもあるので不要？
 bool Comet2InstrInfo::isBranchOffsetInRange(unsigned BranchOp,
                                            int64_t BrOffset) const {
   LLVM_DEBUG(dbgs() << "### isBranchOffsetInRange " << BranchOp << "\n");
