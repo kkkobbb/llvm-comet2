@@ -26,12 +26,13 @@ using namespace llvm;
 void Comet2Subtarget::anchor() {}
 
 Comet2Subtarget::Comet2Subtarget(const Triple &TT, StringRef CPU, StringRef FS,
-                               StringRef ABIName, const TargetMachine &TM)
-    : Comet2GenSubtargetInfo(TT, CPU, FS),
+                                 StringRef ABIName, const TargetMachine &TM)
+    : Comet2GenSubtargetInfo(TT, CPU, /*TuneCPU*/ CPU, FS),
       FrameLowering(*this),
       InstrInfo(), RegInfo(getHwMode()), TLInfo(TM, *this) {
-  std::string CPUName = "comet2";
+  if (CPU.empty())
+    CPU = "comet2";
 
-  ParseSubtargetFeatures(CPUName, FS);
+  ParseSubtargetFeatures(CPU, /*TuneCPU*/ CPU, FS);
 }
 

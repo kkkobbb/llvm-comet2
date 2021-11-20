@@ -59,8 +59,7 @@ static MCAsmInfo *createComet2MCAsmInfo(const MCRegisterInfo &MRI,
 static MCSubtargetInfo *createComet2MCSubtargetInfo(const Triple &TT,
                                                     StringRef CPU, StringRef FS) {
   // TODO subtargetがない場合は？
-  std::string CPUName = std::string(CPU);
-  return createComet2MCSubtargetInfoImpl(TT, CPUName, FS);
+  return createComet2MCSubtargetInfoImpl(TT, CPU, /*TuneCPU*/ CPU, FS);
 }
 
 static MCInstPrinter *createComet2MCInstPrinter(const Triple &T,

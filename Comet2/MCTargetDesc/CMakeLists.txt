@@ -1,4 +1,4 @@
-add_llvm_library(LLVMComet2Desc
+add_llvm_component_library(LLVMComet2Desc
   Comet2AsmBackend.cpp
   Comet2ELFObjectWriter.cpp
   Comet2InstPrinter.cpp
@@ -8,4 +8,12 @@ add_llvm_library(LLVMComet2Desc
   Comet2MCTargetDesc.cpp
   Comet2TargetStreamer.cpp
   Comet2ELFStreamer.cpp
+
+  LINK_COMPONENTS
+  MC
+  Comet2Info
+  Support
+
+  ADD_TO_COMPONENT
+  Comet2
 )

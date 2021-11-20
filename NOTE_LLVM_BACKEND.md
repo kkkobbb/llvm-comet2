@@ -9,7 +9,6 @@
             * 公式にあるターゲットでも必要な場合がある
         * 自分で追加した場合はこのオプションを指定する
         * `Target/` に配置したディレクトリ名を指定する
-        * このオプションを指定すれば、`MakeLists.txt` `LLVMBuild.txt`は変更しなくていい？
     * `-DLLVM_TARGETS_TO_BUILD=Comet2`
         * このオプションで指定したマシンのみビルド対象にする
         * `Target/` に配置したディレクトリ名を指定する
@@ -25,7 +24,9 @@
 ### Target以外のコード修正
 * `$LLVM_ROOT/llvm/include/llvm/ADT/Triple.h`
 * `$LLVM_ROOT/llvm/lib/Support/Triple.cpp`
-* `$LLVM_ROOT/llvm/lib/Target/LLVMBuild.txt`
+
+* LLVM 12以降ではLLVMBuild.txtの仕組みが削除されたので不要
+    * `$LLVM_ROOT/llvm/lib/Target/LLVMBuild.txt`
 
 ### ビルド時のエラー
 * `llvm::CGIOperandList::getSubOperandNumber(unsigned int) const: Assertion i < OperandList.size() && "Invalid flat operand #"' failed.`

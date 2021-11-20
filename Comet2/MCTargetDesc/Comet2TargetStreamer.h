@@ -13,6 +13,8 @@
 
 namespace llvm {
 
+class formatted_raw_ostream;
+
 class Comet2TargetStreamer : public MCTargetStreamer {
 public:
   Comet2TargetStreamer(MCStreamer &S);

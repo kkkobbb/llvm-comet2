@@ -1,3 +1,5 @@
+add_llvm_component_group(Comet2)
+
 set(LLVM_TARGET_DEFINITIONS Comet2.td)
 
 tablegen(LLVM Comet2GenAsmMatcher.inc -gen-asm-matcher)
@@ -26,6 +28,21 @@ add_llvm_target(Comet2CodeGen
   Comet2Subtarget.cpp
   Comet2TargetMachine.cpp
   Comet2TargetObjectFile.cpp
+
+  LINK_COMPONENTS
+  Analysis
+  AsmPrinter
+  Core
+  CodeGen
+  MC
+  Comet2Desc
+  Comet2Info
+  SelectionDAG
+  Support
+  Target
+
+  ADD_TO_COMPONENT
+  Comet2
   )
 
 add_subdirectory(MCTargetDesc)
