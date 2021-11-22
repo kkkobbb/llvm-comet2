@@ -24,13 +24,11 @@ def GR5 : Comet2Reg<5, "GR5">, DwarfRegNum<[5]>;
 def GR6 : Comet2Reg<6, "GR6">, DwarfRegNum<[6]>;
 def GR7 : Comet2Reg<7, "GR7">, DwarfRegNum<[7]>;
 def FR  : Comet2Reg<8, "FR">,  DwarfRegNum<[8]>;
-
-def IntRegsAll : RegisterClass<"Comet2", [i16], 16,
-  (add GR0, GR1, GR2, GR3, GR4, GR5, GR6, GR7)>;
+def SP  : Comet2Reg<9, "SP">,  DwarfRegNum<[9]>;
 
 def IntRegs : RegisterClass<"Comet2", [i16], 16,
-  (add GR1, GR2, GR3, GR4, GR5, GR6)>;
+  (add GR0, GR1, GR2, GR3, GR4, GR5, GR6, GR7)>;
 
-def FlagReg : RegisterClass<"Comet2", [i16], 16, (add FR)> {
+def FlagRegs : RegisterClass<"Comet2", [i16], 16, (add FR, SP)> {
   let CopyCost = -1;      // Don't allow copying of status registers
 }

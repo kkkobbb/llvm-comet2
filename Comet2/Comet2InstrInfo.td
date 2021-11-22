@@ -25,10 +25,6 @@ def Comet2Call : SDNode<"Comet2ISD::CALL", SDT_Comet2Call,
 def Comet2Ret : SDNode<"Comet2ISD::RET", SDTNone,
                        [SDNPHasChain, SDNPOptInGlue, SDNPVariadic]>;
 
-def SDT_Comet2St : SDTypeProfile<0, 3, []>;
-def Comet2StRegOffset : SDNode<"Comet2ISD::STREGOFFSET", SDT_Comet2St,
-                               [SDNPHasChain, SDNPInGlue, SDNPMayStore]>;
-
 def SDT_Comet2Comp : SDTypeProfile<0, 2, [SDTCisSameAs<0, 1>]>;
 def Comet2Cpa : SDNode<"Comet2ISD::CPA", SDT_Comet2Comp, [SDNPOutGlue]>;
 def Comet2Cpl : SDNode<"Comet2ISD::CPL", SDT_Comet2Comp, [SDNPOutGlue]>;
@@ -151,16 +147,13 @@ def LD : Comet2InstRegAdr<0x10, (outs IntRegs:$r), (ins mem:$adr),
 let mayStore = 1 in
 def ST : Comet2InstRegAdr<0x11, (outs), (ins IntRegs:$src, IntRegs:$dest, i16imm:$offset),
                           "ST $src,$offset,$dest", []>;
-// NOTE Pat 第1引数にマッチしたパターンを第2引数に変換する
-// NOTE llvm/include/llvm/Target/TargetSelectionDAG.td Pat
-// Comet2StRegOffsetはComet2ISelLowering.cpp内で記述された処理によって生成される
-def : Pat<(Comet2StRegOffset IntRegs:$src, IntRegs:$dest, immSExt16:$offset),
-          (ST IntRegs:$src, IntRegs:$dest, immSExt16:$offset)>;
 // NOTE PatFragで複数階層のパターンを1階層として扱うことができる
 // NOTE llvm/include/llvm/Target/TargetSelectionDAG.td PatFrag
 // (以下の場合、PatFragなしでもPatは記述できる)
 def StAddr : PatFrag<(ops node:$n1, node:$n2, node:$n3),
                      (store node:$n1, (addr node:$n2, node:$n3))>;
+// NOTE Pat 第1引数にマッチしたパターンを第2引数に変換する
+// NOTE llvm/include/llvm/Target/TargetSelectionDAG.td Pat
 def : Pat<(StAddr IntRegs:$src, IntRegs:$dest, immSExt16:$offset),
           (ST IntRegs:$src, IntRegs:$dest, immSExt16:$offset)>;
 // (store src, (add ...))よりも (store src, dest)のパターンが
@@ -174,6 +167,20 @@ def LAD : Comet2InstRegAdr<0x12, (outs IntRegs:$r), (ins i16imm:$adr),
 let Defs = [FR] in
 def LDREG : Comet2InstRegReg<0x14, (outs IntRegs:$r1), (ins IntRegs:$r2),
                              "LD $r1,$r2", [(set IntRegs:$r1, IntRegs:$r2)]>;
+
+let Defs = [SP], Uses = [SP] in {
+// pop レジスタ
+let hasSideEffects = 0, mayLoad = 1, mayStore = 0,
+    r2 = 0 in
+def POP : Comet2InstRegReg<0x70, (outs IntRegs:$rd), (ins),
+                           "POP $rd", []>;
+
+// push レジスタ
+let hasSideEffects = 0, mayLoad = 0, mayStore = 1,
+    r = 0 in
+def PUSH : Comet2InstRegAdr<0x71, (outs), (ins IntRegs:$rs, i16imm:$offset),
+                            "PUSH $offset,$rs", []>;
+}
 
 
 // Call命令
@@ -249,11 +256,9 @@ def JGEp : BranchPseudo<Comet2Jge>;  // <=
 
 
 // Callの開始終了を表す疑似命令
-let Defs = [GR7], Uses = [GR7] in {
 def ADJCALLSTACKDOWN : Comet2InstPseudo<(outs), (ins i16imm:$amt1, i16imm:$amt2),
                                         "!ADJCALLSTACKDOWN $amt1",
                                         [(callseq_start timm:$amt1, timm:$amt2)]>;
 def ADJCALLSTACKUP   : Comet2InstPseudo<(outs), (ins i16imm:$amt1, i16imm:$amt2),
                                         "!ADJCALLSTACKUP $amt1",
                                         [(callseq_end timm:$amt1, timm:$amt2)]>;
-}

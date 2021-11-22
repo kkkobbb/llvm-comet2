@@ -99,9 +99,9 @@ void Comet2InstrInfo::storeRegToStackSlot(MachineBasicBlock &MBB,
   if (I != MBB.end())
     DL = I->getDebugLoc();
 
-  BuildMI(MBB, I, DL, get(Comet2::ST))
+  // FI関係なくpushする (SPを変更できないため)
+  BuildMI(MBB, I, DL, get(Comet2::PUSH))
       .addReg(SrcReg, getKillRegState(IsKill))
-      .addFrameIndex(FI)
       .addImm(0);
 }
 
@@ -114,9 +114,8 @@ void Comet2InstrInfo::loadRegFromStackSlot(MachineBasicBlock &MBB,
   if (I != MBB.end())
     DL = I->getDebugLoc();
 
-  BuildMI(MBB, I, DL, get(Comet2::LD), DstReg)
-      .addFrameIndex(FI)
-      .addImm(0);
+  // FI関係なくpopする (SPを変更できないため)
+  BuildMI(MBB, I, DL, get(Comet2::POP), DstReg);
 }
 
 // NOTE llvm/include/llvm/CodeGen/TargetInstrInfo.h

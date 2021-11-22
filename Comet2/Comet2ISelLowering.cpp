@@ -54,8 +54,6 @@ Comet2TargetLowering::Comet2TargetLowering(const TargetMachine &TM,
   // Compute derived properties from the register classes.
   computeRegisterProperties(STI.getRegisterInfo());
 
-  setStackPointerRegisterToSaveRestore(Comet2::GR7);
-
   // NOTE Promote 型を大きな型として扱う
   setOperationAction(ISD::EXTLOAD,  MVT::i1,  Promote);
   setOperationAction(ISD::EXTLOAD,  MVT::i8,  Promote);
@@ -343,20 +341,8 @@ SDValue Comet2TargetLowering::LowerCall(CallLoweringInfo &CLI,
   if (HasStackArgs) {
     LLVM_DEBUG(dbgs() << "### LowerCall HasStack\n");
     for (AE = AI, AI = ArgLocs.size(); AI != AE; --AI) {
-      unsigned Loc = AI - 1;
-      CCValAssign &VA = ArgLocs[Loc];
-      SDValue Arg = OutVals[Loc];
-
-      assert(VA.isMemLoc());
-
-      // スタックに引数を格納する
-      // ここで(store reg1, (add reg2, offset))のようなノードを作るとうまく変換してくれないため
-      // 専用のノードSTREGOFFSETを生成している
-      // NOTE Comet2InstrInfo.tdの定義でSDNPHasChainを指定しているのでChainを渡す必要がある
-      Chain = DAG.getNode(Comet2ISD::STREGOFFSET, DL, getPointerTy(DAG.getDataLayout()),
-          Chain, Arg,
-          DAG.getRegister(Comet2::GR7, getPointerTy(DAG.getDataLayout())),
-          DAG.getIntPtrConstant(VA.getLocMemOffset(), DL));
+      // Comet2ではSPを直接読み書きする手段がないため、スタックに引数を格納しても取り出すのが面倒になる
+      report_fatal_error("Unsupported stack arguments");
     }
   }
 
@@ -494,8 +480,6 @@ const char *Comet2TargetLowering::getTargetNodeName(unsigned Opcode) const {
     return "Comet2ISD::CALL";
   case Comet2ISD::RET:
     return "Comet2ISD::RET";
-  case Comet2ISD::STREGOFFSET:
-    return "Comet2ISD::STREGOFFSET";
   case Comet2ISD::CPA:
     return "Comet2ISD::CPA";
   case Comet2ISD::CPL:

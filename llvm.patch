@@ -1,61 +1,61 @@
 diff --git a/llvm/include/llvm/ADT/Triple.h b/llvm/include/llvm/ADT/Triple.h
-index 6bad18f19244..1399e416a844 100644
+index 76f3514050f0..19ac536acdfe 100644
 --- a/llvm/include/llvm/ADT/Triple.h
 +++ b/llvm/include/llvm/ADT/Triple.h
-@@ -97,6 +97,7 @@ public:
-     wasm64,         // WebAssembly with 64-bit pointers
+@@ -101,6 +101,7 @@ public:
      renderscript32, // 32-bit RenderScript
      renderscript64, // 64-bit RenderScript
-+    comet2,         // COMET-II
      ve,             // NEC SX-Aurora Vector Engine
++    comet2,         // COMET-II
      LastArchType = ve
    };
+   enum SubArchType {
 diff --git a/llvm/lib/Support/Triple.cpp b/llvm/lib/Support/Triple.cpp
-index fec1985ccaca..37b09465b5c6 100644
+index 88311546354b..39d7b80100e7 100644
 --- a/llvm/lib/Support/Triple.cpp
 +++ b/llvm/lib/Support/Triple.cpp
-@@ -75,6 +75,7 @@ StringRef Triple::getArchTypeName(ArchType Kind) {
-   case x86:            return "i386";
-   case x86_64:         return "x86_64";
-   case xcore:          return "xcore";
+@@ -36,6 +36,7 @@ StringRef Triple::getArchTypeName(ArchType Kind) {
+   case avr:            return "avr";
+   case bpfeb:          return "bpfeb";
+   case bpfel:          return "bpfel";
 +  case comet2:         return "comet2";
-   }
- 
-   llvm_unreachable("Invalid ArchType!");
-@@ -151,6 +152,8 @@ StringRef Triple::getArchTypePrefix(ArchType Kind) {
-   case riscv64:     return "riscv";
+   case csky:           return "csky";
+   case hexagon:        return "hexagon";
+   case hsail64:        return "hsail64";
+@@ -158,6 +159,8 @@ StringRef Triple::getArchTypePrefix(ArchType Kind) {
  
    case ve:          return "ve";
+   case csky:        return "csky";
 +
 +  case comet2:      return "comet2";
    }
  }
  
-@@ -320,6 +323,7 @@ Triple::ArchType Triple::getArchTypeForLLVMName(StringRef Name) {
-     .Case("wasm64", wasm64)
-     .Case("renderscript32", renderscript32)
+@@ -332,6 +335,7 @@ Triple::ArchType Triple::getArchTypeForLLVMName(StringRef Name) {
      .Case("renderscript64", renderscript64)
-+    .Case("comet2", comet2)
      .Case("ve", ve)
+     .Case("csky", csky)
++    .Case("comet2", comet2)
      .Default(UnknownArch);
  }
-@@ -450,6 +454,7 @@ static Triple::ArchType parseArch(StringRef ArchName) {
-     .Case("ve", Triple::ve)
+ 
+@@ -465,6 +469,7 @@ static Triple::ArchType parseArch(StringRef ArchName) {
      .Case("wasm32", Triple::wasm32)
      .Case("wasm64", Triple::wasm64)
+     .Case("csky", Triple::csky)
 +    .Case("comet2", Triple::comet2)
      .Default(Triple::UnknownArch);
  
    // Some architectures require special parsing logic just to compute the
-@@ -710,6 +715,7 @@ static Triple::ObjectFormatType getDefaultFormat(const Triple &T) {
-   case Triple::tce:
-   case Triple::tcele:
-   case Triple::thumbeb:
+@@ -703,6 +708,7 @@ static Triple::ObjectFormatType getDefaultFormat(const Triple &T) {
+   case Triple::avr:
+   case Triple::bpfeb:
+   case Triple::bpfel:
 +  case Triple::comet2:
-   case Triple::ve:
-   case Triple::xcore:
-     return Triple::ELF;
-@@ -1242,6 +1248,7 @@ static unsigned getArchPointerBitWidth(llvm::Triple::ArchType Arch) {
+   case Triple::csky:
+   case Triple::hexagon:
+   case Triple::hsail64:
+@@ -1272,6 +1278,7 @@ static unsigned getArchPointerBitWidth(llvm::Triple::ArchType Arch) {
  
    case llvm::Triple::avr:
    case llvm::Triple::msp430:
@@ -63,15 +63,15 @@ index fec1985ccaca..37b09465b5c6 100644
      return 16;
  
    case llvm::Triple::aarch64_32:
-@@ -1324,6 +1331,7 @@ Triple Triple::get32BitArchVariant() const {
-   case Triple::ppc64le:
+@@ -1356,6 +1363,7 @@ Triple Triple::get32BitArchVariant() const {
+   case Triple::msp430:
    case Triple::systemz:
    case Triple::ve:
 +  case Triple::comet2:
      T.setArch(UnknownArch);
      break;
  
-@@ -1393,6 +1401,7 @@ Triple Triple::get64BitArchVariant() const {
+@@ -1431,6 +1439,7 @@ Triple Triple::get64BitArchVariant() const {
    case Triple::tce:
    case Triple::tcele:
    case Triple::xcore:
@@ -79,15 +79,15 @@ index fec1985ccaca..37b09465b5c6 100644
      T.setArch(UnknownArch);
      break;
  
-@@ -1476,6 +1485,7 @@ Triple Triple::getBigEndianArchVariant() const {
-   case Triple::x86_64:
+@@ -1516,6 +1525,7 @@ Triple Triple::getBigEndianArchVariant() const {
    case Triple::xcore:
    case Triple::ve:
+   case Triple::csky:
 +  case Triple::comet2:
  
    // ARM is intentionally unsupported here, changing the architecture would
    // drop any arch suffixes.
-@@ -1568,6 +1578,7 @@ bool Triple::isLittleEndian() const {
+@@ -1612,6 +1622,7 @@ bool Triple::isLittleEndian() const {
    case Triple::x86:
    case Triple::x86_64:
    case Triple::xcore:
@@ -95,15 +95,3 @@ index fec1985ccaca..37b09465b5c6 100644
      return true;
    default:
      return false;
-diff --git a/llvm/lib/Target/LLVMBuild.txt b/llvm/lib/Target/LLVMBuild.txt
-index e5a9d787e7fa..1c3956c9b986 100644
---- a/llvm/lib/Target/LLVMBuild.txt
-+++ b/llvm/lib/Target/LLVMBuild.txt
-@@ -24,6 +24,7 @@ subdirectories =
-  ARM
-  AVR
-  BPF
-+ Comet2
-  Hexagon
-  Lanai
-  MSP430

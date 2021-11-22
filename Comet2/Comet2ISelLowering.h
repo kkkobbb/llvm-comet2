@@ -26,8 +26,6 @@ enum NodeType : unsigned {
   CALL,
   RET,
 
-  STREGOFFSET,
-
   CPA,
   CPL,
   JZE,

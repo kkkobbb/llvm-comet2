@@ -43,9 +43,8 @@ BitVector Comet2RegisterInfo::getReservedRegs(const MachineFunction &MF) const {
   BitVector Reserved(getNumRegs());
 
   // Use markSuperRegs to ensure any register aliases are also reserved
-  markSuperRegs(Reserved, Comet2::GR0); // return
-  markSuperRegs(Reserved, Comet2::GR7); // stack pointer
   markSuperRegs(Reserved, Comet2::FR);  // flag register
+  markSuperRegs(Reserved, Comet2::SP);  // stack pointer
   assert(checkAllSuperRegsMarked(Reserved));
   return Reserved;
 }
@@ -78,7 +77,7 @@ void Comet2RegisterInfo::eliminateFrameIndex(MachineBasicBlock::iterator II,
 }
 
 Register Comet2RegisterInfo::getFrameRegister(const MachineFunction &MF) const {
-  return Comet2::GR7;
+  report_fatal_error("Comet2 cannot read or overwrite SP");
 }
 
 const uint32_t *

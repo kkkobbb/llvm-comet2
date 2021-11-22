@@ -6,23 +6,21 @@
 //
 //===----------------------------------------------------------------------===//
 
-
 // レジスタの役割
 // GR0     戻り値
-// GR1-GR4 引数受け取り
-// GR5     空き
-// GR6     フレームレジスタ退避等の計算用
-// GR7     フレームレジスタ
+// GR0-GR5 引数受け取り (GR0は戻り値格納と引数格納の両方で使用する)
+// GR6-GR7 呼び出し先退避
 
 // 引数
 def CC_Comet2 : CallingConv<[
     // i8型の引数はi16型に昇格する
     CCIfType<[i8], CCPromoteToType<i16>>,
     // i16型はGR1-GR4に渡す
-    CCIfType<[i16], CCAssignToReg<[GR1, GR2, GR3, GR4]>>,
-    // レジスタに収まらなかった場合、スタックに渡す
+    CCIfType<[i16], CCAssignToReg<[GR0, GR1, GR2, GR3, GR4, GR5]>>,
+    // スタックを使用するように設定するが、レジスタに収まらなかった場合、エラー
+    //   この設定を消すとComet2側に処理がいかず、UNREACHABLEのエラーになる
     // NOTE llvm/include/llvm/Target/TargetCallingConv.td CCAssignToStack
-    // NOTE CCAssignToStack<確保するサイス、アラインメント> (0の場合ABIの値を使用する)
+    // NOTE CCAssignToStack<確保するサイズ、アラインメント> (0の場合ABIの値を使用する)
     CCIfType<[i16], CCAssignToStack<0, 0>>
 ]>;
 
@@ -33,6 +31,4 @@ def RetCC_Comet2 : CallingConv<[
 ]>;
 
 // 呼び出し先退避レジスタ
-// GR0は戻り値格納用、GR6は計算用、GR7はフレームレジスタとして使用する
-def CSR : CalleeSavedRegs<(add (sequence "GR%u", 1, 5))>;
-
+def CSR : CalleeSavedRegs<(add GR6, GR7)>;

@@ -32,54 +32,16 @@ bool Comet2FrameLowering::hasFP(const MachineFunction &MF) const {
 
 void Comet2FrameLowering::emitPrologue(MachineFunction &MF,
                                        MachineBasicBlock &MBB) const {
-  assert(&MF.front() == &MBB && "Shrink-wrapping not yet supported");
-
-  MachineFrameInfo &MFI = MF.getFrameInfo();
-  const Comet2InstrInfo *TII = STI.getInstrInfo();
-  MachineBasicBlock::iterator MBBI = MBB.begin();
-  DebugLoc DL = MBBI->getDebugLoc();
-
-  uint64_t StackSize = MFI.getStackSize();
-
-  // Early exit if there is no need to allocate on the stack
-  if (StackSize == 0 && !MFI.adjustsStack())
-    return;
-
-  // Update stack size
-  MFI.setStackSize(StackSize);
-
-  // Comet2にはSPを直接読み書きする手段がないため、GR7をスタックポインタとして使用しているが、
-  // GR7で管理するスタックポインタとCALLで使用するSPが管理するスタックポインタが別なので
-  // ここで書き込む内容がCALLで上書きされる可能性がある (emitEpilogueでも同様)
-
-  // スタックを1フレーム分伸ばす
-  const Register frameReg = Comet2::GR7;
-  const Register tempReg = Comet2::GR6;
-  BuildMI(MBB, MBBI, DL, TII->get(Comet2::LAD), tempReg)
-      .addImm(StackSize);
-  BuildMI(MBB, MBBI, DL, TII->get(Comet2::SUBAREG), frameReg)
-      .addReg(frameReg)
-      .addReg(tempReg);
+  // ここでできることはない
+  //   Comet2にはSPを直接読み書きする手段がないため、スタックはpush、popのみでしか変更できない
+  // スタックは呼び出し先が責任をもって、関数終了時に呼び出し時の状態に戻す必要がある
+  // emitEpilogueも同様
+  return;
 }
 
 void Comet2FrameLowering::emitEpilogue(MachineFunction &MF,
                                        MachineBasicBlock &MBB) const {
-  MachineBasicBlock::iterator MBBI = MBB.getLastNonDebugInstr();
-  MachineFrameInfo &MFI = MF.getFrameInfo();
-  DebugLoc DL = MBBI->getDebugLoc();
-  const Comet2InstrInfo *TII = STI.getInstrInfo();
-
-  // Get the number of bytes from FrameInfo
-  uint64_t StackSize = MFI.getStackSize();
-
-  // スタックを1フレーム分戻す
-  const Register frameReg = Comet2::GR7;
-  const Register tempReg = Comet2::GR6;
-  BuildMI(MBB, MBBI, DL, TII->get(Comet2::LAD), tempReg)
-      .addImm(StackSize);
-  BuildMI(MBB, MBBI, DL, TII->get(Comet2::ADDAREG), frameReg)
-      .addReg(frameReg)
-      .addReg(tempReg);
+  return;
 }
 
 // Eliminate ADJCALLSTACKDOWN, ADJCALLSTACKUP pseudo instructions.
